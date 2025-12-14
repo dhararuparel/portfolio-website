@@ -886,9 +886,7 @@ section {
 }
 
 .footer-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    text-align: center;
 }
 
 .footer-content p {

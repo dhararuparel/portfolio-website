@@ -361,7 +361,6 @@ async function editInternship(id) {
         document.getElementById('internshipCompany').value = internship.company;
         document.getElementById('internshipDuration').value = internship.duration;
         document.getElementById('internshipLocation').value = internship.location;
-        document.getElementById('internshipDescription').value = internship.description;
         document.getElementById('internshipTechnologies').value = internship.technologies || '';
         
         document.getElementById('internshipModalTitle').textContent = 'Edit Internship';

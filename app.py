@@ -419,7 +419,7 @@ def api_internships():
             position=data['position'],
             duration=data['duration'],
             location=data['location'],
-            description=data['description'],
+            description=data.get('description', ''),
             technologies=data.get('technologies', '')
         )
         db.session.add(internship)
@@ -461,7 +461,7 @@ def api_internship(internship_id):
         internship.position = data['position']
         internship.duration = data['duration']
         internship.location = data['location']
-        internship.description = data['description']
+        internship.description = data.get('description', '')
         internship.technologies = data.get('technologies', '')
         db.session.commit()
         return jsonify({'message': 'Internship updated successfully'})
