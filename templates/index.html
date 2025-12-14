@@ -1,0 +1,342 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Navigation -->
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="nav-logo">
+            <h2>DHARA RUPAREL</h2>
+        </div>
+        <div class="nav-menu">
+            <a href="#home" class="nav-link">Home</a>
+            <a href="#about" class="nav-link">About</a>
+            <a href="#projects" class="nav-link">Projects</a>
+            <a href="#skills" class="nav-link">Skills</a>
+            <a href="#internships" class="nav-link">Internships</a>
+            <a href="#education" class="nav-link">Education</a>
+            <a href="#certifications" class="nav-link">Certifications</a>
+            <a href="#contact" class="nav-link">Contact</a>
+        </div>
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section id="home" class="hero">
+    <div class="hero-container">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                Hi, I'm Dhara Ruparel.
+            </h1>
+            <p class="hero-subtitle">Computer Engineer & AI Enthusiast</p>
+            <p class="hero-description">
+                Passionate about Python, Machine Learning, and creating innovative solutions 
+                through technology. Currently pursuing B.E. in Computer Science.
+            </p>
+            <div class="hero-buttons">
+                <a href="#projects" class="btn btn-primary">View My Work</a>
+                <a href="#contact" class="btn btn-secondary">Get In Touch</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="profile-card">
+                <div class="profile-avatar">
+                    <img src="{{ url_for('static', filename='images/DHARA.jpg') }}" alt="Dhara Ruparel" class="profile-image">
+                </div>
+                <div class="floating-elements">
+                    <div class="floating-icon python"><i class="fab fa-python"></i></div>
+                    <div class="floating-icon js"><i class="fab fa-js-square"></i></div>
+                    <div class="floating-icon react"><i class="fab fa-react"></i></div>
+                    <div class="floating-icon database"><i class="fas fa-database"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section id="about" class="about">
+    <div class="container">
+        <h2 class="section-title">About Me</h2>
+        <div class="about-content">
+            <div class="about-text">
+                <p>
+                    I'm a dedicated Computer Science student with a passion for artificial intelligence, 
+                    machine learning, and web development. My journey in technology has led me to work 
+                    on various projects involving motion sensing, gesture recognition, and emotion detection.
+                </p>
+                <p>
+                    With experience in Python, Flask, PostgreSQL, and modern web technologies, I enjoy 
+                    creating solutions that bridge the gap between complex algorithms and user-friendly interfaces.
+                </p>
+            </div>
+            <div class="about-image">
+                <div class="about-stats">
+                    <div class="stat">
+                        <h3>{{ projects|length }}</h3>
+                        <p>Projects Completed</p>
+                    </div>
+                    <div class="stat">
+                        <h3>{{ internships|length }}</h3>
+                        <p>Internships</p>
+                    </div>
+                    <div class="stat">
+                        <h3>{{ certifications|length }}</h3>
+                        <p>Certifications</p>
+                    </div>
+                </div>
+                <div class="about-card">
+                    <div class="languages">
+                        <h4>Languages</h4>
+                        <div class="language-list">
+                            <span class="language-tag">English</span>
+                            <span class="language-tag">Hindi</span>
+                            <span class="language-tag">Gujarati</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Projects Section -->
+<section id="projects" class="projects">
+    <div class="container">
+        <h2 class="section-title">Work Experience & Projects</h2>
+        <div class="projects-grid">
+            {% for project in projects %}
+            <div class="project-card">
+                <div class="project-header">
+                    <h3>{{ project.title }}</h3>
+                    <div class="project-meta">
+                        <span class="duration">{{ project.duration }}</span>
+                        <span class="team-size">Team: {{ project.team_size }}</span>
+                    </div>
+                </div>
+                <div class="project-content">
+                    <p class="project-description">{{ project.description }}</p>
+                    <div class="project-role">
+                        <strong>Role:</strong> {{ project.role }}
+                    </div>
+                    <div class="project-tech">
+                        <h4>Technologies Used:</h4>
+                        <div class="tech-tags">
+                            {% for tech in project.technologies.split(', ') %}
+                            <span class="tech-tag">{{ tech }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Skills Section -->
+<section id="skills" class="skills">
+    <div class="container">
+        <h2 class="section-title">Skills & Technologies</h2>
+        <div class="skills-container">
+            {% set skill_categories = {} %}
+            {% for skill in skills %}
+                {% if skill.category not in skill_categories %}
+                    {% set _ = skill_categories.update({skill.category: []}) %}
+                {% endif %}
+                {% set _ = skill_categories[skill.category].append(skill) %}
+            {% endfor %}
+            
+            {% for category, category_skills in skill_categories.items() %}
+            <div class="skill-category">
+                <h3>{{ category }}</h3>
+                <div class="skills-list">
+                    {% for skill in category_skills %}
+                    <div class="skill-item">
+                        <span class="skill-name">{{ skill.name }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Internships Section -->
+<section id="internships" class="internships">
+    <div class="container">
+        <h2 class="section-title">Internships</h2>
+        <div class="internships-grid">
+            {% for internship in internships %}
+            <div class="internship-card">
+                <div class="internship-header">
+                    <h3>{{ internship.position }}</h3>
+                    <div class="company-info">
+                        <span class="company">{{ internship.company }}</span>
+                        <span class="location">{{ internship.location }}</span>
+                    </div>
+                    <div class="duration">{{ internship.duration }}</div>
+                </div>
+                <div class="internship-content">
+                    <p class="internship-description">{{ internship.description }}</p>
+                    {% if internship.technologies %}
+                    <div class="internship-tech">
+                        <h4>Technologies Used:</h4>
+                        <div class="tech-tags">
+                            {% for tech in internship.technologies.split(', ') %}
+                            <span class="tech-tag">{{ tech }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% if not internships %}
+        <div class="empty-state">
+            <i class="fas fa-briefcase"></i>
+            <p>No internships added yet.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Education Section -->
+<section id="education" class="education">
+    <div class="container">
+        <h2 class="section-title">Education</h2>
+        <div class="education-timeline">
+            {% for edu in education %}
+            <div class="education-item">
+                <div class="education-year">{{ edu.year }}</div>
+                <div class="education-content">
+                    <h3>{{ edu.degree }}</h3>
+                    <p class="institution">{{ edu.institution }}</p>
+                    {% if edu.percentage %}
+                    <div class="percentage">{{ edu.percentage }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Certifications Section -->
+<section id="certifications" class="certifications">
+    <div class="container">
+        <h2 class="section-title">Certifications</h2>
+        <div class="certifications-grid">
+            {% for cert in certifications %}
+            <div class="certification-card">
+                <div class="cert-icon">
+                    <i class="fas fa-certificate"></i>
+                </div>
+                <div class="cert-content">
+                    <h3>{{ cert.title }}</h3>
+                    <p class="cert-issuer">{{ cert.issuer }}</p>
+                    {% if cert.percentage %}
+                    <div class="cert-score">Score: {{ cert.percentage }}</div>
+                    {% endif %}
+                    {% if cert.date_range %}
+                    <div class="cert-date">{{ cert.date_range }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="contact">
+    <div class="container">
+        <h2 class="section-title">Get In Touch</h2>
+        <div class="contact-content">
+            <div class="contact-info">
+                <h3>Let's Connect</h3>
+                <p>I'm always open to discussing new opportunities, interesting projects, or just having a chat about technology.</p>
+                
+                {% if contact %}
+                <div class="contact-details">
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>{{ contact.phone }}</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>{{ contact.email }}</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>{{ contact.location }}</span>
+                    </div>
+                    <div class="contact-item social-media">
+                        <span class="social-label">Connect with me:</span>
+                        <div class="social-icons-inline">
+                            <a href="#" class="social-icon-small instagram" title="Instagram">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="social-icon-small linkedin" title="LinkedIn">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                            <a href="#" class="social-icon-small github" title="GitHub">
+                                <i class="fab fa-github"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="contact-form">
+                <form id="contactForm">
+                    <div class="form-group">
+                        <input type="text" id="name" name="name" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="email" name="email" placeholder="Your Email" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="subject" name="subject" placeholder="Subject" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="message" name="message" placeholder="Your Message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <p>&copy; 2025 Dhara Ruparel. All rights reserved.</p>
+            <div class="social-links">
+                <a href="#" class="social-link instagram" title="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" class="social-link linkedin" title="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="#" class="social-link github" title="GitHub">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="mailto:{{ contact.email if contact else 'dhararuparel16@gmail.com' }}" class="social-link email" title="Email">
+                    <i class="fas fa-envelope"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+{% endblock %}

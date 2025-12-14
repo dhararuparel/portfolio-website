@@ -1,0 +1,1032 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Portfolio{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <!-- Admin Header -->
+    <header class="admin-header">
+        <div class="admin-nav">
+            <h1>Portfolio Admin Dashboard</h1>
+            <div class="admin-actions">
+                <a href="{{ url_for('index') }}" class="btn btn-secondary" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> View Portfolio
+                </a>
+                <a href="{{ url_for('admin_logout') }}" class="btn btn-danger">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Admin Content -->
+    <div class="admin-content">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <nav class="admin-menu">
+                <a href="#projects" class="menu-item active" data-section="projects">
+                    <i class="fas fa-project-diagram"></i>
+                    <span>Projects</span>
+                </a>
+                <a href="#skills" class="menu-item" data-section="skills">
+                    <i class="fas fa-cogs"></i>
+                    <span>Skills</span>
+                </a>
+                <a href="#internships" class="menu-item" data-section="internships">
+                    <i class="fas fa-briefcase"></i>
+                    <span>Internships</span>
+                </a>
+                <a href="#education" class="menu-item" data-section="education">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Education</span>
+                </a>
+                <a href="#certifications" class="menu-item" data-section="certifications">
+                    <i class="fas fa-certificate"></i>
+                    <span>Certifications</span>
+                </a>
+                <a href="#contact" class="menu-item" data-section="contact">
+                    <i class="fas fa-address-book"></i>
+                    <span>Contact Info</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Projects Section -->
+            <section id="projects-section" class="admin-section active">
+                <div class="section-header">
+                    <h2>Manage Projects</h2>
+                    <button class="btn btn-primary" onclick="openModal('projectModal')">
+                        <i class="fas fa-plus"></i> Add Project
+                    </button>
+                </div>
+                
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Duration</th>
+                                <th>Team Size</th>
+                                <th>Role</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="projects-tbody">
+                            {% for project in projects %}
+                            <tr data-id="{{ project.id }}">
+                                <td>{{ project.title }}</td>
+                                <td>{{ project.duration }}</td>
+                                <td>{{ project.team_size }}</td>
+                                <td>{{ project.role }}</td>
+                                <td class="actions">
+                                    <button class="btn-icon btn-edit" onclick="editProject({{ project.id }})">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-icon btn-delete" onclick="deleteProject({{ project.id }})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Skills Section -->
+            <section id="skills-section" class="admin-section">
+                <div class="section-header">
+                    <h2>Manage Skills</h2>
+                    <button class="btn btn-primary" onclick="openModal('skillModal')">
+                        <i class="fas fa-plus"></i> Add Skill
+                    </button>
+                </div>
+                
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="skills-tbody">
+                            {% for skill in skills %}
+                            <tr data-id="{{ skill.id }}">
+                                <td>{{ skill.name }}</td>
+                                <td>{{ skill.category }}</td>
+                                <td class="actions">
+                                    <button class="btn-icon btn-edit" onclick="editSkill({{ skill.id }})">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-icon btn-delete" onclick="deleteSkill({{ skill.id }})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Internships Section -->
+            <section id="internships-section" class="admin-section">
+                <div class="section-header">
+                    <h2>Manage Internships</h2>
+                    <button class="btn btn-primary" onclick="openModal('internshipModal')">
+                        <i class="fas fa-plus"></i> Add Internship
+                    </button>
+                </div>
+                
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Position</th>
+                                <th>Company</th>
+                                <th>Duration</th>
+                                <th>Location</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="internships-tbody">
+                            {% for internship in internships %}
+                            <tr data-id="{{ internship.id }}">
+                                <td>{{ internship.position }}</td>
+                                <td>{{ internship.company }}</td>
+                                <td>{{ internship.duration }}</td>
+                                <td>{{ internship.location }}</td>
+                                <td class="actions">
+                                    <button class="btn-icon btn-edit" onclick="editInternship({{ internship.id }})">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-icon btn-delete" onclick="deleteInternship({{ internship.id }})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Education Section -->
+            <section id="education-section" class="admin-section">
+                <div class="section-header">
+                    <h2>Manage Education</h2>
+                    <button class="btn btn-primary" onclick="openModal('educationModal')">
+                        <i class="fas fa-plus"></i> Add Education
+                    </button>
+                </div>
+                
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Degree</th>
+                                <th>Institution</th>
+                                <th>Year</th>
+                                <th>Percentage</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="education-tbody">
+                            {% for edu in education %}
+                            <tr data-id="{{ edu.id }}">
+                                <td>{{ edu.degree }}</td>
+                                <td>{{ edu.institution }}</td>
+                                <td>{{ edu.year }}</td>
+                                <td>{{ edu.percentage or 'N/A' }}</td>
+                                <td class="actions">
+                                    <button class="btn-icon btn-edit" onclick="editEducation({{ edu.id }})">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-icon btn-delete" onclick="deleteEducation({{ edu.id }})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Certifications Section -->
+            <section id="certifications-section" class="admin-section">
+                <div class="section-header">
+                    <h2>Manage Certifications</h2>
+                    <button class="btn btn-primary" onclick="openModal('certificationModal')">
+                        <i class="fas fa-plus"></i> Add Certification
+                    </button>
+                </div>
+                
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Issuer</th>
+                                <th>Percentage</th>
+                                <th>Date Range</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="certifications-tbody">
+                            {% for cert in certifications %}
+                            <tr data-id="{{ cert.id }}">
+                                <td>{{ cert.title }}</td>
+                                <td>{{ cert.issuer }}</td>
+                                <td>{{ cert.percentage or 'N/A' }}</td>
+                                <td>{{ cert.date_range or 'N/A' }}</td>
+                                <td class="actions">
+                                    <button class="btn-icon btn-edit" onclick="editCertification({{ cert.id }})">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-icon btn-delete" onclick="deleteCertification({{ cert.id }})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Contact Section -->
+            <section id="contact-section" class="admin-section">
+                <div class="section-header">
+                    <h2>Manage Contact Information</h2>
+                    {% if contact %}
+                    <button class="btn btn-primary" onclick="editContact({{ contact.id }})">
+                        <i class="fas fa-edit"></i> Edit Contact Info
+                    </button>
+                    {% else %}
+                    <button class="btn btn-primary" onclick="openModal('contactModal')">
+                        <i class="fas fa-plus"></i> Add Contact Info
+                    </button>
+                    {% endif %}
+                </div>
+                
+                {% if contact %}
+                <div class="contact-info-card">
+                    <div class="info-item">
+                        <label>Phone:</label>
+                        <span>{{ contact.phone }}</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Email:</label>
+                        <span>{{ contact.email }}</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Location:</label>
+                        <span>{{ contact.location }}</span>
+                    </div>
+                    <div class="info-item">
+                        <label>LinkedIn:</label>
+                        <span>{{ contact.linkedin or 'Not provided' }}</span>
+                    </div>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-address-book"></i>
+                    <p>No contact information added yet.</p>
+                </div>
+                {% endif %}
+            </section>
+        </main>
+    </div>
+</div>
+
+<!-- Modals -->
+<!-- Project Modal -->
+<div id="projectModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="projectModalTitle">Add Project</h3>
+            <span class="close" onclick="closeModal('projectModal')">&times;</span>
+        </div>
+        <form id="projectForm">
+            <input type="hidden" id="projectId" name="id">
+            <div class="form-group">
+                <label for="projectTitle">Title *</label>
+                <input type="text" id="projectTitle" name="title" required>
+            </div>
+            <div class="form-group">
+                <label for="projectDescription">Description *</label>
+                <textarea id="projectDescription" name="description" rows="4" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="projectTechnologies">Technologies (comma-separated) *</label>
+                <input type="text" id="projectTechnologies" name="technologies" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="projectDuration">Duration *</label>
+                    <input type="text" id="projectDuration" name="duration" required>
+                </div>
+                <div class="form-group">
+                    <label for="projectTeamSize">Team Size *</label>
+                    <input type="text" id="projectTeamSize" name="team_size" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="projectRole">Role *</label>
+                <input type="text" id="projectRole" name="role" required>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('projectModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Project</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Skill Modal -->
+<div id="skillModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="skillModalTitle">Add Skill</h3>
+            <span class="close" onclick="closeModal('skillModal')">&times;</span>
+        </div>
+        <form id="skillForm">
+            <input type="hidden" id="skillId" name="id">
+            <div class="form-group">
+                <label for="skillName">Skill Name *</label>
+                <input type="text" id="skillName" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="skillCategory">Category *</label>
+                <select id="skillCategory" name="category" required>
+                    <option value="">Select Category</option>
+                    <option value="Programming Languages">Programming Languages</option>
+                    <option value="Web Technologies">Web Technologies</option>
+                    <option value="Web Frameworks">Web Frameworks</option>
+                    <option value="Databases">Databases</option>
+                    <option value="Libraries & Frameworks">Libraries & Frameworks</option>
+                    <option value="Tools & Technologies">Tools & Technologies</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('skillModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Skill</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Education Modal -->
+<div id="educationModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="educationModalTitle">Add Education</h3>
+            <span class="close" onclick="closeModal('educationModal')">&times;</span>
+        </div>
+        <form id="educationForm">
+            <input type="hidden" id="educationId" name="id">
+            <div class="form-group">
+                <label for="educationDegree">Degree *</label>
+                <input type="text" id="educationDegree" name="degree" required>
+            </div>
+            <div class="form-group">
+                <label for="educationInstitution">Institution *</label>
+                <input type="text" id="educationInstitution" name="institution" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="educationYear">Year *</label>
+                    <input type="text" id="educationYear" name="year" required>
+                </div>
+                <div class="form-group">
+                    <label for="educationPercentage">Percentage/Grade</label>
+                    <input type="text" id="educationPercentage" name="percentage">
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('educationModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Education</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Certification Modal -->
+<div id="certificationModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="certificationModalTitle">Add Certification</h3>
+            <span class="close" onclick="closeModal('certificationModal')">&times;</span>
+        </div>
+        <form id="certificationForm">
+            <input type="hidden" id="certificationId" name="id">
+            <div class="form-group">
+                <label for="certificationTitle">Title *</label>
+                <input type="text" id="certificationTitle" name="title" required>
+            </div>
+            <div class="form-group">
+                <label for="certificationIssuer">Issuer *</label>
+                <input type="text" id="certificationIssuer" name="issuer" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="certificationPercentage">Percentage/Score</label>
+                    <input type="text" id="certificationPercentage" name="percentage">
+                </div>
+                <div class="form-group">
+                    <label for="certificationDateRange">Date Range</label>
+                    <input type="text" id="certificationDateRange" name="date_range">
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('certificationModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Certification</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Internship Modal -->
+<div id="internshipModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="internshipModalTitle">Add Internship</h3>
+            <span class="close" onclick="closeModal('internshipModal')">&times;</span>
+        </div>
+        <form id="internshipForm">
+            <input type="hidden" id="internshipId" name="id">
+            <div class="form-group">
+                <label for="internshipPosition">Position *</label>
+                <input type="text" id="internshipPosition" name="position" required>
+            </div>
+            <div class="form-group">
+                <label for="internshipCompany">Company *</label>
+                <input type="text" id="internshipCompany" name="company" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="internshipDuration">Duration *</label>
+                    <input type="text" id="internshipDuration" name="duration" required>
+                </div>
+                <div class="form-group">
+                    <label for="internshipLocation">Location *</label>
+                    <input type="text" id="internshipLocation" name="location" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="internshipDescription">Description *</label>
+                <textarea id="internshipDescription" name="description" rows="4" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="internshipTechnologies">Technologies (comma-separated)</label>
+                <input type="text" id="internshipTechnologies" name="technologies">
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('internshipModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Internship</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Contact Modal -->
+<div id="contactModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="contactModalTitle">Add Contact Info</h3>
+            <span class="close" onclick="closeModal('contactModal')">&times;</span>
+        </div>
+        <form id="contactForm">
+            <input type="hidden" id="contactId" name="id">
+            <div class="form-group">
+                <label for="contactPhone">Phone *</label>
+                <input type="tel" id="contactPhone" name="phone" required>
+            </div>
+            <div class="form-group">
+                <label for="contactEmail">Email *</label>
+                <input type="email" id="contactEmail" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="contactLocation">Location *</label>
+                <input type="text" id="contactLocation" name="location" required>
+            </div>
+            <div class="form-group">
+                <label for="contactLinkedin">LinkedIn URL</label>
+                <input type="url" id="contactLinkedin" name="linkedin">
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('contactModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Contact Info</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+/* Admin Dashboard Styles */
+.admin-container {
+    min-height: 100vh;
+    background: #0a0a0a;
+    color: #ffffff;
+}
+
+.admin-header {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 20px 0;
+}
+
+.admin-nav {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin-nav h1 {
+    color: #6c5ce7;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.admin-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: #ffffff;
+}
+
+.btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(231, 76, 60, 0.3);
+}
+
+.admin-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    min-height: calc(100vh - 80px);
+}
+
+.admin-sidebar {
+    width: 250px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 30px 0;
+}
+
+.admin-menu {
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 25px;
+    color: #b0b0b0;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+}
+
+.menu-item:hover,
+.menu-item.active {
+    color: #6c5ce7;
+    background: rgba(108, 92, 231, 0.1);
+    border-left-color: #6c5ce7;
+}
+
+.menu-item i {
+    font-size: 18px;
+    width: 20px;
+}
+
+.admin-main {
+    flex: 1;
+    padding: 30px;
+}
+
+.admin-section {
+    display: none;
+}
+
+.admin-section.active {
+    display: block;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.section-header h2 {
+    color: #ffffff;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.data-table {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.data-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+    padding: 15px 20px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.data-table th {
+    background: rgba(108, 92, 231, 0.1);
+    color: #6c5ce7;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+.data-table td {
+    color: #b0b0b0;
+}
+
+.data-table tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-icon {
+    width: 35px;
+    height: 35px;
+    border: none;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.btn-edit {
+    background: rgba(52, 152, 219, 0.2);
+    color: #3498db;
+}
+
+.btn-edit:hover {
+    background: rgba(52, 152, 219, 0.3);
+    transform: translateY(-2px);
+}
+
+.btn-delete {
+    background: rgba(231, 76, 60, 0.2);
+    color: #e74c3c;
+}
+
+.btn-delete:hover {
+    background: rgba(231, 76, 60, 0.3);
+    transform: translateY(-2px);
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+}
+
+.modal select {
+    position: relative;
+    z-index: 10001;
+}
+
+.modal-content {
+    background: rgba(26, 26, 46, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin: 5% auto;
+    padding: 0;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+    padding: 25px 30px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.close {
+    color: #b0b0b0;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close:hover {
+    color: #6c5ce7;
+}
+
+.modal form {
+    padding: 30px;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group label {
+    display: block;
+    color: #ffffff;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+    position: relative;
+    z-index: 1000;
+}
+
+.form-group select option {
+    background: #1a1a2e;
+    color: #ffffff;
+    padding: 10px;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #6c5ce7;
+    box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Contact Info Card */
+.contact-info-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 30px;
+    display: grid;
+    gap: 20px;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-item label {
+    color: #6c5ce7;
+    font-weight: 600;
+    min-width: 100px;
+}
+
+.info-item span {
+    color: #b0b0b0;
+    text-align: right;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #888888;
+}
+
+.empty-state i {
+    font-size: 48px;
+    color: #6c5ce7;
+    margin-bottom: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .admin-content {
+        flex-direction: column;
+    }
+    
+    .admin-sidebar {
+        width: 100%;
+        order: 2;
+    }
+    
+    .admin-main {
+        order: 1;
+    }
+    
+    .admin-menu {
+        flex-direction: row;
+        overflow-x: auto;
+        padding: 0 20px;
+    }
+    
+    .menu-item {
+        white-space: nowrap;
+        border-left: none;
+        border-bottom: 3px solid transparent;
+    }
+    
+    .menu-item:hover,
+    .menu-item.active {
+        border-left: none;
+        border-bottom-color: #6c5ce7;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 2% auto;
+    }
+}
+</style>
+
+<script>
+// Admin Dashboard JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    // Menu navigation
+    const menuItems = document.querySelectorAll('.menu-item');
+    const sections = document.querySelectorAll('.admin-section');
+    
+    menuItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Remove active class from all items and sections
+            menuItems.forEach(mi => mi.classList.remove('active'));
+            sections.forEach(section => section.classList.remove('active'));
+            
+            // Add active class to clicked item
+            this.classList.add('active');
+            
+            // Show corresponding section
+            const sectionId = this.getAttribute('data-section') + '-section';
+            document.getElementById(sectionId).classList.add('active');
+        });
+    });
+});
+
+// Modal functions
+function openModal(modalId) {
+    document.getElementById(modalId).style.display = 'block';
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+    // Reset form if exists
+    const form = document.querySelector(`#${modalId} form`);
+    if (form) {
+        form.reset();
+        // Clear hidden ID field
+        const idField = form.querySelector('input[type="hidden"]');
+        if (idField) idField.value = '';
+    }
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    if (event.target.classList.contains('modal')) {
+        event.target.style.display = 'none';
+    }
+}
+
+// CRUD functions (to be implemented with actual API calls)
+function editProject(id) {
+    // Implementation for editing project
+    console.log('Edit project:', id);
+}
+
+function deleteProject(id) {
+    if (confirm('Are you sure you want to delete this project?')) {
+        // Implementation for deleting project
+        console.log('Delete project:', id);
+    }
+}
+
+function editSkill(id) {
+    console.log('Edit skill:', id);
+}
+
+function deleteSkill(id) {
+    if (confirm('Are you sure you want to delete this skill?')) {
+        console.log('Delete skill:', id);
+    }
+}
+
+function editEducation(id) {
+    console.log('Edit education:', id);
+}
+
+function deleteEducation(id) {
+    if (confirm('Are you sure you want to delete this education entry?')) {
+        console.log('Delete education:', id);
+    }
+}
+
+function editCertification(id) {
+    console.log('Edit certification:', id);
+}
+
+function deleteCertification(id) {
+    if (confirm('Are you sure you want to delete this certification?')) {
+        console.log('Delete certification:', id);
+    }
+}
+
+function editContact(id) {
+    console.log('Edit contact:', id);
+}
+</script>
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}
