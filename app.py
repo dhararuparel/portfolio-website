@@ -396,17 +396,6 @@ def api_contact():
         })
     return jsonify({'message': 'No contact info found'})
 
-if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-        # Create default admin if not exists
-        if not Admin.query.filter_by(username='admin').first():
-            admin = Admin(username='admin', password_hash=generate_password_hash('admin123'))
-            db.session.add(admin)
-            db.session.commit()
-    
-    app.run(debug=True)
-
 @app.route('/api/internships', methods=['GET', 'POST'])
 def api_internships():
     if 'admin_logged_in' not in session:
@@ -470,3 +459,14 @@ def api_internship(internship_id):
         db.session.delete(internship)
         db.session.commit()
         return jsonify({'message': 'Internship deleted successfully'})
+
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+        # Create default admin if not exists
+        if not Admin.query.filter_by(username='admin').first():
+            admin = Admin(username='admin', password_hash=generate_password_hash('admin123'))
+            db.session.add(admin)
+            db.session.commit()
+    
+    app.run(debug=True)

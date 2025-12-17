@@ -3,18 +3,25 @@ from werkzeug.security import generate_password_hash
 
 def populate_database():
     with app.app_context():
-        # Clear existing data
-        db.drop_all()
+        # Create tables if they don't exist (don't drop existing data)
         db.create_all()
         
-        # Create admin user
-        admin = Admin(
-            username='admin',
-            password_hash=generate_password_hash('admin123')
-        )
-        db.session.add(admin)
+        # Create admin user (only if it doesn't exist)
+        if not Admin.query.filter_by(username='admin').first():
+            admin = Admin(
+                username='admin',
+                password_hash=generate_password_hash('admin123')
+            )
+            db.session.add(admin)
+            print("Created admin user")
+        else:
+            print("Admin user already exists")
         
-        # Add Projects from resume
+        # Check if data already exists
+        existing_projects_count = Project.query.count()
+        print(f"Existing projects in database: {existing_projects_count}")
+        
+        # Add Projects from resume (only if they don't exist)
         projects = [
             {
                 'title': 'CAMERA MOTION SENSING PROJECT',
@@ -42,9 +49,15 @@ def populate_database():
             }
         ]
         
+        # Only add projects if they don't already exist
         for project_data in projects:
-            project = Project(**project_data)
-            db.session.add(project)
+            existing = Project.query.filter_by(title=project_data['title']).first()
+            if not existing:
+                project = Project(**project_data)
+                db.session.add(project)
+                print(f"Added project: {project_data['title']}")
+            else:
+                print(f"Project already exists: {project_data['title']}")
         
         # Add Skills from resume
         skills = [
@@ -65,9 +78,15 @@ def populate_database():
             {'name': 'Streamlit', 'category': 'Libraries & Frameworks', 'proficiency': 75}
         ]
         
+        # Only add skills if they don't already exist
         for skill_data in skills:
-            skill = Skill(**skill_data)
-            db.session.add(skill)
+            existing = Skill.query.filter_by(name=skill_data['name']).first()
+            if not existing:
+                skill = Skill(**skill_data)
+                db.session.add(skill)
+                print(f"Added skill: {skill_data['name']}")
+            else:
+                print(f"Skill already exists: {skill_data['name']}")
         
         # Add Education from resume
         education_data = [
@@ -75,7 +94,7 @@ def populate_database():
                 'degree': 'B.E.(COMPUTER) - KSV',
                 'institution': 'KSV University',
                 'year': '2022-2026',
-                'percentage': '8.44'
+                'percentage': '8.49'
             },
             {
                 'degree': 'H.S.C - C.B.S.E',
@@ -91,9 +110,15 @@ def populate_database():
             }
         ]
         
+        # Only add education if it doesn't already exist
         for edu_data in education_data:
-            education = Education(**edu_data)
-            db.session.add(education)
+            existing = Education.query.filter_by(degree=edu_data['degree'], year=edu_data['year']).first()
+            if not existing:
+                education = Education(**edu_data)
+                db.session.add(education)
+                print(f"Added education: {edu_data['degree']}")
+            else:
+                print(f"Education already exists: {edu_data['degree']}")
         
         # Add Certifications from resume
         certifications_data = [
@@ -129,18 +154,29 @@ def populate_database():
             }
         ]
         
+        # Only add certifications if they don't already exist
         for cert_data in certifications_data:
-            certification = Certification(**cert_data)
-            db.session.add(certification)
+            existing = Certification.query.filter_by(title=cert_data['title']).first()
+            if not existing:
+                certification = Certification(**cert_data)
+                db.session.add(certification)
+                print(f"Added certification: {cert_data['title']}")
+            else:
+                print(f"Certification already exists: {cert_data['title']}")
         
-        # Add Contact Information from resume
-        contact = Contact(
-            phone='+91 6352732968',
-            email='dhara.ruparel16@gmail.com',
-            location='Gandhinagar',
-            linkedin='https://www.linkedin.com/in/dhara-ruparel/'
-        )
-        db.session.add(contact)
+        # Add Contact Information from resume (only if it doesn't exist)
+        existing_contact = Contact.query.first()
+        if not existing_contact:
+            contact = Contact(
+                phone='+91 6352732968',
+                email='dhararuparel16@gmail.com',
+                location='Gandhinagar',
+                linkedin='https://www.linkedin.com/in/dhara-ruparel/'
+            )
+            db.session.add(contact)
+            print("Added contact information")
+        else:
+            print("Contact information already exists")
         
         # Commit all changes
         db.session.commit()

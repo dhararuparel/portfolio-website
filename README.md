@@ -217,4 +217,4 @@ This project is open source and available under the MIT License.
 
 ## Contact
 
-For questions or support, contact Dhara Ruparel at dhara.ruparel16@gmail.com
+For questions or support, contact Dhara Ruparel at dhararuparel16@gmail.com
