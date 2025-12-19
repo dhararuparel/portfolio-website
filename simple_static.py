@@ -1,4 +1,20 @@
-<!DOCTYPE html>
+"""
+Simple static site generator for GitHub Pages
+"""
+import os
+import shutil
+
+def create_simple_static():
+    # Create docs directory
+    os.makedirs('docs', exist_ok=True)
+    
+    # Copy static assets
+    if os.path.exists('docs/static'):
+        shutil.rmtree('docs/static')
+    shutil.copytree('static', 'docs/static')
+    
+    # Create simple index.html
+    html_content = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -416,4 +432,14 @@
 
     <script src="static/js/script.js"></script>
 </body>
-</html>
+</html>"""
+    
+    # Write the HTML file
+    with open('docs/index.html', 'w', encoding='utf-8') as f:
+        f.write(html_content)
+    
+    print("✅ Simple static site created in 'docs' folder")
+    print("🚀 Ready for GitHub Pages!")
+
+if __name__ == '__main__':
+    create_simple_static()
