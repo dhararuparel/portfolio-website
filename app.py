@@ -11,11 +11,16 @@ CORS(app, origins=["*"])  # Allow all origins for now, restrict in production
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-secret-key-here')
 
 # Handle both local and Render database URLs
-database_url = os.getenv('DATABASE_URL', 'postgresql://postgres:dhara16@localhost/portfolio_db')
-if database_url.startswith('postgres://'):
-    database_url = database_url.replace('postgres://', 'postgresql://', 1)
+database_url = os.getenv('DATABASE_URL')
+if database_url:
+    # Use PostgreSQL if DATABASE_URL is provided
+    if database_url.startswith('postgres://'):
+        database_url = database_url.replace('postgres://', 'postgresql://', 1)
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+else:
+    # Use SQLite for development and as fallback
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///portfolio.db'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
