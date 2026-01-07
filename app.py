@@ -9,7 +9,13 @@ app = Flask(__name__)
 CORS(app, origins=["*"])  # Allow all origins for now, restrict in production
 
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-secret-key-here')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://postgres:dhara16@localhost/portfolio_db')
+
+# Handle both local and Render database URLs
+database_url = os.getenv('DATABASE_URL', 'postgresql://postgres:dhara16@localhost/portfolio_db')
+if database_url.startswith('postgres://'):
+    database_url = database_url.replace('postgres://', 'postgresql://', 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -472,4 +478,5 @@ if __name__ == '__main__':
             db.session.add(admin)
             db.session.commit()
     
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
