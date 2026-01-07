@@ -1,12 +1,177 @@
 """
-Create index.html in root directory for GitHub Pages
+Create index.html in root directory for GitHub Pages with actual database data
 """
 import shutil
 import os
+from app import app, Project, Skill, Education, Certification, Internship, Contact
 
 def create_root_index():
+    # Get data from database
+    with app.app_context():
+        projects = Project.query.all()
+        skills = Skill.query.all()
+        education = Education.query.all()
+        certifications = Certification.query.all()
+        internships = Internship.query.all()
+        contact = Contact.query.first()
+    
+    # Group skills by category
+    skill_categories = {}
+    for skill in skills:
+        if skill.category not in skill_categories:
+            skill_categories[skill.category] = []
+        skill_categories[skill.category].append(skill)
+    
+    # Generate projects HTML
+    projects_html = ""
+    for project in projects:
+        tech_tags = ""
+        for tech in project.technologies.split(', '):
+            tech_tags += f'<span class="tech-tag">{tech}</span>\n                                '
+        
+        projects_html += f"""
+                <div class="project-card">
+                    <div class="project-header">
+                        <h3>{project.title}</h3>
+                        <div class="project-meta">
+                            <span class="duration">{project.duration}</span>
+                            <span class="team-size">Team: {project.team_size}</span>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <p class="project-description">{project.description}</p>
+                        <div class="project-role">
+                            <strong>Role:</strong> {project.role}
+                        </div>
+                        <div class="project-tech">
+                            <h4>Technologies Used:</h4>
+                            <div class="tech-tags">
+                                {tech_tags}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                """
+    
+    # Generate skills HTML
+    skills_html = ""
+    for category, category_skills in skill_categories.items():
+        skill_items = ""
+        for skill in category_skills:
+            skill_items += f'<div class="skill-item"><span class="skill-name">{skill.name}</span></div>\n                        '
+        
+        skills_html += f"""
+            <div class="skill-category">
+                <h3>{category}</h3>
+                <div class="skills-list">
+                    {skill_items}
+                </div>
+            </div>
+            """
+    
+    # Generate education HTML
+    education_html = ""
+    for edu in education:
+        percentage_html = f'<div class="percentage">{edu.percentage}</div>' if edu.percentage else ''
+        education_html += f"""
+                <div class="education-item">
+                    <div class="education-year">{edu.year}</div>
+                    <div class="education-content">
+                        <h3>{edu.degree}</h3>
+                        <p class="institution">{edu.institution}</p>
+                        {percentage_html}
+                    </div>
+                </div>
+                """
+    
+    # Generate certifications HTML
+    certifications_html = ""
+    for cert in certifications:
+        score_html = f'<div class="cert-score">Score: {cert.percentage}</div>' if cert.percentage else ''
+        date_html = f'<div class="cert-date">{cert.date_range}</div>' if cert.date_range else ''
+        
+        certifications_html += f"""
+                <div class="certification-card">
+                    <div class="cert-icon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <div class="cert-content">
+                        <h3>{cert.title}</h3>
+                        <p class="cert-issuer">{cert.issuer}</p>
+                        {score_html}
+                        {date_html}
+                    </div>
+                </div>
+                """
+    
+    # Generate internships HTML
+    internships_html = ""
+    for internship in internships:
+        tech_html = ""
+        if internship.technologies:
+            tech_tags = ""
+            for tech in internship.technologies.split(', '):
+                tech_tags += f'<span class="tech-tag">{tech}</span>\n                            '
+            tech_html = f"""
+                    <div class="internship-tech">
+                        <h4>Technologies Used:</h4>
+                        <div class="tech-tags">
+                            {tech_tags}
+                        </div>
+                    </div>"""
+        
+        internships_html += f"""
+                <div class="internship-card">
+                    <div class="internship-header">
+                        <h3>{internship.position}</h3>
+                        <div class="company-info">
+                            <span class="company">{internship.company}</span>
+                            <span class="location">{internship.location}</span>
+                        </div>
+                        <div class="duration">{internship.duration}</div>
+                    </div>
+                    <div class="internship-content">
+                        <p class="internship-description">{internship.description}</p>
+                        {tech_html}
+                    </div>
+                </div>
+                """
+    
+    # Generate contact HTML
+    contact_html = ""
+    if contact:
+        contact_html = f"""
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span>{contact.phone}</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>{contact.email}</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>{contact.location}</span>
+                        </div>
+                        <div class="contact-item social-media">
+                            <span class="social-label">Connect with me:</span>
+                            <div class="social-icons-inline">
+                                <a href="https://www.instagram.com/dhara_ruparel16?igsh=emRwZTJyc2h6cnN3" class="social-icon-small instagram" title="Instagram" target="_blank">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="https://www.linkedin.com/in/dhara-ruparel/" class="social-icon-small linkedin" title="LinkedIn" target="_blank">
+                                    <i class="fab fa-linkedin"></i>
+                                </a>
+                                <a href="https://github.com/dhararuparel" class="social-icon-small github" title="GitHub" target="_blank">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>"""
+    
     # Create the static HTML content
-    html_content = """<!DOCTYPE html>
+    html_content = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -28,6 +193,7 @@ def create_root_index():
                 <a href="#about" class="nav-link">About</a>
                 <a href="#projects" class="nav-link">Projects</a>
                 <a href="#skills" class="nav-link">Skills</a>
+                <a href="#internships" class="nav-link">Internships</a>
                 <a href="#education" class="nav-link">Education</a>
                 <a href="#certifications" class="nav-link">Certifications</a>
                 <a href="#contact" class="nav-link">Contact</a>
@@ -92,15 +258,15 @@ def create_root_index():
                 <div class="about-image">
                     <div class="about-stats">
                         <div class="stat">
-                            <h3>3</h3>
+                            <h3>{len(projects)}</h3>
                             <p>Projects Completed</p>
                         </div>
                         <div class="stat">
-                            <h3>0</h3>
+                            <h3>{len(internships)}</h3>
                             <p>Internships</p>
                         </div>
                         <div class="stat">
-                            <h3>5</h3>
+                            <h3>{len(certifications)}</h3>
                             <p>Certifications</p>
                         </div>
                     </div>
@@ -124,82 +290,8 @@ def create_root_index():
         <div class="container">
             <h2 class="section-title">Work Experience & Projects</h2>
             <div class="projects-grid">
-                <div class="project-card">
-                    <div class="project-header">
-                        <h3>CAMERA MOTION SENSING PROJECT</h3>
-                        <div class="project-meta">
-                            <span class="duration">6 months</span>
-                            <span class="team-size">Team: 4 persons</span>
-                        </div>
-                    </div>
-                    <div class="project-content">
-                        <p class="project-description">A smart surveillance system that detects and responds to motion using real-time camera sensing and Python-based automation.</p>
-                        <div class="project-role">
-                            <strong>Role:</strong> Member
-                        </div>
-                        <div class="project-tech">
-                            <h4>Technologies Used:</h4>
-                            <div class="tech-tags">
-                                <span class="tech-tag">HTML</span>
-                                <span class="tech-tag">CSS</span>
-                                <span class="tech-tag">Flask</span>
-                                <span class="tech-tag">Python</span>
-                                <span class="tech-tag">PostgreSQL</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="project-card">
-                    <div class="project-header">
-                        <h3>HAND GESTURE RECOGNITION SYSTEM</h3>
-                        <div class="project-meta">
-                            <span class="duration">1 Month</span>
-                            <span class="team-size">Team: 1 person</span>
-                        </div>
-                    </div>
-                    <div class="project-content">
-                        <p class="project-description">A real-time hand gesture recognition system that detects and classifies 5 distinct hand gestures using computer vision and Media Pipe.</p>
-                        <div class="project-role">
-                            <strong>Role:</strong> Individual
-                        </div>
-                        <div class="project-tech">
-                            <h4>Technologies Used:</h4>
-                            <div class="tech-tags">
-                                <span class="tech-tag">Python</span>
-                                <span class="tech-tag">OpenCV</span>
-                                <span class="tech-tag">Media Pipe</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="project-card">
-                    <div class="project-header">
-                        <h3>EMOTION DETECTION FROM TEXT</h3>
-                        <div class="project-meta">
-                            <span class="duration">3 weeks</span>
-                            <span class="team-size">Team: 1 person</span>
-                        </div>
-                    </div>
-                    <div class="project-content">
-                        <p class="project-description">A sentiment analysis project that classifies user emotions from textual input using a machine learning model trained on the Twitter Emotion Dataset.</p>
-                        <div class="project-role">
-                            <strong>Role:</strong> Individual
-                        </div>
-                        <div class="project-tech">
-                            <h4>Technologies Used:</h4>
-                            <div class="tech-tags">
-                                <span class="tech-tag">Python</span>
-                                <span class="tech-tag">Scikit-learn</span>
-                                <span class="tech-tag">Pandas</span>
-                                <span class="tech-tag">NLTK</span>
-                                <span class="tech-tag">Streamlit</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {projects_html}
+        </div>
         </div>
     </section>
 
@@ -208,52 +300,19 @@ def create_root_index():
         <div class="container">
             <h2 class="section-title">Skills & Technologies</h2>
             <div class="skills-container">
-                <div class="skill-category">
-                    <h3>Programming Languages</h3>
-                    <div class="skills-list">
-                        <div class="skill-item"><span class="skill-name">Python</span></div>
-                        <div class="skill-item"><span class="skill-name">Machine Learning</span></div>
-                        <div class="skill-item"><span class="skill-name">AI</span></div>
-                    </div>
-                </div>
-                
-                <div class="skill-category">
-                    <h3>Databases</h3>
-                    <div class="skills-list">
-                        <div class="skill-item"><span class="skill-name">PostgreSQL</span></div>
-                        <div class="skill-item"><span class="skill-name">SQL</span></div>
-                    </div>
-                </div>
-                
-                <div class="skill-category">
-                    <h3>Web Technologies</h3>
-                    <div class="skills-list">
-                        <div class="skill-item"><span class="skill-name">HTML</span></div>
-                        <div class="skill-item"><span class="skill-name">CSS</span></div>
-                        <div class="skill-item"><span class="skill-name">JavaScript</span></div>
-                    </div>
-                </div>
-                
-                <div class="skill-category">
-                    <h3>Web Frameworks</h3>
-                    <div class="skills-list">
-                        <div class="skill-item"><span class="skill-name">Flask</span></div>
-                        <div class="skill-item"><span class="skill-name">Django</span></div>
-                    </div>
-                </div>
-                
-                <div class="skill-category">
-                    <h3>Libraries & Frameworks</h3>
-                    <div class="skills-list">
-                        <div class="skill-item"><span class="skill-name">OpenCV</span></div>
-                        <div class="skill-item"><span class="skill-name">MediaPipe</span></div>
-                        <div class="skill-item"><span class="skill-name">Scikit-learn</span></div>
-                        <div class="skill-item"><span class="skill-name">Pandas</span></div>
-                        <div class="skill-item"><span class="skill-name">NLTK</span></div>
-                        <div class="skill-item"><span class="skill-name">Streamlit</span></div>
-                    </div>
-                </div>
+                {skills_html}
             </div>
+        </div>
+    </section>
+
+    <!-- Internships Section -->
+    <section id="internships" class="internships">
+        <div class="container">
+            <h2 class="section-title">Internships</h2>
+            <div class="internships-grid">
+                {internships_html}
+            </div>
+            {f'<div class="empty-state"><i class="fas fa-briefcase"></i><p>No internships added yet.</p></div>' if not internships else ''}
         </div>
     </section>
 
@@ -262,32 +321,7 @@ def create_root_index():
         <div class="container">
             <h2 class="section-title">Education</h2>
             <div class="education-timeline">
-                <div class="education-item">
-                    <div class="education-year">2022-2026</div>
-                    <div class="education-content">
-                        <h3>B.E.(COMPUTER) - KSV</h3>
-                        <p class="institution">KSV University</p>
-                        <div class="percentage">8.44</div>
-                    </div>
-                </div>
-                
-                <div class="education-item">
-                    <div class="education-year">2020-2022</div>
-                    <div class="education-content">
-                        <h3>H.S.C - C.B.S.E</h3>
-                        <p class="institution">CBSE Board</p>
-                        <div class="percentage">87%</div>
-                    </div>
-                </div>
-                
-                <div class="education-item">
-                    <div class="education-year">2020</div>
-                    <div class="education-content">
-                        <h3>S.S.C - C.B.S.E</h3>
-                        <p class="institution">CBSE Board</p>
-                        <div class="percentage">94.2%</div>
-                    </div>
-                </div>
+                {education_html}
             </div>
         </div>
     </section>
@@ -297,58 +331,7 @@ def create_root_index():
         <div class="container">
             <h2 class="section-title">Certifications</h2>
             <div class="certifications-grid">
-                <div class="certification-card">
-                    <div class="cert-icon">
-                        <i class="fas fa-certificate"></i>
-                    </div>
-                    <div class="cert-content">
-                        <h3>NPTEL Certification on "Enhancing Soft Skills and Personality"</h3>
-                        <p class="cert-issuer">NPTEL</p>
-                        <div class="cert-score">Score: 77%</div>
-                    </div>
-                </div>
-                
-                <div class="certification-card">
-                    <div class="cert-icon">
-                        <i class="fas fa-certificate"></i>
-                    </div>
-                    <div class="cert-content">
-                        <h3>NPTEL Certification on "Python for Data Science"</h3>
-                        <p class="cert-issuer">NPTEL</p>
-                        <div class="cert-score">Score: 68%</div>
-                    </div>
-                </div>
-                
-                <div class="certification-card">
-                    <div class="cert-icon">
-                        <i class="fas fa-certificate"></i>
-                    </div>
-                    <div class="cert-content">
-                        <h3>5 Days Hands-on Series on Laravel Framework and Wordpress CMS</h3>
-                        <p class="cert-issuer">LDRP ITR</p>
-                        <div class="cert-date">20/01/2025 to 24/01/2025</div>
-                    </div>
-                </div>
-                
-                <div class="certification-card">
-                    <div class="cert-icon">
-                        <i class="fas fa-certificate"></i>
-                    </div>
-                    <div class="cert-content">
-                        <h3>Institute of Plasma Research Project Completion Certificate</h3>
-                        <p class="cert-issuer">Institute of Plasma Research</p>
-                    </div>
-                </div>
-                
-                <div class="certification-card">
-                    <div class="cert-icon">
-                        <i class="fas fa-certificate"></i>
-                    </div>
-                    <div class="cert-content">
-                        <h3>TCS iON Career Edge - Young Professional Program</h3>
-                        <p class="cert-issuer">TCS iON</p>
-                    </div>
-                </div>
+                {certifications_html}
             </div>
         </div>
     </section>
@@ -362,34 +345,7 @@ def create_root_index():
                     <h3>Let's Connect</h3>
                     <p>I'm always open to discussing new opportunities, interesting projects, or just having a chat about technology.</p>
                     
-                    <div class="contact-details">
-                        <div class="contact-item">
-                            <i class="fas fa-phone"></i>
-                            <span>+91 6352732968</span>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-envelope"></i>
-                            <span>dhararuparel16@gmail.com</span>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>Gandhinagar</span>
-                        </div>
-                        <div class="contact-item social-media">
-                            <span class="social-label">Connect with me:</span>
-                            <div class="social-icons-inline">
-                                <a href="https://www.instagram.com/dhara_ruparel16?igsh=emRwZTJyc2h6cnN3" class="social-icon-small instagram" title="Instagram" target="_blank">
-                                    <i class="fab fa-instagram"></i>
-                                </a>
-                                <a href="https://www.linkedin.com/in/dhara-ruparel/" class="social-icon-small linkedin" title="LinkedIn" target="_blank">
-                                    <i class="fab fa-linkedin"></i>
-                                </a>
-                                <a href="https://github.com/dhararuparel" class="social-icon-small github" title="GitHub" target="_blank">
-                                    <i class="fab fa-github"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+                    {contact_html}
                 </div>
                 
                 <div class="contact-form">
