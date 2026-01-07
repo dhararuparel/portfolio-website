@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dhara Ruparel - Portfolio</title>
-    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" href="css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -53,7 +53,7 @@
             <div class="hero-image">
                 <div class="profile-card">
                     <div class="profile-avatar">
-                        <img src="static/images/DHARA.jpg" alt="Dhara Ruparel" class="profile-image">
+                        <img src="images/DHARA.jpg" alt="Dhara Ruparel" class="profile-image">
                     </div>
                     <div class="floating-elements">
                         <div class="floating-icon python"><i class="fab fa-python"></i></div>
@@ -85,15 +85,15 @@
                 <div class="about-image">
                     <div class="about-stats">
                         <div class="stat">
-                            <h3>4</h3>
+                            <h3 id="projects-count">0</h3>
                             <p>Projects Completed</p>
                         </div>
                         <div class="stat">
-                            <h3>2</h3>
+                            <h3 id="internships-count">0</h3>
                             <p>Internships</p>
                         </div>
                         <div class="stat">
-                            <h3>5</h3>
+                            <h3 id="certifications-count">0</h3>
                             <p>Certifications</p>
                         </div>
                     </div>
@@ -116,120 +116,9 @@
     <section id="projects" class="projects">
         <div class="container">
             <h2 class="section-title">Work Experience & Projects</h2>
-            <div class="projects-grid">
-            
-                <div class="project-card">
-                    <div class="project-header">
-                        <h3>CAMERA MOTION SENSING PROJECT</h3>
-                        <div class="project-meta">
-                            <span class="duration">6 months</span>
-                            <span class="team-size">Team: 4 persons</span>
-                        </div>
-                    </div>
-                    <div class="project-content">
-                        <p class="project-description">A smart surveillance system that detects and responds to motion using real-time camera sensing and Python-based automation.</p>
-                        <div class="project-role">
-                            <strong>Role:</strong> Member
-                        </div>
-                        <div class="project-tech">
-                            <h4>Technologies Used:</h4>
-                            <div class="tech-tags">
-                                <span class="tech-tag">HTML</span>
-                                <span class="tech-tag">CSS</span>
-                                <span class="tech-tag">Flask</span>
-                                <span class="tech-tag">Python</span>
-                                <span class="tech-tag">PostgreSQL</span>
-                                
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="project-card">
-                    <div class="project-header">
-                        <h3>HAND GESTURE RECOGNITION SYSTEM</h3>
-                        <div class="project-meta">
-                            <span class="duration">1 Month</span>
-                            <span class="team-size">Team: 1 person</span>
-                        </div>
-                    </div>
-                    <div class="project-content">
-                        <p class="project-description">A real-time hand gesture recognition system that detects and classifies 5 distinct hand gestures — open palm, thumbs up, OK sign, closed fist, and peace sign — using computer vision and Media Pipe, enabling intuitive and hands-free control of basic computer interactions.</p>
-                        <div class="project-role">
-                            <strong>Role:</strong> Individual
-                        </div>
-                        <div class="project-tech">
-                            <h4>Technologies Used:</h4>
-                            <div class="tech-tags">
-                                <span class="tech-tag">Python</span>
-                                <span class="tech-tag">OpenCV</span>
-                                <span class="tech-tag">Media Pipe</span>
-                                
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="project-card">
-                    <div class="project-header">
-                        <h3>EMOTION DETECTION FROM TEXT</h3>
-                        <div class="project-meta">
-                            <span class="duration">3 weeks</span>
-                            <span class="team-size">Team: 1 person</span>
-                        </div>
-                    </div>
-                    <div class="project-content">
-                        <p class="project-description">A sentiment analysis project that classifies user emotions from textual input using a machine learning model trained on the Twitter Emotion Dataset, deployed through an interactive web interface.</p>
-                        <div class="project-role">
-                            <strong>Role:</strong> Individual
-                        </div>
-                        <div class="project-tech">
-                            <h4>Technologies Used:</h4>
-                            <div class="tech-tags">
-                                <span class="tech-tag">Python</span>
-                                <span class="tech-tag">Scikit-learn</span>
-                                <span class="tech-tag">Pandas</span>
-                                <span class="tech-tag">NLTK</span>
-                                <span class="tech-tag">Streamlit</span>
-                                
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="project-card">
-                    <div class="project-header">
-                        <h3>House Price Prediction System</h3>
-                        <div class="project-meta">
-                            <span class="duration">2 Month</span>
-                            <span class="team-size">Team: 4</span>
-                        </div>
-                    </div>
-                    <div class="project-content">
-                        <p class="project-description">Built a House Price Prediction Website using Machine Learning with a dynamic admin panel for managing cities seamlessly. The platform provides instant price predictions and property recommendations while showcasing end-to-end ML deployment and full-stack integration skills.</p>
-                        <div class="project-role">
-                            <strong>Role:</strong> Member
-                        </div>
-                        <div class="project-tech">
-                            <h4>Technologies Used:</h4>
-                            <div class="tech-tags">
-                                <span class="tech-tag">Python</span>
-                                <span class="tech-tag">Machine Learning</span>
-                                <span class="tech-tag">Scikit-learn</span>
-                                <span class="tech-tag">Flask</span>
-                                <span class="tech-tag">HTML</span>
-                                <span class="tech-tag">CSS</span>
-                                <span class="tech-tag">JavaScript</span>
-                                <span class="tech-tag">PostgreSQL</span>
-                                <span class="tech-tag">REST APIs</span>
-                                <span class="tech-tag">Pickle/Joblib</span>
-                                
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-        </div>
+            <div class="projects-grid" id="projects-container">
+                <!-- Projects will be loaded dynamically -->
+            </div>
         </div>
     </section>
 
@@ -237,60 +126,8 @@
     <section id="skills" class="skills">
         <div class="container">
             <h2 class="section-title">Skills & Technologies</h2>
-            <div class="skills-container">
-                
-            <div class="skill-category">
-                <h3>Programming Languages</h3>
-                <div class="skills-list">
-                    <div class="skill-item"><span class="skill-name">Python</span></div>
-                        <div class="skill-item"><span class="skill-name">Machine Learning</span></div>
-                        <div class="skill-item"><span class="skill-name">AI</span></div>
-                        
-                </div>
-            </div>
-            
-            <div class="skill-category">
-                <h3>Databases</h3>
-                <div class="skills-list">
-                    <div class="skill-item"><span class="skill-name">PostgreSQL</span></div>
-                        <div class="skill-item"><span class="skill-name">MySQL</span></div>
-                        <div class="skill-item"><span class="skill-name">SQL Server</span></div>
-                        
-                </div>
-            </div>
-            
-            <div class="skill-category">
-                <h3>Libraries & Frameworks</h3>
-                <div class="skills-list">
-                    <div class="skill-item"><span class="skill-name">OpenCV</span></div>
-                        <div class="skill-item"><span class="skill-name">MediaPipe</span></div>
-                        <div class="skill-item"><span class="skill-name">Scikit-learn</span></div>
-                        <div class="skill-item"><span class="skill-name">Pandas</span></div>
-                        <div class="skill-item"><span class="skill-name">NLTK</span></div>
-                        <div class="skill-item"><span class="skill-name">Streamlit</span></div>
-                        
-                </div>
-            </div>
-            
-            <div class="skill-category">
-                <h3>Web Frameworks</h3>
-                <div class="skills-list">
-                    <div class="skill-item"><span class="skill-name">Flask</span></div>
-                        <div class="skill-item"><span class="skill-name">Django</span></div>
-                        
-                </div>
-            </div>
-            
-            <div class="skill-category">
-                <h3>Web Technologies</h3>
-                <div class="skills-list">
-                    <div class="skill-item"><span class="skill-name">HTML</span></div>
-                        <div class="skill-item"><span class="skill-name">CSS</span></div>
-                        <div class="skill-item"><span class="skill-name">JavaScript</span></div>
-                        
-                </div>
-            </div>
-            
+            <div class="skills-container" id="skills-container">
+                <!-- Skills will be loaded dynamically -->
             </div>
         </div>
     </section>
@@ -299,58 +136,9 @@
     <section id="internships" class="internships">
         <div class="container">
             <h2 class="section-title">Internships</h2>
-            <div class="internships-grid">
-                
-                <div class="internship-card">
-                    <div class="internship-header">
-                        <h3>Python for Django</h3>
-                        <div class="company-info">
-                            <span class="company">iTechbrains Pvt. Ltd.</span>
-                            <span class="location">Virtual</span>
-                        </div>
-                        <div class="duration">1 Month</div>
-                    </div>
-                    <div class="internship-content">
-                        <p class="internship-description"></p>
-                        
-                    <div class="internship-tech">
-                        <h4>Technologies Used:</h4>
-                        <div class="tech-tags">
-                            <span class="tech-tag">Python</span>
-                            <span class="tech-tag">Django</span>
-                            <span class="tech-tag">PostgreSQL</span>
-                            
-                        </div>
-                    </div>
-                    </div>
-                </div>
-                
-                <div class="internship-card">
-                    <div class="internship-header">
-                        <h3>Summer Internship</h3>
-                        <div class="company-info">
-                            <span class="company">TatvaSoft Pvt. Ltd.</span>
-                            <span class="location">Virtual</span>
-                        </div>
-                        <div class="duration">15  Days</div>
-                    </div>
-                    <div class="internship-content">
-                        <p class="internship-description"></p>
-                        
-                    <div class="internship-tech">
-                        <h4>Technologies Used:</h4>
-                        <div class="tech-tags">
-                            <span class="tech-tag">PostgreSQL</span>
-                            <span class="tech-tag">.NET</span>
-                            <span class="tech-tag">Angular</span>
-                            
-                        </div>
-                    </div>
-                    </div>
-                </div>
-                
+            <div class="internships-grid" id="internships-container">
+                <!-- Internships will be loaded dynamically -->
             </div>
-            
         </div>
     </section>
 
@@ -358,35 +146,8 @@
     <section id="education" class="education">
         <div class="container">
             <h2 class="section-title">Education</h2>
-            <div class="education-timeline">
-                
-                <div class="education-item">
-                    <div class="education-year">2022-2026</div>
-                    <div class="education-content">
-                        <h3>B.E.(COMPUTER) - KSV</h3>
-                        <p class="institution">KSV University</p>
-                        <div class="percentage">8.49</div>
-                    </div>
-                </div>
-                
-                <div class="education-item">
-                    <div class="education-year">2020-2022</div>
-                    <div class="education-content">
-                        <h3>H.S.C - C.B.S.E</h3>
-                        <p class="institution">CBSE Board</p>
-                        <div class="percentage">87%</div>
-                    </div>
-                </div>
-                
-                <div class="education-item">
-                    <div class="education-year">2020</div>
-                    <div class="education-content">
-                        <h3>S.S.C - C.B.S.E</h3>
-                        <p class="institution">CBSE Board</p>
-                        <div class="percentage">94.2%</div>
-                    </div>
-                </div>
-                
+            <div class="education-timeline" id="education-container">
+                <!-- Education will be loaded dynamically -->
             </div>
         </div>
     </section>
@@ -395,68 +156,8 @@
     <section id="certifications" class="certifications">
         <div class="container">
             <h2 class="section-title">Certifications</h2>
-            <div class="certifications-grid">
-                
-                <div class="certification-card">
-                    <div class="cert-icon">
-                        <i class="fas fa-certificate"></i>
-                    </div>
-                    <div class="cert-content">
-                        <h3>NPTEL Certification on "Enhancing Soft Skills and Personality"</h3>
-                        <p class="cert-issuer">NPTEL</p>
-                        <div class="cert-score">Score: 77%</div>
-                        
-                    </div>
-                </div>
-                
-                <div class="certification-card">
-                    <div class="cert-icon">
-                        <i class="fas fa-certificate"></i>
-                    </div>
-                    <div class="cert-content">
-                        <h3>NPTEL Certification on "Python for Data Science"</h3>
-                        <p class="cert-issuer">NPTEL</p>
-                        <div class="cert-score">Score: 68%</div>
-                        
-                    </div>
-                </div>
-                
-                <div class="certification-card">
-                    <div class="cert-icon">
-                        <i class="fas fa-certificate"></i>
-                    </div>
-                    <div class="cert-content">
-                        <h3>5 Days Hands-on Series on Laravel Framework and Wordpress CMS</h3>
-                        <p class="cert-issuer">LDRP ITR</p>
-                        
-                        <div class="cert-date">20/01/2025 to 24/01/2025</div>
-                    </div>
-                </div>
-                
-                <div class="certification-card">
-                    <div class="cert-icon">
-                        <i class="fas fa-certificate"></i>
-                    </div>
-                    <div class="cert-content">
-                        <h3>Institute of Plasma Research Project Completion Certificate</h3>
-                        <p class="cert-issuer">Institute of Plasma Research</p>
-                        
-                        
-                    </div>
-                </div>
-                
-                <div class="certification-card">
-                    <div class="cert-icon">
-                        <i class="fas fa-certificate"></i>
-                    </div>
-                    <div class="cert-content">
-                        <h3>TCS iON Career Edge - Young Professional Program</h3>
-                        <p class="cert-issuer">TCS iON</p>
-                        
-                        
-                    </div>
-                </div>
-                
+            <div class="certifications-grid" id="certifications-container">
+                <!-- Certifications will be loaded dynamically -->
             </div>
         </div>
     </section>
@@ -470,34 +171,8 @@
                     <h3>Let's Connect</h3>
                     <p>I'm always open to discussing new opportunities, interesting projects, or just having a chat about technology.</p>
                     
-                    
-                    <div class="contact-details">
-                        <div class="contact-item">
-                            <i class="fas fa-phone"></i>
-                            <span>+91 6352732968</span>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-envelope"></i>
-                            <span>dhara.ruparel16@gmail.com</span>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>Gandhinagar</span>
-                        </div>
-                        <div class="contact-item social-media">
-                            <span class="social-label">Connect with me:</span>
-                            <div class="social-icons-inline">
-                                <a href="https://www.instagram.com/dhara_ruparel16?igsh=emRwZTJyc2h6cnN3" class="social-icon-small instagram" title="Instagram" target="_blank">
-                                    <i class="fab fa-instagram"></i>
-                                </a>
-                                <a href="https://www.linkedin.com/in/dhara-ruparel/" class="social-icon-small linkedin" title="LinkedIn" target="_blank">
-                                    <i class="fab fa-linkedin"></i>
-                                </a>
-                                <a href="https://github.com/dhararuparel" class="social-icon-small github" title="GitHub" target="_blank">
-                                    <i class="fab fa-github"></i>
-                                </a>
-                            </div>
-                        </div>
+                    <div class="contact-details" id="contact-details">
+                        <!-- Contact details will be loaded dynamically -->
                     </div>
                 </div>
                 
@@ -531,6 +206,6 @@
         </div>
     </footer>
 
-    <script src="static/js/script.js"></script>
+    <script src="js/script.js"></script>
 </body>
 </html>
