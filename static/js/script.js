@@ -44,29 +44,46 @@ document.addEventListener('DOMContentLoaded', function() {
     // Contact form handling
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
+        contactForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            
-            // Get form data
+
             const formData = new FormData(this);
             const data = Object.fromEntries(formData);
-            
-            // Simple validation
+
             if (!data.name || !data.email || !data.subject || !data.message) {
                 showNotification('Please fill in all fields', 'error');
                 return;
             }
-            
-            // Email validation
+
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(data.email)) {
                 showNotification('Please enter a valid email address', 'error');
                 return;
             }
-            
-            // Simulate form submission
-            showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
-            this.reset();
+
+            const btn = this.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            btn.textContent = 'Sending...';
+
+            try {
+                const response = await fetch('/api/contact/send', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    showNotification("Message sent successfully! I'll get back to you soon.", 'success');
+                    this.reset();
+                } else {
+                    showNotification('Error: ' + (result.error || 'Could not send message.'), 'error');
+                }
+            } catch (err) {
+                showNotification('Something went wrong. Please try again.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Send Message';
+            }
         });
     }
 

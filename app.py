@@ -1,29 +1,34 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
 from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS
+from flask_mail import Mail, Message
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
+from dotenv import load_dotenv
 import os
 
-app = Flask(__name__)
-CORS(app, origins=["*"])  # Allow all origins for now, restrict in production
+load_dotenv()
 
+app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-secret-key-here')
 
-# Handle both local and Render database URLs
-database_url = os.getenv('DATABASE_URL')
-if database_url:
-    # Use PostgreSQL if DATABASE_URL is provided
-    if database_url.startswith('postgres://'):
-        database_url = database_url.replace('postgres://', 'postgresql://', 1)
-    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
-else:
-    # Use SQLite for development and as fallback
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///portfolio.db'
+# Render uses 'postgres://' but SQLAlchemy requires 'postgresql://'
+db_url = os.getenv('DATABASE_URL', 'postgresql://postgres:dhara16@localhost/portfolio_db')
+if db_url.startswith('postgres://'):
+    db_url = db_url.replace('postgres://', 'postgresql://', 1)
 
+app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# Flask-Mail configuration (Gmail SMTP)
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')       # your Gmail address
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')       # Gmail App Password
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_USERNAME')
+
 db = SQLAlchemy(app)
+mail = Mail(app)
 
 # Database Models
 class Admin(db.Model):
@@ -474,14 +479,36 @@ def api_internship(internship_id):
         db.session.commit()
         return jsonify({'message': 'Internship deleted successfully'})
 
+@app.route('/api/contact/send', methods=['POST'])
+def send_contact_email():
+    data = request.json
+    name    = data.get('name', '').strip()
+    sender  = data.get('email', '').strip()
+    subject = data.get('subject', '').strip()
+    body    = data.get('message', '').strip()
+
+    if not all([name, sender, subject, body]):
+        return jsonify({'error': 'All fields are required.'}), 400
+
+    try:
+        recipient = os.getenv('CONTACT_RECEIVER_EMAIL', os.getenv('MAIL_USERNAME'))
+        msg = Message(
+            subject=f"Portfolio Contact: {subject}",
+            recipients=[recipient],
+            reply_to=sender,
+            body=f"Name: {name}\nEmail: {sender}\n\n{body}"
+        )
+        mail.send(msg)
+        return jsonify({'message': 'Email sent successfully!'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-        # Create default admin if not exists
         if not Admin.query.filter_by(username='admin').first():
             admin = Admin(username='admin', password_hash=generate_password_hash('admin123'))
             db.session.add(admin)
             db.session.commit()
-    
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=False)
+    app.run(debug=False)

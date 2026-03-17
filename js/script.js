@@ -262,23 +262,40 @@ function updateStats(projects, internships, certifications) {
 // Handle contact form submission
 async function handleContactForm(e) {
     e.preventDefault();
-    
+
+    const btn = e.target.querySelector('button[type="submit"]');
     const formData = new FormData(e.target);
     const data = {
-        name: formData.get('name'),
-        email: formData.get('email'),
+        name:    formData.get('name'),
+        email:   formData.get('email'),
         subject: formData.get('subject'),
         message: formData.get('message')
     };
 
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+
     try {
-        // You can implement contact form submission to your backend here
-        console.log('Contact form data:', data);
-        alert('Thank you for your message! I will get back to you soon.');
-        e.target.reset();
+        const response = await fetch('/api/contact/send', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            alert('Message sent! I will get back to you soon.');
+            e.target.reset();
+        } else {
+            alert('Error: ' + (result.error || 'Could not send message.'));
+        }
     } catch (error) {
         console.error('Error sending message:', error);
         alert('Sorry, there was an error sending your message. Please try again.');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Send Message';
     }
 }
 
