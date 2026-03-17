@@ -1040,12 +1040,25 @@ section {
         grid-template-columns: 1fr;
         text-align: center;
         gap: 40px;
+        padding: 0 15px;
     }
     
     .hero-title {
-        font-size: 2.5rem;
+        font-size: 2rem;
+        word-break: break-word;
+        overflow-wrap: break-word;
     }
     
+    .hero-subtitle {
+        font-size: 1.2rem;
+    }
+
+    .profile-card {
+        min-width: unset;
+        width: 100%;
+        padding: 30px 20px;
+    }
+
     .about-content,
     .contact-content {
         grid-template-columns: 1fr;
@@ -1056,7 +1069,8 @@ section {
         justify-content: center;
     }
     
-    .projects-grid {
+    .projects-grid,
+    .internships-grid {
         grid-template-columns: 1fr;
     }
     
@@ -1095,7 +1109,9 @@ section {
     }
     
     .hero-title {
-        font-size: 2rem;
+        font-size: 1.7rem;
+        word-break: break-word;
+        overflow-wrap: break-word;
     }
     
     .hero-buttons {
