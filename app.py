@@ -512,3 +512,62 @@ if __name__ == '__main__':
             db.session.add(admin)
             db.session.commit()
     app.run(debug=False)
+
+
+# Auto-run on gunicorn startup (Render)
+with app.app_context():
+    db.create_all()
+
+    if not Admin.query.filter_by(username='admin').first():
+        db.session.add(Admin(username='admin', password_hash=generate_password_hash('admin123')))
+
+    if Project.query.count() == 0:
+        for p in [
+            {'title':'CAMERA MOTION SENSING PROJECT','description':'A smart surveillance system that detects and responds to motion using real-time camera sensing and Python-based automation.','technologies':'HTML, CSS, Flask, Python, PostgreSQL','duration':'6 months','team_size':'4 persons','role':'Member'},
+            {'title':'HAND GESTURE RECOGNITION SYSTEM','description':'A real-time hand gesture recognition system that detects and classifies 5 distinct hand gestures using computer vision and Media Pipe.','technologies':'Python, OpenCV, Media Pipe','duration':'1 Month','team_size':'1 person','role':'Individual'},
+            {'title':'EMOTION DETECTION FROM TEXT','description':'A sentiment analysis project that classifies user emotions from textual input using a machine learning model trained on the Twitter Emotion Dataset.','technologies':'Python, Scikit-learn, Pandas, NLTK, Streamlit','duration':'3 weeks','team_size':'1 person','role':'Individual'},
+        ]:
+            db.session.add(Project(**p))
+
+    if Skill.query.count() == 0:
+        for s in [
+            {'name':'Python','category':'Programming Languages','proficiency':90},
+            {'name':'Machine Learning','category':'Programming Languages','proficiency':85},
+            {'name':'AI','category':'Programming Languages','proficiency':80},
+            {'name':'PostgreSQL','category':'Databases','proficiency':85},
+            {'name':'OpenCV','category':'Libraries & Frameworks','proficiency':80},
+            {'name':'MediaPipe','category':'Libraries & Frameworks','proficiency':75},
+            {'name':'Flask','category':'Web Frameworks','proficiency':85},
+            {'name':'Django','category':'Web Frameworks','proficiency':75},
+            {'name':'HTML','category':'Web Technologies','proficiency':90},
+            {'name':'CSS','category':'Web Technologies','proficiency':85},
+            {'name':'JavaScript','category':'Web Technologies','proficiency':80},
+            {'name':'Scikit-learn','category':'Libraries & Frameworks','proficiency':85},
+            {'name':'Pandas','category':'Libraries & Frameworks','proficiency':90},
+            {'name':'NLTK','category':'Libraries & Frameworks','proficiency':80},
+            {'name':'Streamlit','category':'Libraries & Frameworks','proficiency':75},
+        ]:
+            db.session.add(Skill(**s))
+
+    if Education.query.count() == 0:
+        for e in [
+            {'degree':'B.E.(COMPUTER) - KSV','institution':'KSV University','year':'2022-2026','percentage':'8.49'},
+            {'degree':'H.S.C - C.B.S.E','institution':'CBSE Board','year':'2020-2022','percentage':'87%'},
+            {'degree':'S.S.C - C.B.S.E','institution':'CBSE Board','year':'2020','percentage':'94.2%'},
+        ]:
+            db.session.add(Education(**e))
+
+    if Certification.query.count() == 0:
+        for c in [
+            {'title':'NPTEL Certification on "Enhancing Soft Skills and Personality"','issuer':'NPTEL','percentage':'77%','date_range':None},
+            {'title':'NPTEL Certification on "Python for Data Science"','issuer':'NPTEL','percentage':'68%','date_range':None},
+            {'title':'5 Days Hands-on Series on Laravel Framework and Wordpress CMS','issuer':'LDRP ITR','percentage':None,'date_range':'20/01/2025 to 24/01/2025'},
+            {'title':'Institute of Plasma Research Project Completion Certificate','issuer':'Institute of Plasma Research','percentage':None,'date_range':None},
+            {'title':'TCS iON Career Edge - Young Professional Program','issuer':'TCS iON','percentage':None,'date_range':None},
+        ]:
+            db.session.add(Certification(**c))
+
+    if Contact.query.count() == 0:
+        db.session.add(Contact(phone='+91 6352732968', email='dhararuparel16@gmail.com', location='Gandhinagar', linkedin='https://www.linkedin.com/in/dhara-ruparel/'))
+
+    db.session.commit()
