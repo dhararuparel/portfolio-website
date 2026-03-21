@@ -547,6 +547,11 @@ with app.app_context():
                 {'name':'Pandas','category':'Libraries & Frameworks','proficiency':90},
                 {'name':'NLTK','category':'Libraries & Frameworks','proficiency':80},
                 {'name':'Streamlit','category':'Libraries & Frameworks','proficiency':75},
+                {'name':'ChatGPT','category':'AI Tools','proficiency':90},
+                {'name':'GitHub Copilot','category':'AI Tools','proficiency':85},
+                {'name':'Kiro','category':'AI Tools','proficiency':85},
+                {'name':'Gemini','category':'AI Tools','proficiency':80},
+                {'name':'Midjourney','category':'AI Tools','proficiency':75},
             ]:
                 db.session.add(Skill(**s))
 
