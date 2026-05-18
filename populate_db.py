@@ -99,7 +99,7 @@ def populate_database():
                 'degree': 'B.E.(COMPUTER) - KSV',
                 'institution': 'KSV University',
                 'year': '2022-2026',
-                'percentage': '8.49'
+                'percentage': '8.55'
             },
             {
                 'degree': 'H.S.C - C.B.S.E',
