@@ -89,7 +89,7 @@ class Contact(db.Model):
 def index():
     projects = Project.query.all()
     skills = Skill.query.all()
-    education = Education.query.all()
+    education = Education.query.order_by(Education.id).all()
     certifications = Certification.query.all()
     internships = Internship.query.all()
     contact = Contact.query.first()
