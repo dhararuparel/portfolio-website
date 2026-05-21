@@ -32,10 +32,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Navbar background on scroll
     window.addEventListener('scroll', function() {
         const navbar = document.querySelector('.navbar');
+        const isLight = document.body.classList.contains('light-mode');
         if (window.scrollY > 50) {
-            navbar.style.background = 'rgba(10, 10, 10, 0.98)';
+            navbar.style.background = isLight
+                ? 'rgba(244, 244, 248, 0.99)'
+                : 'rgba(10, 10, 10, 0.98)';
         } else {
-            navbar.style.background = 'rgba(10, 10, 10, 0.95)';
+            navbar.style.background = '';
         }
     });
 
@@ -177,36 +180,111 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
     }
 
-    // Intersection Observer for animations
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
+    // ===== SCROLL ANIMATIONS =====
+    // Assign animation types to elements before observing
+    const animationMap = [
+        // fade up — general cards
+        { selector: '.project-card',        anim: 'fade-up',    stagger: true },
+        { selector: '.certification-card',  anim: 'fade-up',    stagger: true },
+        { selector: '.internship-card',     anim: 'fade-up',    stagger: true },
+        // fade in from left
+        { selector: '.about-text',          anim: 'fade-left',  stagger: false },
+        { selector: '.contact-info',        anim: 'fade-left',  stagger: false },
+        // fade in from right
+        { selector: '.about-image',         anim: 'fade-right', stagger: false },
+        { selector: '.contact-form',        anim: 'fade-right', stagger: false },
+        // zoom in
+        { selector: '.skill-category',      anim: 'zoom-in',    stagger: true },
+        { selector: '.stat',                anim: 'zoom-in',    stagger: true },
+        // slide up with stagger
+        { selector: '.education-item',      anim: 'slide-up',   stagger: true },
+        // section titles
+        { selector: '.section-title',       anim: 'fade-up',    stagger: false },
+        // hero elements
+        { selector: '.hero-content',        anim: 'fade-left',  stagger: false },
+        { selector: '.hero-image',          anim: 'fade-right', stagger: false },
+    ];
 
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.animation = 'fadeInUp 0.8s ease-out forwards';
+    // Add CSS for scroll animations
+    const scrollAnimCSS = document.createElement('style');
+    scrollAnimCSS.textContent = `
+        /* Base hidden state */
+        .sa-hidden {
+            opacity: 0;
+            will-change: transform, opacity;
+        }
+        .sa-fade-up    { transform: translateY(50px); }
+        .sa-fade-left  { transform: translateX(-50px); }
+        .sa-fade-right { transform: translateX(50px); }
+        .sa-zoom-in    { transform: scale(0.85); }
+        .sa-slide-up   { transform: translateY(70px); }
+
+        /* Visible state */
+        .sa-visible {
+            opacity: 1 !important;
+            transform: none !important;
+            transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1),
+                        transform 0.7s cubic-bezier(0.22,1,0.36,1);
+        }
+
+        /* Stagger delays */
+        .sa-delay-1 { transition-delay: 0.05s !important; }
+        .sa-delay-2 { transition-delay: 0.15s !important; }
+        .sa-delay-3 { transition-delay: 0.25s !important; }
+        .sa-delay-4 { transition-delay: 0.35s !important; }
+        .sa-delay-5 { transition-delay: 0.45s !important; }
+        .sa-delay-6 { transition-delay: 0.55s !important; }
+
+        /* Parallax subtle layer */
+        .hero::before {
+            will-change: transform;
+        }
+    `;
+    document.head.appendChild(scrollAnimCSS);
+
+    // Apply hidden classes
+    animationMap.forEach(({ selector, anim, stagger }) => {
+        const els = document.querySelectorAll(selector);
+        els.forEach((el, i) => {
+            // Skip if already in viewport on load (hero elements)
+            el.classList.add('sa-hidden', `sa-${anim}`);
+            if (stagger) {
+                const delay = (i % 6) + 1;
+                el.classList.add(`sa-delay-${delay}`);
             }
         });
-    }, observerOptions);
-
-    // Observe elements for animation
-    const animateElements = document.querySelectorAll('.project-card, .skill-category, .education-item, .certification-card');
-    animateElements.forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(30px)';
-        observer.observe(el);
     });
 
-    // Parallax effect for hero section
-    window.addEventListener('scroll', () => {
-        const scrolled = window.pageYOffset;
-        const hero = document.querySelector('.hero');
-        if (hero) {
-            hero.style.transform = `translateY(${scrolled * 0.5}px)`;
-        }
+    // IntersectionObserver
+    const scrollObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('sa-visible');
+                scrollObserver.unobserve(entry.target); // animate once
+            }
+        });
+    }, {
+        threshold: 0.12,
+        rootMargin: '0px 0px -40px 0px'
     });
+
+    document.querySelectorAll('.sa-hidden').forEach(el => scrollObserver.observe(el));
+
+    // Trigger hero elements immediately (they're in viewport on load)
+    document.querySelectorAll('.hero-content, .hero-image').forEach(el => {
+        setTimeout(() => el.classList.add('sa-visible'), 100);
+    });
+
+    // Subtle parallax on hero background grid only (no layout shift)
+    const heroSection = document.querySelector('.hero');
+    if (heroSection) {
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            if (scrolled < window.innerHeight) {
+                heroSection.style.backgroundPositionY = `${scrolled * 0.3}px`;
+            }
+        }, { passive: true });
+    }
 
     // Hero title displays immediately - no typing effect needed
 });
@@ -257,3 +335,28 @@ const mobileMenuStyles = `
 const styleSheet = document.createElement('style');
 styleSheet.textContent = mobileMenuStyles;
 document.head.appendChild(styleSheet);
+
+// ===== LIGHT / DARK MODE TOGGLE =====
+(function () {
+    const btn  = document.getElementById('theme-toggle');
+    const icon = document.getElementById('theme-icon');
+    if (!btn) return;
+
+    // Restore saved preference
+    const saved = localStorage.getItem('theme');
+    if (saved === 'light') {
+        document.body.classList.add('light-mode');
+        icon.classList.replace('fa-sun', 'fa-moon');
+    }
+
+    btn.addEventListener('click', function () {
+        const isLight = document.body.classList.toggle('light-mode');
+        if (isLight) {
+            icon.classList.replace('fa-sun', 'fa-moon');
+            localStorage.setItem('theme', 'light');
+        } else {
+            icon.classList.replace('fa-moon', 'fa-sun');
+            localStorage.setItem('theme', 'dark');
+        }
+    });
+})();

@@ -362,6 +362,7 @@ async function editInternship(id) {
         document.getElementById('internshipDuration').value = internship.duration;
         document.getElementById('internshipLocation').value = internship.location;
         document.getElementById('internshipTechnologies').value = internship.technologies || '';
+        document.getElementById('internshipDescription').value = internship.description || '';
         
         document.getElementById('internshipModalTitle').textContent = 'Edit Internship';
         openModal('internshipModal');
@@ -589,3 +590,118 @@ window.onclick = function(event) {
         event.target.style.display = 'none';
     }
 }
+
+// ═══════════════════════════════════════════════════════════════
+//  DRAG-AND-DROP ROW REORDERING
+// ═══════════════════════════════════════════════════════════════
+(function () {
+    // Map section name → API endpoint
+    const REORDER_URLS = {
+        projects:       '/api/projects/reorder',
+        skills:         '/api/skills/reorder',
+        education:      '/api/education/reorder',
+        certifications: '/api/certifications/reorder',
+        internships:    '/api/internships/reorder',
+    };
+
+    let dragSrc = null;   // the <tr> being dragged
+    let tbodyName = null; // which resource is being reordered
+
+    function getTbodyName(tbody) {
+        return tbody.id.replace('-tbody', '');
+    }
+
+    function attachDragListeners(tbody) {
+        const name = getTbodyName(tbody);
+
+        tbody.querySelectorAll('tr[draggable="true"]').forEach(row => {
+            row.addEventListener('dragstart', onDragStart);
+            row.addEventListener('dragend',   onDragEnd);
+            row.addEventListener('dragover',  onDragOver);
+            row.addEventListener('dragleave', onDragLeave);
+            row.addEventListener('drop',      onDrop);
+        });
+
+        function onDragStart(e) {
+            dragSrc   = this;
+            tbodyName = name;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', this.dataset.id);
+        }
+
+        function onDragEnd() {
+            this.classList.remove('dragging');
+            tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
+        }
+
+        function onDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            if (this !== dragSrc) this.classList.add('drag-over');
+        }
+
+        function onDragLeave() {
+            this.classList.remove('drag-over');
+        }
+
+        function onDrop(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+            if (!dragSrc || dragSrc === this) return;
+
+            // Swap DOM positions
+            const allRows = [...tbody.querySelectorAll('tr')];
+            const srcIdx  = allRows.indexOf(dragSrc);
+            const tgtIdx  = allRows.indexOf(this);
+
+            if (srcIdx < tgtIdx) {
+                tbody.insertBefore(dragSrc, this.nextSibling);
+            } else {
+                tbody.insertBefore(dragSrc, this);
+            }
+
+            // Show the Save Order button for this section
+            const saveBtn = document.getElementById(`save-order-${name}`);
+            if (saveBtn) saveBtn.style.display = 'inline-flex';
+        }
+    }
+
+    // Attach to all sortable tbodies on load
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.sortable-tbody').forEach(attachDragListeners);
+    });
+
+    // Global saveOrder function called by the Save Order buttons
+    window.saveOrder = async function (name) {
+        const tbody = document.getElementById(`${name}-tbody`);
+        if (!tbody) return;
+
+        const rows = [...tbody.querySelectorAll('tr[data-id]')];
+        const payload = rows.map((row, idx) => ({
+            id:    parseInt(row.dataset.id, 10),
+            order: idx + 1,
+        }));
+
+        const url = REORDER_URLS[name];
+        if (!url) return;
+
+        try {
+            const res = await fetch(url, {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body:    JSON.stringify(payload),
+            });
+            const data = await res.json();
+            if (res.ok) {
+                showNotification(`${name.charAt(0).toUpperCase() + name.slice(1)} order saved!`, 'success');
+                const saveBtn = document.getElementById(`save-order-${name}`);
+                if (saveBtn) saveBtn.style.display = 'none';
+            } else {
+                showNotification('Error saving order: ' + (data.error || 'Unknown error'), 'error');
+            }
+        } catch (err) {
+            showNotification('Network error saving order.', 'error');
+        }
+    };
+})();

@@ -48,6 +48,10 @@
                     <i class="fas fa-address-book"></i>
                     <span>Contact Info</span>
                 </a>
+                <a href="#resume" class="menu-item" data-section="resume">
+                    <i class="fas fa-file-pdf"></i>
+                    <span>Resume</span>
+                </a>
             </nav>
         </aside>
 
@@ -57,15 +61,20 @@
             <section id="projects-section" class="admin-section active">
                 <div class="section-header">
                     <h2>Manage Projects</h2>
-                    <button class="btn btn-primary" onclick="openModal('projectModal')">
-                        <i class="fas fa-plus"></i> Add Project
-                    </button>
+                    <div class="header-actions">
+                        <button class="btn btn-success" id="save-order-projects" onclick="saveOrder('projects')" style="display:none">
+                            <i class="fas fa-save"></i> Save Order
+                        </button>
+                        <button class="btn btn-primary" onclick="openModal('projectModal')">
+                            <i class="fas fa-plus"></i> Add Project
+                        </button>
+                    </div>
                 </div>
-                
                 <div class="data-table">
                     <table>
                         <thead>
                             <tr>
+                                <th class="drag-col"></th>
                                 <th>Title</th>
                                 <th>Duration</th>
                                 <th>Team Size</th>
@@ -73,9 +82,10 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="projects-tbody">
+                        <tbody id="projects-tbody" class="sortable-tbody">
                             {% for project in projects %}
-                            <tr data-id="{{ project.id }}">
+                            <tr data-id="{{ project.id }}" draggable="true">
+                                <td class="drag-handle"><i class="fas fa-grip-vertical"></i></td>
                                 <td>{{ project.title }}</td>
                                 <td>{{ project.duration }}</td>
                                 <td>{{ project.team_size }}</td>
@@ -99,23 +109,29 @@
             <section id="skills-section" class="admin-section">
                 <div class="section-header">
                     <h2>Manage Skills</h2>
-                    <button class="btn btn-primary" onclick="openModal('skillModal')">
-                        <i class="fas fa-plus"></i> Add Skill
-                    </button>
+                    <div class="header-actions">
+                        <button class="btn btn-success" id="save-order-skills" onclick="saveOrder('skills')" style="display:none">
+                            <i class="fas fa-save"></i> Save Order
+                        </button>
+                        <button class="btn btn-primary" onclick="openModal('skillModal')">
+                            <i class="fas fa-plus"></i> Add Skill
+                        </button>
+                    </div>
                 </div>
-                
                 <div class="data-table">
                     <table>
                         <thead>
                             <tr>
+                                <th class="drag-col"></th>
                                 <th>Name</th>
                                 <th>Category</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="skills-tbody">
+                        <tbody id="skills-tbody" class="sortable-tbody">
                             {% for skill in skills %}
-                            <tr data-id="{{ skill.id }}">
+                            <tr data-id="{{ skill.id }}" draggable="true">
+                                <td class="drag-handle"><i class="fas fa-grip-vertical"></i></td>
                                 <td>{{ skill.name }}</td>
                                 <td>{{ skill.category }}</td>
                                 <td class="actions">
@@ -137,15 +153,20 @@
             <section id="internships-section" class="admin-section">
                 <div class="section-header">
                     <h2>Manage Internships</h2>
-                    <button class="btn btn-primary" onclick="openModal('internshipModal')">
-                        <i class="fas fa-plus"></i> Add Internship
-                    </button>
+                    <div class="header-actions">
+                        <button class="btn btn-success" id="save-order-internships" onclick="saveOrder('internships')" style="display:none">
+                            <i class="fas fa-save"></i> Save Order
+                        </button>
+                        <button class="btn btn-primary" onclick="openModal('internshipModal')">
+                            <i class="fas fa-plus"></i> Add Internship
+                        </button>
+                    </div>
                 </div>
-                
                 <div class="data-table">
                     <table>
                         <thead>
                             <tr>
+                                <th class="drag-col"></th>
                                 <th>Position</th>
                                 <th>Company</th>
                                 <th>Duration</th>
@@ -153,9 +174,10 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="internships-tbody">
+                        <tbody id="internships-tbody" class="sortable-tbody">
                             {% for internship in internships %}
-                            <tr data-id="{{ internship.id }}">
+                            <tr data-id="{{ internship.id }}" draggable="true">
+                                <td class="drag-handle"><i class="fas fa-grip-vertical"></i></td>
                                 <td>{{ internship.position }}</td>
                                 <td>{{ internship.company }}</td>
                                 <td>{{ internship.duration }}</td>
@@ -179,15 +201,20 @@
             <section id="education-section" class="admin-section">
                 <div class="section-header">
                     <h2>Manage Education</h2>
-                    <button class="btn btn-primary" onclick="openModal('educationModal')">
-                        <i class="fas fa-plus"></i> Add Education
-                    </button>
+                    <div class="header-actions">
+                        <button class="btn btn-success" id="save-order-education" onclick="saveOrder('education')" style="display:none">
+                            <i class="fas fa-save"></i> Save Order
+                        </button>
+                        <button class="btn btn-primary" onclick="openModal('educationModal')">
+                            <i class="fas fa-plus"></i> Add Education
+                        </button>
+                    </div>
                 </div>
-                
                 <div class="data-table">
                     <table>
                         <thead>
                             <tr>
+                                <th class="drag-col"></th>
                                 <th>Degree</th>
                                 <th>Institution</th>
                                 <th>Year</th>
@@ -195,9 +222,10 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="education-tbody">
+                        <tbody id="education-tbody" class="sortable-tbody">
                             {% for edu in education %}
-                            <tr data-id="{{ edu.id }}">
+                            <tr data-id="{{ edu.id }}" draggable="true">
+                                <td class="drag-handle"><i class="fas fa-grip-vertical"></i></td>
                                 <td>{{ edu.degree }}</td>
                                 <td>{{ edu.institution }}</td>
                                 <td>{{ edu.year }}</td>
@@ -221,15 +249,20 @@
             <section id="certifications-section" class="admin-section">
                 <div class="section-header">
                     <h2>Manage Certifications</h2>
-                    <button class="btn btn-primary" onclick="openModal('certificationModal')">
-                        <i class="fas fa-plus"></i> Add Certification
-                    </button>
+                    <div class="header-actions">
+                        <button class="btn btn-success" id="save-order-certifications" onclick="saveOrder('certifications')" style="display:none">
+                            <i class="fas fa-save"></i> Save Order
+                        </button>
+                        <button class="btn btn-primary" onclick="openModal('certificationModal')">
+                            <i class="fas fa-plus"></i> Add Certification
+                        </button>
+                    </div>
                 </div>
-                
                 <div class="data-table">
                     <table>
                         <thead>
                             <tr>
+                                <th class="drag-col"></th>
                                 <th>Title</th>
                                 <th>Issuer</th>
                                 <th>Percentage</th>
@@ -237,9 +270,10 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="certifications-tbody">
+                        <tbody id="certifications-tbody" class="sortable-tbody">
                             {% for cert in certifications %}
-                            <tr data-id="{{ cert.id }}">
+                            <tr data-id="{{ cert.id }}" draggable="true">
+                                <td class="drag-handle"><i class="fas fa-grip-vertical"></i></td>
                                 <td>{{ cert.title }}</td>
                                 <td>{{ cert.issuer }}</td>
                                 <td>{{ cert.percentage or 'N/A' }}</td>
@@ -299,6 +333,48 @@
                     <p>No contact information added yet.</p>
                 </div>
                 {% endif %}
+            </section>
+
+            <!-- Resume Section -->
+            <section id="resume-section" class="admin-section">
+                <div class="section-header">
+                    <h2>Manage Resume</h2>
+                </div>
+
+                <div class="resume-upload-card">
+                    <!-- Current status -->
+                    <div class="resume-status" id="resumeStatus">
+                        <div class="resume-status-icon" id="resumeStatusIcon">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                        <div class="resume-status-text" id="resumeStatusText">Checking...</div>
+                    </div>
+
+                    <!-- Upload form -->
+                    <form id="resumeUploadForm" enctype="multipart/form-data">
+                        <div class="resume-drop-zone" id="resumeDropZone">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Drag &amp; drop your PDF here</p>
+                            <span>or</span>
+                            <label for="resumeFile" class="btn btn-primary" style="cursor:pointer; margin-top:10px;">
+                                <i class="fas fa-folder-open"></i> Browse File
+                            </label>
+                            <input type="file" id="resumeFile" name="resume" accept=".pdf" style="display:none">
+                            <p class="resume-hint">Only PDF files · Max 10 MB</p>
+                        </div>
+                        <div id="resumeFileName" class="resume-file-name" style="display:none"></div>
+                        <div class="resume-actions">
+                            <button type="submit" class="btn btn-primary" id="resumeUploadBtn" disabled>
+                                <i class="fas fa-upload"></i> Upload Resume
+                            </button>
+                            <a href="/static/Dhara_Ruparel_Resume.pdf" download class="btn btn-secondary" id="resumeDownloadBtn" style="display:none">
+                                <i class="fas fa-download"></i> Download Current
+                            </a>
+                        </div>
+                    </form>
+
+                    <div id="resumeMsg" class="resume-msg" style="display:none"></div>
+                </div>
             </section>
         </main>
     </div>
@@ -482,6 +558,10 @@
             <div class="form-group">
                 <label for="internshipTechnologies">Technologies (comma-separated)</label>
                 <input type="text" id="internshipTechnologies" name="technologies">
+            </div>
+            <div class="form-group">
+                <label for="internshipDescription">Description *</label>
+                <textarea id="internshipDescription" name="description" rows="4" required placeholder="Describe your role and responsibilities..."></textarea>
             </div>
             <div class="modal-actions">
                 <button type="button" class="btn btn-secondary" onclick="closeModal('internshipModal')">Cancel</button>
@@ -927,6 +1007,139 @@
         margin: 2% auto;
     }
 }
+
+/* ── Drag & Drop ─────────────────────────────────────────────── */
+.drag-col {
+    width: 36px;
+}
+
+.drag-handle {
+    width: 36px;
+    text-align: center;
+    cursor: grab;
+    color: #555;
+    font-size: 15px;
+    user-select: none;
+    transition: color 0.2s;
+}
+
+.drag-handle:active { cursor: grabbing; }
+
+.sortable-tbody tr {
+    transition: background 0.15s, opacity 0.15s;
+}
+
+.sortable-tbody tr.drag-over {
+    background: rgba(108, 92, 231, 0.18) !important;
+    outline: 2px dashed #6c5ce7;
+    outline-offset: -2px;
+}
+
+.sortable-tbody tr.dragging {
+    opacity: 0.4;
+}
+
+.header-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+    color: #fff;
+    animation: pulse-save 1.6s ease-in-out infinite;
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(46, 204, 113, 0.35);
+    animation: none;
+}
+
+@keyframes pulse-save {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(46,204,113,0.5); }
+    50%       { box-shadow: 0 0 0 6px rgba(46,204,113,0); }
+}
+/* ────────────────────────────────────────────────────────────── */
+.resume-upload-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 600px;
+}
+
+.resume-status {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 30px;
+    padding: 16px 20px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.resume-status-icon { font-size: 22px; }
+.resume-status-icon.ok  { color: #2ecc71; }
+.resume-status-icon.missing { color: #e74c3c; }
+.resume-status-text { color: #b0b0b0; font-size: 14px; }
+
+.resume-drop-zone {
+    border: 2px dashed rgba(108,92,231,0.4);
+    border-radius: 14px;
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: #b0b0b0;
+}
+
+.resume-drop-zone:hover,
+.resume-drop-zone.drag-over {
+    border-color: #6c5ce7;
+    background: rgba(108,92,231,0.06);
+}
+
+.resume-drop-zone i { font-size: 40px; color: #6c5ce7; margin-bottom: 6px; }
+.resume-drop-zone p { margin: 0; font-size: 15px; }
+.resume-drop-zone span { font-size: 12px; color: #666; }
+.resume-hint { font-size: 11px !important; color: #555 !important; margin-top: 4px; }
+
+.resume-file-name {
+    margin-top: 14px;
+    padding: 10px 16px;
+    background: rgba(108,92,231,0.12);
+    border: 1px solid rgba(108,92,231,0.3);
+    border-radius: 8px;
+    color: #a29bfe;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.resume-actions {
+    display: flex;
+    gap: 14px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+}
+
+.resume-msg {
+    margin-top: 18px;
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+}
+.resume-msg.success { background: rgba(46,204,113,0.15); color: #2ecc71; border: 1px solid rgba(46,204,113,0.3); }
+.resume-msg.error   { background: rgba(231,76,60,0.15);  color: #e74c3c; border: 1px solid rgba(231,76,60,0.3); }
 </style>
 
 <script>
@@ -1024,6 +1237,120 @@ function deleteCertification(id) {
 function editContact(id) {
     console.log('Edit contact:', id);
 }
+
+// ===== Resume Upload =====
+(function () {
+    const dropZone   = document.getElementById('resumeDropZone');
+    const fileInput  = document.getElementById('resumeFile');
+    const fileNameEl = document.getElementById('resumeFileName');
+    const uploadBtn  = document.getElementById('resumeUploadBtn');
+    const downloadBtn= document.getElementById('resumeDownloadBtn');
+    const form       = document.getElementById('resumeUploadForm');
+    const msgEl      = document.getElementById('resumeMsg');
+    const statusIcon = document.getElementById('resumeStatusIcon');
+    const statusText = document.getElementById('resumeStatusText');
+
+    if (!form) return;
+
+    // Check current resume status
+    fetch('/api/resume/status')
+        .then(r => r.json())
+        .then(data => {
+            if (data.exists) {
+                statusIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                statusIcon.className = 'resume-status-icon ok';
+                statusText.textContent = 'Resume on file — last updated: ' + data.last_updated;
+                downloadBtn.style.display = 'inline-flex';
+            } else {
+                statusIcon.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
+                statusIcon.className = 'resume-status-icon missing';
+                statusText.textContent = 'No resume uploaded yet.';
+            }
+        })
+        .catch(() => {
+            statusText.textContent = 'Could not check resume status.';
+        });
+
+    // File input change
+    fileInput.addEventListener('change', function () {
+        if (this.files[0]) selectFile(this.files[0]);
+    });
+
+    // Drop zone click
+    dropZone.addEventListener('click', function (e) {
+        if (e.target.tagName !== 'LABEL' && e.target.tagName !== 'INPUT') {
+            fileInput.click();
+        }
+    });
+
+    // Drag & drop
+    dropZone.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        dropZone.classList.add('drag-over');
+    });
+    dropZone.addEventListener('dragleave', function () {
+        dropZone.classList.remove('drag-over');
+    });
+    dropZone.addEventListener('drop', function (e) {
+        e.preventDefault();
+        dropZone.classList.remove('drag-over');
+        const file = e.dataTransfer.files[0];
+        if (file) selectFile(file);
+    });
+
+    function selectFile(file) {
+        if (!file.name.toLowerCase().endsWith('.pdf')) {
+            showMsg('Only PDF files are allowed.', 'error');
+            return;
+        }
+        fileNameEl.innerHTML = '<i class="fas fa-file-pdf"></i> ' + file.name;
+        fileNameEl.style.display = 'flex';
+        uploadBtn.disabled = false;
+        // Assign to input
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        fileInput.files = dt.files;
+    }
+
+    // Upload
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        if (!fileInput.files[0]) return;
+
+        uploadBtn.disabled = true;
+        uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+
+        const fd = new FormData();
+        fd.append('resume', fileInput.files[0]);
+
+        try {
+            const res = await fetch('/api/resume/upload', { method: 'POST', body: fd });
+            const data = await res.json();
+            if (res.ok) {
+                showMsg('Resume uploaded successfully!', 'success');
+                statusIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                statusIcon.className = 'resume-status-icon ok';
+                const now = new Date();
+                statusText.textContent = 'Resume on file — last updated: ' + now.toLocaleString();
+                downloadBtn.style.display = 'inline-flex';
+            } else {
+                showMsg(data.error || 'Upload failed.', 'error');
+            }
+        } catch (err) {
+            showMsg('Network error. Please try again.', 'error');
+        } finally {
+            uploadBtn.disabled = false;
+            uploadBtn.innerHTML = '<i class="fas fa-upload"></i> Upload Resume';
+        }
+    });
+
+    function showMsg(text, type) {
+        msgEl.textContent = text;
+        msgEl.className = 'resume-msg ' + type;
+        msgEl.style.display = 'block';
+        setTimeout(() => { msgEl.style.display = 'none'; }, 5000);
+    }
+})();
 </script>
 <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
 {% endblock %}

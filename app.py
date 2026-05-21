@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -45,6 +45,7 @@ class Project(db.Model):
     duration = db.Column(db.String(100), nullable=False)
     team_size = db.Column(db.String(50), nullable=False)
     role = db.Column(db.String(100), nullable=False)
+    display_order = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 class Skill(db.Model):
@@ -52,6 +53,7 @@ class Skill(db.Model):
     name = db.Column(db.String(100), nullable=False)
     category = db.Column(db.String(100), nullable=False)
     proficiency = db.Column(db.Integer, default=80)
+    display_order = db.Column(db.Integer, default=0)
 
 class Education(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -59,6 +61,7 @@ class Education(db.Model):
     institution = db.Column(db.String(200), nullable=False)
     year = db.Column(db.String(20), nullable=False)
     percentage = db.Column(db.String(10))
+    display_order = db.Column(db.Integer, default=0)
 
 class Certification(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -66,6 +69,7 @@ class Certification(db.Model):
     issuer = db.Column(db.String(200), nullable=False)
     percentage = db.Column(db.String(10))
     date_range = db.Column(db.String(100))
+    display_order = db.Column(db.Integer, default=0)
 
 class Internship(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -75,6 +79,7 @@ class Internship(db.Model):
     location = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=False)
     technologies = db.Column(db.String(500))
+    display_order = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 class Contact(db.Model):
@@ -87,11 +92,11 @@ class Contact(db.Model):
 # Routes
 @app.route('/')
 def index():
-    projects = Project.query.all()
-    skills = Skill.query.all()
-    education = Education.query.order_by(Education.id).all()
-    certifications = Certification.query.all()
-    internships = Internship.query.all()
+    projects = Project.query.order_by(Project.display_order, Project.id).all()
+    skills = Skill.query.order_by(Skill.display_order, Skill.id).all()
+    education = Education.query.order_by(Education.display_order, Education.id).all()
+    certifications = Certification.query.order_by(Certification.display_order, Certification.id).all()
+    internships = Internship.query.order_by(Internship.display_order, Internship.id).all()
     contact = Contact.query.first()
     return render_template('index.html', 
                          projects=projects, 
@@ -130,11 +135,11 @@ def admin_dashboard():
     if 'admin_logged_in' not in session:
         return redirect(url_for('admin_login'))
     
-    projects = Project.query.all()
-    skills = Skill.query.all()
-    education = Education.query.all()
-    certifications = Certification.query.all()
-    internships = Internship.query.all()
+    projects = Project.query.order_by(Project.display_order, Project.id).all()
+    skills = Skill.query.order_by(Skill.display_order, Skill.id).all()
+    education = Education.query.order_by(Education.display_order, Education.id).all()
+    certifications = Certification.query.order_by(Certification.display_order, Certification.id).all()
+    internships = Internship.query.order_by(Internship.display_order, Internship.id).all()
     contact = Contact.query.first()
     
     return render_template('admin_dashboard.html',
@@ -480,6 +485,88 @@ def api_internship(internship_id):
         db.session.commit()
         return jsonify({'message': 'Internship deleted successfully'})
 
+
+# ── Reorder routes ────────────────────────────────────────────────────────────
+def _reorder(model, items):
+    """Generic helper: items = [{id, order}, ...]"""
+    if 'admin_logged_in' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    for item in items:
+        row = model.query.get(item['id'])
+        if row:
+            row.display_order = item['order']
+    db.session.commit()
+    return jsonify({'message': 'Order saved'})
+
+@app.route('/api/projects/reorder', methods=['POST'])
+def reorder_projects():
+    return _reorder(Project, request.json)
+
+@app.route('/api/skills/reorder', methods=['POST'])
+def reorder_skills():
+    return _reorder(Skill, request.json)
+
+@app.route('/api/education/reorder', methods=['POST'])
+def reorder_education():
+    return _reorder(Education, request.json)
+
+@app.route('/api/certifications/reorder', methods=['POST'])
+def reorder_certifications():
+    return _reorder(Certification, request.json)
+
+@app.route('/api/internships/reorder', methods=['POST'])
+def reorder_internships():
+    return _reorder(Internship, request.json)
+# ─────────────────────────────────────────────────────────────────────────────
+
+@app.route('/resume/download')
+def download_resume():
+    """Serve the resume PDF with forced download headers."""
+    resume_path = os.path.join(app.root_path, 'static', 'Dhara_Ruparel_Resume.pdf')
+    if not os.path.isfile(resume_path):
+        return "Resume not found. Please upload it via the admin panel.", 404
+    return send_file(
+        resume_path,
+        mimetype='application/pdf',
+        as_attachment=True,
+        download_name='Dhara_Ruparel_Resume.pdf'
+    )
+
+
+@app.route('/api/resume/upload', methods=['POST'])
+def upload_resume():
+    if 'admin_logged_in' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    if 'resume' not in request.files:
+        return jsonify({'error': 'No file provided'}), 400
+
+    file = request.files['resume']
+    if file.filename == '':
+        return jsonify({'error': 'No file selected'}), 400
+
+    # Only allow PDF
+    if not file.filename.lower().endswith('.pdf'):
+        return jsonify({'error': 'Only PDF files are allowed'}), 400
+
+    save_path = os.path.join(app.root_path, 'static', 'Dhara_Ruparel_Resume.pdf')
+    file.save(save_path)
+    return jsonify({'message': 'Resume uploaded successfully'})
+
+
+@app.route('/api/resume/status', methods=['GET'])
+def resume_status():
+    if 'admin_logged_in' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    path = os.path.join(app.root_path, 'static', 'Dhara_Ruparel_Resume.pdf')
+    exists = os.path.isfile(path)
+    mtime = None
+    if exists:
+        import time
+        mtime = time.strftime('%d %b %Y, %H:%M', time.localtime(os.path.getmtime(path)))
+    return jsonify({'exists': exists, 'last_updated': mtime})
+
+
 @app.route('/api/contact/send', methods=['POST'])
 def send_contact_email():
     data = request.json
@@ -522,5 +609,23 @@ with app.app_context():
         if not Admin.query.filter_by(username='admin').first():
             db.session.add(Admin(username='admin', password_hash=generate_password_hash('admin123')))
             db.session.commit()
+
+        # Migrate: add display_order column if missing (SQLite / Postgres safe)
+        from sqlalchemy import text, inspect as sa_inspect
+        inspector = sa_inspect(db.engine)
+        for model, table in [
+            (Project, 'project'), (Skill, 'skill'),
+            (Education, 'education'), (Certification, 'certification'),
+            (Internship, 'internship'),
+        ]:
+            cols = [c['name'] for c in inspector.get_columns(table)]
+            if 'display_order' not in cols:
+                db.session.execute(text(f'ALTER TABLE "{table}" ADD COLUMN display_order INTEGER DEFAULT 0'))
+                db.session.commit()
+            # Back-fill zeros with sequential values so existing rows have a stable order
+            rows = model.query.filter(model.display_order == 0).order_by(model.id).all()
+            for i, row in enumerate(rows, start=1):
+                row.display_order = i
+        db.session.commit()
     except Exception as e:
         print(f"Startup DB init error: {e}")

@@ -8,14 +8,24 @@
             <h2>DHARA RUPAREL</h2>
         </div>
         <div class="nav-menu">
-            <a href="#home" class="nav-link">Home</a>
-            <a href="#about" class="nav-link">About</a>
             <a href="#projects" class="nav-link">Projects</a>
             <a href="#skills" class="nav-link">Skills</a>
             <a href="#internships" class="nav-link">Internships</a>
             <a href="#education" class="nav-link">Education</a>
             <a href="#certifications" class="nav-link">Certifications</a>
             <a href="#contact" class="nav-link">Contact</a>
+        </div>
+        <div class="nav-actions">
+            <!-- Resume button -->
+            <a href="{{ url_for('download_resume') }}" 
+               class="btn-resume">
+                <i class="fas fa-download"></i>
+                Resume
+            </a>
+            <!-- Theme toggle -->
+            <button id="theme-toggle" class="theme-btn" title="Toggle light/dark mode" aria-label="Toggle theme">
+                <i class="fas fa-sun" id="theme-icon"></i>
+            </button>
         </div>
         <div class="hamburger">
             <span></span>
@@ -266,10 +276,6 @@
                 
                 {% if contact %}
                 <div class="contact-details">
-                    <div class="contact-item">
-                        <i class="fas fa-phone"></i>
-                        <span>{{ contact.phone }}</span>
-                    </div>
                     <div class="contact-item">
                         <i class="fas fa-envelope"></i>
                         <span>{{ contact.email }}</span>

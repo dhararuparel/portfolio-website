@@ -9,6 +9,51 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+
+    <!-- ===== LOADING SCREEN ===== -->
+    <div id="loader-overlay">
+        <div class="loader-grid"></div>
+        <div class="loader-body">
+            <div class="loader-logo">
+                <span class="loader-logo-text">DR</span>
+                <div class="loader-logo-dot"></div>
+            </div>
+            <div class="loader-name">DHARA RUPAREL</div>
+            <div class="loader-tagline">Computer Engineer &amp; AI Enthusiast</div>
+            <div class="loader-bar-wrap"><div class="loader-bar-fill"></div></div>
+            <div class="loader-status"><span class="loader-status-label">INITIALIZING</span><span id="loader-pct">0%</span></div>
+        </div>
+    </div>
+    <style>
+        #loader-overlay{position:fixed;inset:0;background:#0a0a0a;display:flex;align-items:center;justify-content:center;z-index:99999;transition:opacity .7s ease,visibility .7s ease}
+        #loader-overlay.hidden{opacity:0;visibility:hidden;pointer-events:none}
+        .loader-grid{position:absolute;inset:0;background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="g" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="%23ffffff" stroke-width="0.5" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23g)"/></svg>');opacity:.15;pointer-events:none}
+        .loader-body{position:relative;display:flex;flex-direction:column;align-items:center;gap:16px;z-index:1}
+        .loader-logo{position:relative;width:100px;height:100px;background:rgba(255,255,255,.04);border:1px solid rgba(108,92,231,.35);border-radius:24px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);box-shadow:0 0 40px rgba(108,92,231,.15),inset 0 1px 0 rgba(255,255,255,.06);animation:lf 3s ease-in-out infinite;margin-bottom:4px}
+        .loader-logo::before{content:'';position:absolute;inset:-2px;border-radius:26px;background:conic-gradient(from 0deg,#6c5ce7 0%,#a29bfe 25%,transparent 50%,transparent 100%);animation:ls 2s linear infinite;z-index:-1}
+        .loader-logo::after{content:'';position:absolute;inset:0;border-radius:24px;background:#0a0a0a;z-index:-1}
+        .loader-logo-text{font-family:'Inter',sans-serif;font-size:2.2rem;font-weight:700;letter-spacing:-.02em;background:linear-gradient(135deg,#fff 0%,#6c5ce7 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .loader-logo-dot{position:absolute;bottom:10px;right:10px;width:8px;height:8px;background:#6c5ce7;border-radius:50%;box-shadow:0 0 8px #6c5ce7;animation:lb 1.4s ease-in-out infinite}
+        .loader-name{font-family:'Inter',sans-serif;font-size:1.05rem;font-weight:700;letter-spacing:.18em;color:#fff;text-transform:uppercase}
+        .loader-tagline{font-family:'Inter',sans-serif;font-size:.75rem;color:#888;letter-spacing:.06em}
+        .loader-bar-wrap{width:260px;height:2px;background:rgba(108,92,231,.15);border-radius:2px;overflow:hidden;margin-top:6px}
+        .loader-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,#6c5ce7,#a29bfe);border-radius:2px;box-shadow:0 0 10px rgba(108,92,231,.6);transition:width .12s ease}
+        .loader-status{display:flex;gap:10px;font-family:'Inter',sans-serif;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase}
+        .loader-status-label{color:#555}
+        #loader-pct{color:#6c5ce7;font-weight:600}
+        @keyframes ls{to{transform:rotate(360deg)}}
+        @keyframes lf{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+        @keyframes lb{0%,100%{opacity:1}50%{opacity:.2}}
+    </style>
+    <script>
+        (function(){
+            var o=document.getElementById('loader-overlay'),b=document.querySelector('.loader-bar-fill'),p=document.getElementById('loader-pct'),pct=0;
+            var t=setInterval(function(){var s=pct<70?Math.random()*8+4:pct<88?Math.random()*3+1:0;pct=Math.min(pct+s,90);b.style.width=pct+'%';p.textContent=Math.round(pct)+'%';if(pct>=90)clearInterval(t);},120);
+            window.addEventListener('load',function(){clearInterval(t);pct=100;b.style.width='100%';p.textContent='100%';setTimeout(function(){o.classList.add('hidden');},500);});
+        })();
+    </script>
+    <!-- ===== END LOADING SCREEN ===== -->
+
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
@@ -16,13 +61,20 @@
                 <h2>DHARA RUPAREL</h2>
             </div>
             <div class="nav-menu">
-                <a href="#home" class="nav-link">Home</a>
-                <a href="#about" class="nav-link">About</a>
                 <a href="#projects" class="nav-link">Projects</a>
                 <a href="#skills" class="nav-link">Skills</a>
                 <a href="#education" class="nav-link">Education</a>
                 <a href="#certifications" class="nav-link">Certifications</a>
                 <a href="#contact" class="nav-link">Contact</a>
+            </div>
+            <div class="nav-actions">
+                <a href="static/Dhara_Ruparel_Resume.pdf" download="Dhara_Ruparel_Resume.pdf" type="application/pdf" class="btn-resume">
+                    <i class="fas fa-download"></i>
+                    Resume
+                </a>
+                <button id="theme-toggle" class="theme-btn" title="Toggle light/dark mode" aria-label="Toggle theme">
+                    <i class="fas fa-sun" id="theme-icon"></i>
+                </button>
             </div>
             <div class="hamburger">
                 <span></span>
