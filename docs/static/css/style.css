@@ -137,6 +137,11 @@ body {
     margin-left: 8px;
 }
 
+.nav-right {
+    display: flex;
+    align-items: center;
+}
+
 /* Theme toggle button */
 .theme-btn {
     width: 38px;
@@ -605,6 +610,38 @@ section {
     border-radius: 15px;
     font-size: 12px;
     font-weight: 500;
+}
+
+/* Project link button */
+.project-link {
+    margin-top: 20px;
+}
+
+.btn-project-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 18px;
+    border: 1.5px solid #6c5ce7;
+    border-radius: 8px;
+    color: #6c5ce7;
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-project-link i {
+    font-size: 11px;
+}
+
+.btn-project-link:hover {
+    background: #6c5ce7;
+    color: #ffffff;
+    box-shadow: 0 4px 18px rgba(108, 92, 231, 0.35);
+    transform: translateY(-2px);
 }
 
 /* Skills Section */

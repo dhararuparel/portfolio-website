@@ -7,25 +7,27 @@
         <div class="nav-logo">
             <h2>DHARA RUPAREL</h2>
         </div>
-        <div class="nav-menu">
-            <a href="#projects" class="nav-link">Projects</a>
-            <a href="#skills" class="nav-link">Skills</a>
-            <a href="#internships" class="nav-link">Internships</a>
-            <a href="#education" class="nav-link">Education</a>
-            <a href="#certifications" class="nav-link">Certifications</a>
-            <a href="#contact" class="nav-link">Contact</a>
-        </div>
-        <div class="nav-actions">
-            <!-- Resume button -->
-            <a href="{{ url_for('download_resume') }}" 
-               class="btn-resume">
-                <i class="fas fa-download"></i>
-                Resume
-            </a>
-            <!-- Theme toggle -->
-            <button id="theme-toggle" class="theme-btn" title="Toggle light/dark mode" aria-label="Toggle theme">
-                <i class="fas fa-sun" id="theme-icon"></i>
-            </button>
+        <div class="nav-right">
+            <div class="nav-menu">
+                <a href="#projects" class="nav-link">Projects</a>
+                <a href="#skills" class="nav-link">Skills</a>
+                <a href="#internships" class="nav-link">Internships</a>
+                <a href="#education" class="nav-link">Education</a>
+                <a href="#certifications" class="nav-link">Certifications</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </div>
+            <div class="nav-actions">
+                <!-- Resume button -->
+                <a href="{{ url_for('download_resume') }}" 
+                   class="btn-resume">
+                    <i class="fas fa-download"></i>
+                    Resume
+                </a>
+                <!-- Theme toggle -->
+                <button id="theme-toggle" class="theme-btn" title="Toggle light/dark mode" aria-label="Toggle theme">
+                    <i class="fas fa-sun" id="theme-icon"></i>
+                </button>
+            </div>
         </div>
         <div class="hamburger">
             <span></span>
@@ -142,6 +144,14 @@
                             {% endfor %}
                         </div>
                     </div>
+                    {% if project.link_url %}
+                    <div class="project-link">
+                        <a href="{{ project.link_url }}" target="_blank" rel="noopener noreferrer" class="btn-project-link">
+                            <i class="fas fa-external-link-alt"></i>
+                            {{ project.link_label or 'View Project' }}
+                        </a>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
             {% endfor %}

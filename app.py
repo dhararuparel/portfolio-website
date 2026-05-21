@@ -45,6 +45,8 @@ class Project(db.Model):
     duration = db.Column(db.String(100), nullable=False)
     team_size = db.Column(db.String(50), nullable=False)
     role = db.Column(db.String(100), nullable=False)
+    link_url = db.Column(db.String(500))
+    link_label = db.Column(db.String(100))
     display_order = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -164,7 +166,9 @@ def api_projects():
             technologies=data['technologies'],
             duration=data['duration'],
             team_size=data['team_size'],
-            role=data['role']
+            role=data['role'],
+            link_url=data.get('link_url', ''),
+            link_label=data.get('link_label', '')
         )
         db.session.add(project)
         db.session.commit()
@@ -178,7 +182,9 @@ def api_projects():
         'technologies': p.technologies,
         'duration': p.duration,
         'team_size': p.team_size,
-        'role': p.role
+        'role': p.role,
+        'link_url': p.link_url or '',
+        'link_label': p.link_label or ''
     } for p in projects])
 
 @app.route('/api/projects/<int:project_id>', methods=['GET', 'PUT', 'DELETE'])
@@ -196,7 +202,9 @@ def api_project(project_id):
             'technologies': project.technologies,
             'duration': project.duration,
             'team_size': project.team_size,
-            'role': project.role
+            'role': project.role,
+            'link_url': project.link_url or '',
+            'link_label': project.link_label or ''
         })
     
     elif request.method == 'PUT':
@@ -207,6 +215,8 @@ def api_project(project_id):
         project.duration = data['duration']
         project.team_size = data['team_size']
         project.role = data['role']
+        project.link_url = data.get('link_url', '')
+        project.link_label = data.get('link_label', '')
         db.session.commit()
         return jsonify({'message': 'Project updated successfully'})
     
@@ -613,6 +623,16 @@ with app.app_context():
         # Migrate: add display_order column if missing (SQLite / Postgres safe)
         from sqlalchemy import text, inspect as sa_inspect
         inspector = sa_inspect(db.engine)
+
+        # Add link_url / link_label to project FIRST (before any model queries)
+        proj_cols = [c['name'] for c in inspector.get_columns('project')]
+        if 'link_url' not in proj_cols:
+            db.session.execute(text("ALTER TABLE project ADD COLUMN link_url VARCHAR(500)"))
+            db.session.commit()
+        if 'link_label' not in proj_cols:
+            db.session.execute(text("ALTER TABLE project ADD COLUMN link_label VARCHAR(100)"))
+            db.session.commit()
+
         for model, table in [
             (Project, 'project'), (Skill, 'skill'),
             (Education, 'education'), (Certification, 'certification'),

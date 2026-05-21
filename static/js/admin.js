@@ -243,6 +243,8 @@ async function editProject(id) {
         document.getElementById('projectDuration').value = project.duration;
         document.getElementById('projectTeamSize').value = project.team_size;
         document.getElementById('projectRole').value = project.role;
+        document.getElementById('projectLinkUrl').value = project.link_url || '';
+        document.getElementById('projectLinkLabel').value = project.link_label || '';
         
         document.getElementById('projectModalTitle').textContent = 'Edit Project';
         openModal('projectModal');
@@ -595,7 +597,6 @@ window.onclick = function(event) {
 //  DRAG-AND-DROP ROW REORDERING
 // ═══════════════════════════════════════════════════════════════
 (function () {
-    // Map section name → API endpoint
     const REORDER_URLS = {
         projects:       '/api/projects/reorder',
         skills:         '/api/skills/reorder',
@@ -604,8 +605,13 @@ window.onclick = function(event) {
         internships:    '/api/internships/reorder',
     };
 
-    let dragSrc = null;   // the <tr> being dragged
-    let tbodyName = null; // which resource is being reordered
+    let dragSrc = null;
+
+    function getRow(el) {
+        // Walk up to find the <tr>
+        while (el && el.tagName !== 'TR') el = el.parentElement;
+        return el;
+    }
 
     function getTbodyName(tbody) {
         return tbody.id.replace('-tbody', '');
@@ -614,57 +620,73 @@ window.onclick = function(event) {
     function attachDragListeners(tbody) {
         const name = getTbodyName(tbody);
 
-        tbody.querySelectorAll('tr[draggable="true"]').forEach(row => {
-            row.addEventListener('dragstart', onDragStart);
-            row.addEventListener('dragend',   onDragEnd);
-            row.addEventListener('dragover',  onDragOver);
-            row.addEventListener('dragleave', onDragLeave);
-            row.addEventListener('drop',      onDrop);
+        // Make rows draggable only when mousedown is on the handle
+        tbody.addEventListener('mousedown', function (e) {
+            const handle = e.target.closest('.drag-handle');
+            if (!handle) {
+                // Disable dragging if not clicking the handle
+                const row = getRow(e.target);
+                if (row) row.draggable = false;
+                return;
+            }
+            const row = getRow(handle);
+            if (row) row.draggable = true;
         });
 
-        function onDragStart(e) {
-            dragSrc   = this;
-            tbodyName = name;
-            this.classList.add('dragging');
+        tbody.addEventListener('dragstart', function (e) {
+            const row = getRow(e.target);
+            if (!row || !row.draggable) { e.preventDefault(); return; }
+            dragSrc = row;
+            row.classList.add('dragging');
             e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/plain', this.dataset.id);
-        }
+            e.dataTransfer.setData('text/plain', row.dataset.id || '');
+        });
 
-        function onDragEnd() {
-            this.classList.remove('dragging');
+        tbody.addEventListener('dragend', function (e) {
+            const row = getRow(e.target);
+            if (row) { row.classList.remove('dragging'); row.draggable = false; }
             tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
-        }
+            dragSrc = null;
+        });
 
-        function onDragOver(e) {
+        tbody.addEventListener('dragover', function (e) {
             e.preventDefault();
             e.dataTransfer.dropEffect = 'move';
-            if (this !== dragSrc) this.classList.add('drag-over');
-        }
+            const row = getRow(e.target);
+            if (row && row !== dragSrc) {
+                tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
+                row.classList.add('drag-over');
+            }
+        });
 
-        function onDragLeave() {
-            this.classList.remove('drag-over');
-        }
+        tbody.addEventListener('dragleave', function (e) {
+            // Only clear if leaving the tbody entirely
+            if (!tbody.contains(e.relatedTarget)) {
+                tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
+            }
+        });
 
-        function onDrop(e) {
+        tbody.addEventListener('drop', function (e) {
             e.preventDefault();
-            this.classList.remove('drag-over');
-            if (!dragSrc || dragSrc === this) return;
+            const targetRow = getRow(e.target);
+            tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
 
-            // Swap DOM positions
-            const allRows = [...tbody.querySelectorAll('tr')];
-            const srcIdx  = allRows.indexOf(dragSrc);
-            const tgtIdx  = allRows.indexOf(this);
+            if (!dragSrc || !targetRow || dragSrc === targetRow) return;
+
+            const rows    = [...tbody.querySelectorAll('tr')];
+            const srcIdx  = rows.indexOf(dragSrc);
+            const tgtIdx  = rows.indexOf(targetRow);
 
             if (srcIdx < tgtIdx) {
-                tbody.insertBefore(dragSrc, this.nextSibling);
+                tbody.insertBefore(dragSrc, targetRow.nextSibling);
             } else {
-                tbody.insertBefore(dragSrc, this);
+                tbody.insertBefore(dragSrc, targetRow);
             }
 
-            // Show the Save Order button for this section
+            // Show Save Order button
             const saveBtn = document.getElementById(`save-order-${name}`);
             if (saveBtn) saveBtn.style.display = 'inline-flex';
-        }
+        });
     }
 
     // Attach to all sortable tbodies on load
@@ -672,12 +694,12 @@ window.onclick = function(event) {
         document.querySelectorAll('.sortable-tbody').forEach(attachDragListeners);
     });
 
-    // Global saveOrder function called by the Save Order buttons
+    // Global saveOrder called by Save Order buttons
     window.saveOrder = async function (name) {
         const tbody = document.getElementById(`${name}-tbody`);
         if (!tbody) return;
 
-        const rows = [...tbody.querySelectorAll('tr[data-id]')];
+        const rows    = [...tbody.querySelectorAll('tr[data-id]')];
         const payload = rows.map((row, idx) => ({
             id:    parseInt(row.dataset.id, 10),
             order: idx + 1,
@@ -686,8 +708,11 @@ window.onclick = function(event) {
         const url = REORDER_URLS[name];
         if (!url) return;
 
+        const saveBtn = document.getElementById(`save-order-${name}`);
+        if (saveBtn) { saveBtn.disabled = true; saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...'; }
+
         try {
-            const res = await fetch(url, {
+            const res  = await fetch(url, {
                 method:  'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body:    JSON.stringify(payload),
@@ -695,13 +720,14 @@ window.onclick = function(event) {
             const data = await res.json();
             if (res.ok) {
                 showNotification(`${name.charAt(0).toUpperCase() + name.slice(1)} order saved!`, 'success');
-                const saveBtn = document.getElementById(`save-order-${name}`);
                 if (saveBtn) saveBtn.style.display = 'none';
             } else {
                 showNotification('Error saving order: ' + (data.error || 'Unknown error'), 'error');
             }
         } catch (err) {
             showNotification('Network error saving order.', 'error');
+        } finally {
+            if (saveBtn) { saveBtn.disabled = false; saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Order'; }
         }
     };
 })();
