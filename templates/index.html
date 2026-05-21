@@ -39,10 +39,13 @@
 
 <!-- Hero Section -->
 <section id="home" class="hero">
+    <div class="hero-glow hero-glow-1" aria-hidden="true"></div>
+    <div class="hero-glow hero-glow-2" aria-hidden="true"></div>
     <div class="hero-container">
         <div class="hero-content">
+            <span class="hero-badge"><i class="fas fa-bolt"></i> Open to opportunities</span>
             <h1 class="hero-title">
-                Hi, I'm Dhara Ruparel.
+                Hi, I'm <span class="text-gradient">Dhara Ruparel</span>.
             </h1>
             <p class="hero-subtitle">Computer Engineer & AI Enthusiast</p>
             <p class="hero-description">
@@ -73,6 +76,7 @@
 <!-- About Section -->
 <section id="about" class="about">
     <div class="container">
+        <p class="section-eyebrow">Introduction</p>
         <h2 class="section-title">About Me</h2>
         <div class="about-content">
             <div class="about-text">
@@ -120,10 +124,12 @@
 <!-- Projects Section -->
 <section id="projects" class="projects">
     <div class="container">
+        <p class="section-eyebrow">Portfolio</p>
         <h2 class="section-title">Work Experience & Projects</h2>
         <div class="projects-grid">
             {% for project in projects %}
             <div class="project-card">
+                <div class="card-accent"></div>
                 <div class="project-header">
                     <h3>{{ project.title }}</h3>
                     <div class="project-meta">
@@ -162,6 +168,7 @@
 <!-- Skills Section -->
 <section id="skills" class="skills">
     <div class="container">
+        <p class="section-eyebrow">Expertise</p>
         <h2 class="section-title">Skills & Technologies</h2>
         <div class="skills-container">
             {% set skill_categories = {} %}
@@ -174,7 +181,7 @@
             
             {% for category, category_skills in skill_categories.items() %}
             <div class="skill-category">
-                <h3>{{ category }}</h3>
+                <h3><i class="fas fa-layer-group category-icon"></i> {{ category }}</h3>
                 <div class="skills-list">
                     {% for skill in category_skills %}
                     <div class="skill-item">
@@ -191,10 +198,12 @@
 <!-- Internships Section -->
 <section id="internships" class="internships">
     <div class="container">
+        <p class="section-eyebrow">Experience</p>
         <h2 class="section-title">Internships</h2>
         <div class="internships-grid">
             {% for internship in internships %}
             <div class="internship-card">
+                <div class="card-accent"></div>
                 <div class="internship-header">
                     <h3>{{ internship.position }}</h3>
                     <div class="company-info">
@@ -231,6 +240,7 @@
 <!-- Education Section -->
 <section id="education" class="education">
     <div class="container">
+        <p class="section-eyebrow">Background</p>
         <h2 class="section-title">Education</h2>
         <div class="education-timeline">
             {% for edu in education %}
@@ -252,6 +262,7 @@
 <!-- Certifications Section -->
 <section id="certifications" class="certifications">
     <div class="container">
+        <p class="section-eyebrow">Achievements</p>
         <h2 class="section-title">Certifications</h2>
         <div class="certifications-grid">
             {% for cert in certifications %}
@@ -278,6 +289,7 @@
 <!-- Contact Section -->
 <section id="contact" class="contact">
     <div class="container">
+        <p class="section-eyebrow">Contact</p>
         <h2 class="section-title">Get In Touch</h2>
         <div class="contact-content">
             <div class="contact-info">
@@ -314,18 +326,24 @@
             <div class="contact-form">
                 <form id="contactForm">
                     <div class="form-group">
-                        <input type="text" id="name" name="name" placeholder="Your Name" required>
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" name="name" required>
                     </div>
                     <div class="form-group">
-                        <input type="email" id="email" name="email" placeholder="Your Email" required>
+                        <label for="email">Your Email</label>
+                        <input type="email" id="email" name="email" required>
                     </div>
                     <div class="form-group">
-                        <input type="text" id="subject" name="subject" placeholder="Subject" required>
+                        <label for="subject">Subject</label>
+                        <input type="text" id="subject" name="subject" required>
                     </div>
                     <div class="form-group">
-                        <textarea id="message" name="message" placeholder="Your Message" rows="5" required></textarea>
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" rows="5" required></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary">Send Message</button>
+                    <button type="submit" class="btn btn-primary btn-send">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
                 </form>
             </div>
         </div>
@@ -340,4 +358,8 @@
         </div>
     </div>
 </footer>
+
+<button type="button" class="back-to-top" id="backToTop" aria-label="Back to top" title="Back to top">
+    <i class="fas fa-arrow-up"></i>
+</button>
 {% endblock %}

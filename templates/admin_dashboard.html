@@ -2,12 +2,24 @@
 
 {% block title %}Admin Dashboard - Portfolio{% endblock %}
 
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&display=swap" rel="stylesheet">
+<style>#loader-overlay { display: none !important; }</style>
+{% endblock %}
+
 {% block content %}
 <div class="admin-container">
     <!-- Admin Header -->
     <header class="admin-header">
         <div class="admin-nav">
-            <h1>Portfolio Admin Dashboard</h1>
+            <div class="admin-brand">
+                <div class="admin-brand-icon"><i class="fas fa-sliders-h"></i></div>
+                <div>
+                    <h1>Portfolio Admin</h1>
+                    <div class="admin-subtitle">Content management</div>
+                </div>
+            </div>
             <div class="admin-actions">
                 <a href="{{ url_for('index') }}" class="btn btn-secondary" target="_blank">
                     <i class="fas fa-external-link-alt"></i> View Portfolio
@@ -23,30 +35,36 @@
     <div class="admin-content">
         <!-- Sidebar -->
         <aside class="admin-sidebar">
+            <div class="sidebar-label">Sections</div>
             <nav class="admin-menu">
                 <a href="#projects" class="menu-item active" data-section="projects">
                     <i class="fas fa-project-diagram"></i>
                     <span>Projects</span>
+                    <span class="menu-badge">{{ projects|length }}</span>
                 </a>
                 <a href="#skills" class="menu-item" data-section="skills">
                     <i class="fas fa-cogs"></i>
                     <span>Skills</span>
+                    <span class="menu-badge">{{ skills|length }}</span>
                 </a>
                 <a href="#internships" class="menu-item" data-section="internships">
                     <i class="fas fa-briefcase"></i>
                     <span>Internships</span>
+                    <span class="menu-badge">{{ internships|length }}</span>
                 </a>
                 <a href="#education" class="menu-item" data-section="education">
                     <i class="fas fa-graduation-cap"></i>
                     <span>Education</span>
+                    <span class="menu-badge">{{ education|length }}</span>
                 </a>
                 <a href="#certifications" class="menu-item" data-section="certifications">
                     <i class="fas fa-certificate"></i>
                     <span>Certifications</span>
+                    <span class="menu-badge">{{ certifications|length }}</span>
                 </a>
                 <a href="#contact" class="menu-item" data-section="contact">
                     <i class="fas fa-address-book"></i>
-                    <span>Contact Info</span>
+                    <span>Contact</span>
                 </a>
                 <a href="#resume" class="menu-item" data-section="resume">
                     <i class="fas fa-file-pdf"></i>
@@ -57,10 +75,32 @@
 
         <!-- Main Content -->
         <main class="admin-main">
+            <div class="admin-stats">
+                <div class="stat-pill">
+                    <div class="stat-value">{{ projects|length }}</div>
+                    <div class="stat-label">Projects</div>
+                </div>
+                <div class="stat-pill">
+                    <div class="stat-value">{{ skills|length }}</div>
+                    <div class="stat-label">Skills</div>
+                </div>
+                <div class="stat-pill">
+                    <div class="stat-value">{{ internships|length }}</div>
+                    <div class="stat-label">Internships</div>
+                </div>
+                <div class="stat-pill">
+                    <div class="stat-value">{{ certifications|length }}</div>
+                    <div class="stat-label">Certs</div>
+                </div>
+            </div>
+
             <!-- Projects Section -->
             <section id="projects-section" class="admin-section active">
                 <div class="section-header">
-                    <h2>Manage Projects</h2>
+                    <div>
+                        <h2>Manage Projects</h2>
+                        <p class="section-desc">Add, edit, reorder, or remove portfolio projects.</p>
+                    </div>
                     <div class="header-actions">
                         <button class="btn btn-success" id="save-order-projects" onclick="saveOrder('projects')" style="display:none">
                             <i class="fas fa-save"></i> Save Order
@@ -617,646 +657,7 @@
     </div>
 </div>
 
-<style>
-/* Admin Dashboard Styles */
-.admin-container {
-    min-height: 100vh;
-    background: #0a0a0a;
-    color: #ffffff;
-}
-
-.admin-header {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 20px 0;
-}
-
-.admin-nav {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.admin-nav h1 {
-    color: #6c5ce7;
-    font-size: 24px;
-    font-weight: 600;
-}
-
-.admin-actions {
-    display: flex;
-    gap: 15px;
-}
-
-.btn-danger {
-    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-    color: #ffffff;
-}
-
-.btn-danger:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(231, 76, 60, 0.3);
-}
-
-.admin-content {
-    max-width: 1400px;
-    margin: 0 auto;
-    display: flex;
-    min-height: calc(100vh - 80px);
-}
-
-.admin-sidebar {
-    width: 250px;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 30px 0;
-}
-
-.admin-menu {
-    display: flex;
-    flex-direction: column;
-}
-
-.menu-item {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 15px 25px;
-    color: #b0b0b0;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    border-left: 3px solid transparent;
-}
-
-.menu-item:hover,
-.menu-item.active {
-    color: #6c5ce7;
-    background: rgba(108, 92, 231, 0.1);
-    border-left-color: #6c5ce7;
-}
-
-.menu-item i {
-    font-size: 18px;
-    width: 20px;
-}
-
-.admin-main {
-    flex: 1;
-    padding: 30px;
-}
-
-.admin-section {
-    display: none;
-}
-
-.admin-section.active {
-    display: block;
-}
-
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.section-header h2 {
-    color: #ffffff;
-    font-size: 28px;
-    font-weight: 600;
-}
-
-.data-table {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 15px;
-    overflow: hidden;
-}
-
-.data-table table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.data-table th,
-.data-table td {
-    padding: 15px 20px;
-    text-align: left;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.data-table th {
-    background: rgba(108, 92, 231, 0.1);
-    color: #6c5ce7;
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 12px;
-    letter-spacing: 0.5px;
-}
-
-.data-table td {
-    color: #b0b0b0;
-}
-
-.data-table tr:hover {
-    background: rgba(255, 255, 255, 0.02);
-}
-
-.actions {
-    display: flex;
-    gap: 10px;
-}
-
-.btn-icon {
-    width: 35px;
-    height: 35px;
-    border: none;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 14px;
-}
-
-.btn-edit {
-    background: rgba(52, 152, 219, 0.2);
-    color: #3498db;
-}
-
-.btn-edit:hover {
-    background: rgba(52, 152, 219, 0.3);
-    transform: translateY(-2px);
-}
-
-.btn-delete {
-    background: rgba(231, 76, 60, 0.2);
-    color: #e74c3c;
-}
-
-.btn-delete:hover {
-    background: rgba(231, 76, 60, 0.3);
-    transform: translateY(-2px);
-}
-
-/* Modal Styles */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 10000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(5px);
-}
-
-.modal select {
-    position: relative;
-    z-index: 10001;
-}
-
-.modal-content {
-    background: rgba(26, 26, 46, 0.95);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    margin: 5% auto;
-    padding: 0;
-    border-radius: 20px;
-    width: 90%;
-    max-width: 600px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-}
-
-.modal-header {
-    padding: 25px 30px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.modal-header h3 {
-    color: #ffffff;
-    font-size: 24px;
-    font-weight: 600;
-    margin: 0;
-}
-
-.close {
-    color: #b0b0b0;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: color 0.3s ease;
-}
-
-.close:hover {
-    color: #6c5ce7;
-}
-
-.modal form {
-    padding: 30px;
-}
-
-.form-group {
-    margin-bottom: 25px;
-}
-
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-}
-
-.form-group label {
-    display: block;
-    color: #ffffff;
-    margin-bottom: 8px;
-    font-weight: 500;
-}
-
-.form-group input,
-.form-group textarea,
-.form-group select {
-    width: 100%;
-    padding: 12px 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    color: #ffffff;
-    font-size: 16px;
-    transition: all 0.3s ease;
-    font-family: 'Inter', sans-serif;
-    position: relative;
-    z-index: 1000;
-}
-
-.form-group select option {
-    background: #1a1a2e;
-    color: #ffffff;
-    padding: 10px;
-}
-
-.form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus {
-    outline: none;
-    border-color: #6c5ce7;
-    box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
-}
-
-.form-group textarea {
-    resize: vertical;
-    min-height: 100px;
-}
-
-.modal-actions {
-    display: flex;
-    gap: 15px;
-    justify-content: flex-end;
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Contact Info Card */
-.contact-info-card {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 15px;
-    padding: 30px;
-    display: grid;
-    gap: 20px;
-}
-
-.info-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.info-item:last-child {
-    border-bottom: none;
-}
-
-.info-item label {
-    color: #6c5ce7;
-    font-weight: 600;
-    min-width: 100px;
-}
-
-.info-item span {
-    color: #b0b0b0;
-    text-align: right;
-}
-
-.empty-state {
-    text-align: center;
-    padding: 60px 20px;
-    color: #888888;
-}
-
-.empty-state i {
-    font-size: 48px;
-    color: #6c5ce7;
-    margin-bottom: 20px;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .admin-content {
-        flex-direction: column;
-    }
-    
-    .admin-sidebar {
-        width: 100%;
-        order: 2;
-    }
-    
-    .admin-main {
-        order: 1;
-    }
-    
-    .admin-menu {
-        flex-direction: row;
-        overflow-x: auto;
-        padding: 0 20px;
-    }
-    
-    .menu-item {
-        white-space: nowrap;
-        border-left: none;
-        border-bottom: 3px solid transparent;
-    }
-    
-    .menu-item:hover,
-    .menu-item.active {
-        border-left: none;
-        border-bottom-color: #6c5ce7;
-    }
-    
-    .form-row {
-        grid-template-columns: 1fr;
-    }
-    
-    .modal-content {
-        width: 95%;
-        margin: 2% auto;
-    }
-}
-
-/* ── Drag & Drop ─────────────────────────────────────────────── */
-.drag-col {
-    width: 36px;
-}
-
-.drag-handle {
-    width: 36px;
-    text-align: center;
-    cursor: grab;
-    color: #6c5ce7;
-    font-size: 15px;
-    user-select: none;
-    transition: color 0.2s, transform 0.15s;
-    padding: 0 8px;
-}
-
-.drag-handle:hover {
-    color: #a29bfe;
-    transform: scale(1.2);
-}
-
-.drag-handle:active { cursor: grabbing; }
-
-.sortable-tbody tr {
-    transition: background 0.15s, opacity 0.15s;
-}
-
-.sortable-tbody tr.drag-over {
-    background: rgba(108, 92, 231, 0.18) !important;
-    outline: 2px dashed #6c5ce7;
-    outline-offset: -2px;
-}
-
-.sortable-tbody tr.dragging {
-    opacity: 0.4;
-}
-
-.header-actions {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-}
-
-.btn-success {
-    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
-    color: #fff;
-    animation: pulse-save 1.6s ease-in-out infinite;
-}
-
-.btn-success:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(46, 204, 113, 0.35);
-    animation: none;
-}
-
-@keyframes pulse-save {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(46,204,113,0.5); }
-    50%       { box-shadow: 0 0 0 6px rgba(46,204,113,0); }
-}
-/* ────────────────────────────────────────────────────────────── */
-.resume-upload-card {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 20px;
-    padding: 40px;
-    max-width: 600px;
-}
-
-.resume-status {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 30px;
-    padding: 16px 20px;
-    border-radius: 12px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-}
-
-.resume-status-icon { font-size: 22px; }
-.resume-status-icon.ok  { color: #2ecc71; }
-.resume-status-icon.missing { color: #e74c3c; }
-.resume-status-text { color: #b0b0b0; font-size: 14px; }
-
-.resume-drop-zone {
-    border: 2px dashed rgba(108,92,231,0.4);
-    border-radius: 14px;
-    padding: 40px 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    color: #b0b0b0;
-}
-
-.resume-drop-zone:hover,
-.resume-drop-zone.drag-over {
-    border-color: #6c5ce7;
-    background: rgba(108,92,231,0.06);
-}
-
-.resume-drop-zone i { font-size: 40px; color: #6c5ce7; margin-bottom: 6px; }
-.resume-drop-zone p { margin: 0; font-size: 15px; }
-.resume-drop-zone span { font-size: 12px; color: #666; }
-.resume-hint { font-size: 11px !important; color: #555 !important; margin-top: 4px; }
-
-.resume-file-name {
-    margin-top: 14px;
-    padding: 10px 16px;
-    background: rgba(108,92,231,0.12);
-    border: 1px solid rgba(108,92,231,0.3);
-    border-radius: 8px;
-    color: #a29bfe;
-    font-size: 13px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.resume-actions {
-    display: flex;
-    gap: 14px;
-    margin-top: 24px;
-    flex-wrap: wrap;
-}
-
-.resume-msg {
-    margin-top: 18px;
-    padding: 12px 18px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 500;
-}
-.resume-msg.success { background: rgba(46,204,113,0.15); color: #2ecc71; border: 1px solid rgba(46,204,113,0.3); }
-.resume-msg.error   { background: rgba(231,76,60,0.15);  color: #e74c3c; border: 1px solid rgba(231,76,60,0.3); }
-</style>
-
 <script>
-// Admin Dashboard JavaScript
-document.addEventListener('DOMContentLoaded', function() {
-    // Menu navigation
-    const menuItems = document.querySelectorAll('.menu-item');
-    const sections = document.querySelectorAll('.admin-section');
-    
-    menuItems.forEach(item => {
-        item.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Remove active class from all items and sections
-            menuItems.forEach(mi => mi.classList.remove('active'));
-            sections.forEach(section => section.classList.remove('active'));
-            
-            // Add active class to clicked item
-            this.classList.add('active');
-            
-            // Show corresponding section
-            const sectionId = this.getAttribute('data-section') + '-section';
-            document.getElementById(sectionId).classList.add('active');
-        });
-    });
-});
-
-// Modal functions
-function openModal(modalId) {
-    document.getElementById(modalId).style.display = 'block';
-}
-
-function closeModal(modalId) {
-    document.getElementById(modalId).style.display = 'none';
-    // Reset form if exists
-    const form = document.querySelector(`#${modalId} form`);
-    if (form) {
-        form.reset();
-        // Clear hidden ID field
-        const idField = form.querySelector('input[type="hidden"]');
-        if (idField) idField.value = '';
-    }
-}
-
-// Close modal when clicking outside
-window.onclick = function(event) {
-    if (event.target.classList.contains('modal')) {
-        event.target.style.display = 'none';
-    }
-}
-
-// CRUD functions (to be implemented with actual API calls)
-function editProject(id) {
-    // Implementation for editing project
-    console.log('Edit project:', id);
-}
-
-function deleteProject(id) {
-    if (confirm('Are you sure you want to delete this project?')) {
-        // Implementation for deleting project
-        console.log('Delete project:', id);
-    }
-}
-
-function editSkill(id) {
-    console.log('Edit skill:', id);
-}
-
-function deleteSkill(id) {
-    if (confirm('Are you sure you want to delete this skill?')) {
-        console.log('Delete skill:', id);
-    }
-}
-
-function editEducation(id) {
-    console.log('Edit education:', id);
-}
-
-function deleteEducation(id) {
-    if (confirm('Are you sure you want to delete this education entry?')) {
-        console.log('Delete education:', id);
-    }
-}
-
-function editCertification(id) {
-    console.log('Edit certification:', id);
-}
-
-function deleteCertification(id) {
-    if (confirm('Are you sure you want to delete this certification?')) {
-        console.log('Delete certification:', id);
-    }
-}
-
-function editContact(id) {
-    console.log('Edit contact:', id);
-}
-
 // ===== Resume Upload =====
 (function () {
     const dropZone   = document.getElementById('resumeDropZone');

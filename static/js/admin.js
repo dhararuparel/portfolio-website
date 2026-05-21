@@ -192,33 +192,15 @@ const api = new AdminAPI();
 // Utility functions
 function showNotification(message, type = 'success') {
     const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.innerHTML = `
-        <div class="notification-content">
-            <span>${message}</span>
-            <button class="notification-close" onclick="this.parentElement.parentElement.remove()">&times;</button>
-        </div>
-    `;
-    
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: ${type === 'success' ? 'rgba(40, 167, 69, 0.9)' : 'rgba(220, 53, 69, 0.9)'};
-        color: white;
-        padding: 15px 20px;
-        border-radius: 10px;
-        z-index: 10001;
-        animation: slideInRight 0.3s ease-out;
-        max-width: 400px;
-    `;
-    
+    document.querySelectorAll('.admin-toast').forEach(n => n.remove());
+    notification.className = `admin-toast ${type === 'error' ? 'error' : 'success'}`;
+    notification.textContent = message;
     document.body.appendChild(notification);
     setTimeout(() => notification.remove(), 5000);
 }
 
 function openModal(modalId) {
-    document.getElementById(modalId).style.display = 'block';
+    document.getElementById(modalId).style.display = 'flex';
 }
 
 function closeModal(modalId) {

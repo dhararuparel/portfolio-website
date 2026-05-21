@@ -96,7 +96,8 @@ body {
 
 .nav-menu {
     display: flex;
-    gap: 30px;
+    align-items: center;
+    gap: 28px;
 }
 
 .nav-link {
@@ -133,13 +134,13 @@ body {
 .nav-actions {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-left: 8px;
+    gap: 28px;
 }
 
 .nav-right {
     display: flex;
     align-items: center;
+    gap: 28px;
 }
 
 /* Theme toggle button */
@@ -1178,8 +1179,10 @@ section {
         display: none;
     }
     
+    .nav-right,
+    .nav-menu,
     .nav-actions {
-        gap: 8px;
+        gap: 20px;
     }
 
     .btn-resume span {
