@@ -587,14 +587,7 @@ window.onclick = function(event) {
         internships:    '/api/internships/reorder',
     };
 
-    let dragSrc = null;
     const reorderState = {};
-
-    function getRow(el) {
-        // Walk up to find the <tr>
-        while (el && el.tagName !== 'TR') el = el.parentElement;
-        return el;
-    }
 
     function getTbodyName(tbody) {
         return tbody.id.replace('-tbody', '');
@@ -602,62 +595,66 @@ window.onclick = function(event) {
 
     function attachDragListeners(tbody) {
         const name = getTbodyName(tbody);
-        const rows = tbody.querySelectorAll('tr');
-        rows.forEach((row) => {
+        if (typeof Sortable !== 'undefined') {
+            Sortable.create(tbody, {
+                animation: 180,
+                handle: '.drag-handle',
+                draggable: 'tr[data-id]',
+                ghostClass: 'drag-over',
+                chosenClass: 'dragging',
+                onEnd: function (evt) {
+                    if (evt.oldIndex !== evt.newIndex) {
+                        window.saveOrder(name, true);
+                    }
+                }
+            });
+            return;
+        }
+
+        // Fallback when CDN/library is unavailable.
+        let dragSrc = null;
+        const getRow = (el) => {
+            while (el && el.tagName !== 'TR') el = el.parentElement;
+            return el;
+        };
+
+        tbody.querySelectorAll('tr[data-id]').forEach((row) => {
             row.draggable = true;
         });
 
         tbody.addEventListener('dragstart', function (e) {
-            const row = getRow(e.target);
-            if (!row) { e.preventDefault(); return; }
+            const handle = e.target.closest('.drag-handle');
+            if (!handle) {
+                e.preventDefault();
+                return;
+            }
+            const row = getRow(handle);
+            if (!row) {
+                e.preventDefault();
+                return;
+            }
             dragSrc = row;
             row.classList.add('dragging');
             e.dataTransfer.effectAllowed = 'move';
             e.dataTransfer.setData('text/plain', row.dataset.id || '');
         });
 
-        tbody.addEventListener('dragend', function (e) {
-            const row = getRow(e.target);
-            if (row) { row.classList.remove('dragging'); }
-            tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
-            dragSrc = null;
-        });
-
         tbody.addEventListener('dragover', function (e) {
             e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-            const row = getRow(e.target);
-            if (row && row !== dragSrc) {
-                tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
-                row.classList.add('drag-over');
-            }
-        });
-
-        tbody.addEventListener('dragleave', function (e) {
-            // Only clear if leaving the tbody entirely
-            if (!tbody.contains(e.relatedTarget)) {
-                tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
-            }
-        });
-
-        tbody.addEventListener('drop', function (e) {
-            e.preventDefault();
             const targetRow = getRow(e.target);
-            tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
-
-            if (!dragSrc || !targetRow || dragSrc === targetRow) return;
-
-            const rows    = [...tbody.querySelectorAll('tr')];
-            const srcIdx  = rows.indexOf(dragSrc);
-            const tgtIdx  = rows.indexOf(targetRow);
-
-            if (srcIdx < tgtIdx) {
-                tbody.insertBefore(dragSrc, targetRow.nextSibling);
-            } else {
+            if (!dragSrc || !targetRow || targetRow === dragSrc) return;
+            const rect = targetRow.getBoundingClientRect();
+            const insertBefore = e.clientY < rect.top + rect.height / 2;
+            if (insertBefore) {
                 tbody.insertBefore(dragSrc, targetRow);
+            } else {
+                tbody.insertBefore(dragSrc, targetRow.nextSibling);
             }
+        });
 
-            // Auto-save order after every drop.
+        tbody.addEventListener('dragend', function () {
+            if (dragSrc) dragSrc.classList.remove('dragging');
+            dragSrc = null;
             window.saveOrder(name, true);
         });
     }

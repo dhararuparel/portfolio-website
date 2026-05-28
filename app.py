@@ -6,6 +6,7 @@ from datetime import datetime
 from dotenv import load_dotenv
 import requests
 import os
+import io
 
 load_dotenv()
 
@@ -91,6 +92,13 @@ class Contact(db.Model):
     email = db.Column(db.String(100), nullable=False)
     location = db.Column(db.String(100), nullable=False)
     linkedin = db.Column(db.String(200))
+
+class ResumeFile(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.String(255), nullable=False, default='Dhara_Ruparel_Resume.pdf')
+    content_type = db.Column(db.String(100), nullable=False, default='application/pdf')
+    data = db.Column(db.LargeBinary, nullable=False)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 # Routes
 @app.route('/')
@@ -533,6 +541,16 @@ def reorder_internships():
 @app.route('/resume/download')
 def download_resume():
     """Serve the resume PDF with forced download headers."""
+    resume_blob = ResumeFile.query.order_by(ResumeFile.updated_at.desc(), ResumeFile.id.desc()).first()
+    if resume_blob and resume_blob.data:
+        return send_file(
+            io.BytesIO(resume_blob.data),
+            mimetype=resume_blob.content_type or 'application/pdf',
+            as_attachment=True,
+            download_name='Dhara_Ruparel_Resume.pdf'
+        )
+
+    # Backward compatibility for previously disk-based deployments.
     resume_path = os.path.join(app.root_path, 'static', 'Dhara_Ruparel_Resume.pdf')
     if not os.path.isfile(resume_path):
         return "Resume not found. Please upload it via the admin panel.", 404
@@ -560,14 +578,29 @@ def upload_resume():
     if not file.filename.lower().endswith('.pdf'):
         return jsonify({'error': 'Only PDF files are allowed'}), 400
 
-    static_dir = os.path.join(app.root_path, 'static')
-    save_path = os.path.join(static_dir, 'Dhara_Ruparel_Resume.pdf')
-
     try:
-        os.makedirs(static_dir, exist_ok=True)
-        file.save(save_path)
+        pdf_bytes = file.read()
+        if not pdf_bytes:
+            return jsonify({'error': 'Uploaded file is empty'}), 400
+
+        resume_blob = ResumeFile.query.first()
+        if not resume_blob:
+            resume_blob = ResumeFile(
+                filename='Dhara_Ruparel_Resume.pdf',
+                content_type='application/pdf',
+                data=pdf_bytes
+            )
+            db.session.add(resume_blob)
+        else:
+            resume_blob.filename = 'Dhara_Ruparel_Resume.pdf'
+            resume_blob.content_type = 'application/pdf'
+            resume_blob.data = pdf_bytes
+            resume_blob.updated_at = datetime.utcnow()
+
+        db.session.commit()
         return jsonify({'message': 'Resume uploaded successfully'})
     except Exception as e:
+        db.session.rollback()
         return jsonify({'error': f'Could not save file: {str(e)}'}), 500
 
 
@@ -582,6 +615,13 @@ def file_too_large(_error):
 def resume_status():
     if 'admin_logged_in' not in session:
         return jsonify({'error': 'Unauthorized'}), 401
+
+    resume_blob = ResumeFile.query.order_by(ResumeFile.updated_at.desc(), ResumeFile.id.desc()).first()
+    if resume_blob and resume_blob.data:
+        last_updated = resume_blob.updated_at.strftime('%d %b %Y, %H:%M') if resume_blob.updated_at else None
+        return jsonify({'exists': True, 'last_updated': last_updated})
+
+    # Backward compatibility for previously disk-based deployments.
     path = os.path.join(app.root_path, 'static', 'Dhara_Ruparel_Resume.pdf')
     exists = os.path.isfile(path)
     mtime = None
