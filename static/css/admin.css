@@ -17,6 +17,7 @@
 
 .admin-container {
     min-height: 100vh;
+    font-size: 17px;
     background: var(--admin-bg);
     background-image:
         radial-gradient(ellipse 80% 50% at 20% -10%, rgba(108, 92, 231, 0.18), transparent),

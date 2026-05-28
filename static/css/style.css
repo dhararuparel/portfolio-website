@@ -60,6 +60,7 @@ body.light-mode {
 
 body {
     font-family: 'Inter', sans-serif;
+    font-size: 17px;
     background: var(--bg-primary);
     color: var(--text-primary);
     line-height: 1.6;
@@ -528,7 +529,19 @@ section {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 60px;
-    align-items: center;
+    align-items: start;
+}
+
+.about-image {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+}
+
+.about-text {
+    width: 100%;
+    max-width: 640px;
 }
 
 .about-text p {
@@ -539,16 +552,19 @@ section {
 }
 
 .about-stats {
-    display: flex;
-    gap: 30px;
-    margin-bottom: 30px;
-    justify-content: center;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(120px, 1fr));
+    gap: 16px;
+    margin-bottom: 0;
+    width: 100%;
 }
 
 .stat {
     text-align: center;
-    min-width: 120px;
+    min-height: 126px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .stat h3 {
@@ -571,7 +587,13 @@ section {
     backdrop-filter: blur(10px);
     border: 1px solid var(--border-color);
     border-radius: 20px;
-    padding: 30px;
+    padding: 24px;
+    width: 100%;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .about-card h4 {
@@ -580,11 +602,17 @@ section {
     font-size: 1.2rem;
 }
 
+.languages {
+    width: 100%;
+    text-align: center;
+}
+
 .language-list {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 10px;
-    margin-bottom: 30px;
+    margin-bottom: 0;
 }
 
 .language-tag {
@@ -1340,8 +1368,12 @@ section {
         gap: 40px;
     }
     
+    .about-text {
+        max-width: 100%;
+    }
+
     .about-stats {
-        justify-content: center;
+        grid-template-columns: 1fr;
     }
     
     .projects-grid,

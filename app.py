@@ -11,6 +11,7 @@ load_dotenv()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-secret-key-here')
+app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  # 10 MB
 
 # Render uses 'postgres://' but SQLAlchemy requires 'postgresql://'
 db_url = os.getenv('DATABASE_URL', 'postgresql://postgres:dhara16@localhost/portfolio_db')
@@ -559,9 +560,22 @@ def upload_resume():
     if not file.filename.lower().endswith('.pdf'):
         return jsonify({'error': 'Only PDF files are allowed'}), 400
 
-    save_path = os.path.join(app.root_path, 'static', 'Dhara_Ruparel_Resume.pdf')
-    file.save(save_path)
-    return jsonify({'message': 'Resume uploaded successfully'})
+    static_dir = os.path.join(app.root_path, 'static')
+    save_path = os.path.join(static_dir, 'Dhara_Ruparel_Resume.pdf')
+
+    try:
+        os.makedirs(static_dir, exist_ok=True)
+        file.save(save_path)
+        return jsonify({'message': 'Resume uploaded successfully'})
+    except Exception as e:
+        return jsonify({'error': f'Could not save file: {str(e)}'}), 500
+
+
+@app.errorhandler(413)
+def file_too_large(_error):
+    if request.path.startswith('/api/'):
+        return jsonify({'error': 'File is too large. Maximum size is 10 MB.'}), 413
+    return 'File is too large. Maximum size is 10 MB.', 413
 
 
 @app.route('/api/resume/status', methods=['GET'])

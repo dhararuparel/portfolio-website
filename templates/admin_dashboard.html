@@ -75,25 +75,6 @@
 
         <!-- Main Content -->
         <main class="admin-main">
-            <div class="admin-stats">
-                <div class="stat-pill">
-                    <div class="stat-value">{{ projects|length }}</div>
-                    <div class="stat-label">Projects</div>
-                </div>
-                <div class="stat-pill">
-                    <div class="stat-value">{{ skills|length }}</div>
-                    <div class="stat-label">Skills</div>
-                </div>
-                <div class="stat-pill">
-                    <div class="stat-value">{{ internships|length }}</div>
-                    <div class="stat-label">Internships</div>
-                </div>
-                <div class="stat-pill">
-                    <div class="stat-value">{{ certifications|length }}</div>
-                    <div class="stat-label">Certs</div>
-                </div>
-            </div>
-
             <!-- Projects Section -->
             <section id="projects-section" class="admin-section active">
                 <div class="section-header">
@@ -723,6 +704,11 @@
             showMsg('Only PDF files are allowed.', 'error');
             return;
         }
+        if (file.size > 10 * 1024 * 1024) {
+            showMsg('File is too large. Maximum size is 10 MB.', 'error');
+            uploadBtn.disabled = true;
+            return;
+        }
         fileNameEl.innerHTML = '<i class="fas fa-file-pdf"></i> ' + file.name;
         fileNameEl.style.display = 'flex';
         uploadBtn.disabled = false;
@@ -745,7 +731,13 @@
 
         try {
             const res = await fetch('/api/resume/upload', { method: 'POST', body: fd });
-            const data = await res.json();
+            let data = {};
+            try {
+                data = await res.json();
+            } catch (_) {
+                // Non-JSON responses can happen for proxy/server-side upload failures.
+                data = { error: `Upload failed (HTTP ${res.status}).` };
+            }
             if (res.ok) {
                 showMsg('Resume uploaded successfully!', 'success');
                 statusIcon.innerHTML = '<i class="fas fa-check-circle"></i>';

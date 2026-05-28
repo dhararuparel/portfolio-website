@@ -588,6 +588,7 @@ window.onclick = function(event) {
     };
 
     let dragSrc = null;
+    const reorderState = {};
 
     function getRow(el) {
         // Walk up to find the <tr>
@@ -601,23 +602,14 @@ window.onclick = function(event) {
 
     function attachDragListeners(tbody) {
         const name = getTbodyName(tbody);
-
-        // Make rows draggable only when mousedown is on the handle
-        tbody.addEventListener('mousedown', function (e) {
-            const handle = e.target.closest('.drag-handle');
-            if (!handle) {
-                // Disable dragging if not clicking the handle
-                const row = getRow(e.target);
-                if (row) row.draggable = false;
-                return;
-            }
-            const row = getRow(handle);
-            if (row) row.draggable = true;
+        const rows = tbody.querySelectorAll('tr');
+        rows.forEach((row) => {
+            row.draggable = true;
         });
 
         tbody.addEventListener('dragstart', function (e) {
             const row = getRow(e.target);
-            if (!row || !row.draggable) { e.preventDefault(); return; }
+            if (!row) { e.preventDefault(); return; }
             dragSrc = row;
             row.classList.add('dragging');
             e.dataTransfer.effectAllowed = 'move';
@@ -626,7 +618,7 @@ window.onclick = function(event) {
 
         tbody.addEventListener('dragend', function (e) {
             const row = getRow(e.target);
-            if (row) { row.classList.remove('dragging'); row.draggable = false; }
+            if (row) { row.classList.remove('dragging'); }
             tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
             dragSrc = null;
         });
@@ -665,9 +657,8 @@ window.onclick = function(event) {
                 tbody.insertBefore(dragSrc, targetRow);
             }
 
-            // Show Save Order button
-            const saveBtn = document.getElementById(`save-order-${name}`);
-            if (saveBtn) saveBtn.style.display = 'inline-flex';
+            // Auto-save order after every drop.
+            window.saveOrder(name, true);
         });
     }
 
@@ -677,7 +668,12 @@ window.onclick = function(event) {
     });
 
     // Global saveOrder called by Save Order buttons
-    window.saveOrder = async function (name) {
+    window.saveOrder = async function (name, isAutoSave = false) {
+        if (reorderState[name]?.isSaving) {
+            reorderState[name].queued = true;
+            return;
+        }
+
         const tbody = document.getElementById(`${name}-tbody`);
         if (!tbody) return;
 
@@ -691,6 +687,7 @@ window.onclick = function(event) {
         if (!url) return;
 
         const saveBtn = document.getElementById(`save-order-${name}`);
+        reorderState[name] = { isSaving: true, queued: false };
         if (saveBtn) { saveBtn.disabled = true; saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...'; }
 
         try {
@@ -701,15 +698,27 @@ window.onclick = function(event) {
             });
             const data = await res.json();
             if (res.ok) {
-                showNotification(`${name.charAt(0).toUpperCase() + name.slice(1)} order saved!`, 'success');
+                if (isAutoSave) {
+                    showNotification(`${name.charAt(0).toUpperCase() + name.slice(1)} order auto-saved!`, 'success');
+                } else {
+                    showNotification(`${name.charAt(0).toUpperCase() + name.slice(1)} order saved!`, 'success');
+                }
                 if (saveBtn) saveBtn.style.display = 'none';
             } else {
                 showNotification('Error saving order: ' + (data.error || 'Unknown error'), 'error');
+                if (saveBtn) saveBtn.style.display = 'inline-flex';
             }
         } catch (err) {
             showNotification('Network error saving order.', 'error');
+            if (saveBtn) saveBtn.style.display = 'inline-flex';
         } finally {
+            const shouldSaveAgain = reorderState[name]?.queued;
+            reorderState[name] = { isSaving: false, queued: false };
             if (saveBtn) { saveBtn.disabled = false; saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Order'; }
+
+            if (shouldSaveAgain) {
+                window.saveOrder(name, true);
+            }
         }
     };
 })();
