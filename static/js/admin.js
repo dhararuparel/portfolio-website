@@ -587,172 +587,156 @@ window.onclick = function(event) {
         internships:    '/api/internships/reorder',
     };
 
-    // inject DnD styles
+    // Inject DnD styles
     const dndStyle = document.createElement('style');
     dndStyle.textContent = `
-        .drag-handle { cursor: grab; user-select: none; touch-action: none; color: #6c5ce7; }
-        .drag-handle:hover { color: #a29bfe; transform: scale(1.2); }
-        .drag-handle:active { cursor: grabbing; }
-        .dnd-dragging { opacity: 0.35; }
-        .dnd-over { outline: 2px dashed #6c5ce7; outline-offset: -2px; background: rgba(108,92,231,0.12) !important; }
+        .drag-handle { cursor: grab !important; user-select: none; touch-action: none; color: #6c5ce7; padding: 0 8px; }
+        .drag-handle:hover { color: #a29bfe; }
+        .dnd-dragging { opacity: 0.35 !important; }
+        .dnd-over td { background: rgba(108,92,231,0.18) !important; }
         .dnd-ghost {
             position: fixed; pointer-events: none; z-index: 99999;
-            background: #1a1a2e; border: 1px solid #6c5ce7; border-radius: 8px;
-            padding: 8px 16px; color: #fff; font-size: 13px; font-family: Inter,sans-serif;
-            box-shadow: 0 8px 32px rgba(108,92,231,0.4);
-            white-space: nowrap; max-width: 280px; overflow: hidden; text-overflow: ellipsis;
+            background: #1a1a2e; border: 1.5px solid #6c5ce7; border-radius: 8px;
+            padding: 8px 18px; color: #fff; font-size: 13px; font-family: Inter,sans-serif;
+            box-shadow: 0 8px 32px rgba(108,92,231,0.45); white-space: nowrap;
+            max-width: 300px; overflow: hidden; text-overflow: ellipsis;
         }
     `;
     document.head.appendChild(dndStyle);
 
-    let drag = null;  // active drag state
+    let drag = null;
     let overRow = null;
 
-    // pointerdown on a handle → start drag
+    function positionGhost(x, y) {
+        if (!drag) return;
+        drag.ghost.style.left = (x + 18) + 'px';
+        drag.ghost.style.top  = (y - 14) + 'px';
+    }
+
+    function cleanup() {
+        if (!drag) return;
+        drag.ghost.remove();
+        drag.row.classList.remove('dnd-dragging');
+        drag.handle.releasePointerCapture(drag.pointerId);
+        drag = null;
+        if (overRow) { overRow.classList.remove('dnd-over'); overRow = null; }
+    }
+
+    // Use event delegation on document for pointerdown
     document.addEventListener('pointerdown', function (e) {
         const handle = e.target.closest('.drag-handle');
         if (!handle) return;
+
         const row   = handle.closest('tr[data-id]');
         const tbody = handle.closest('tbody.sortable-tbody');
         if (!row || !tbody) return;
 
         e.preventDefault();
-        handle.setPointerCapture(e.pointerId);
+        e.stopPropagation();
 
-        // ghost label = first non-empty cell text after the handle cell
+        // Build ghost
         const cells = [...row.querySelectorAll('td')].slice(1);
         const label = cells.map(c => c.textContent.trim()).find(t => t) || 'Row';
         const ghost = document.createElement('div');
         ghost.className = 'dnd-ghost';
-        ghost.textContent = '\u283f  ' + label;
+        ghost.textContent = '⠿  ' + label;
         document.body.appendChild(ghost);
 
         row.classList.add('dnd-dragging');
-        drag = { row, tbody, name: tbody.id.replace('-tbody',''), ghost, id: e.pointerId };
-        positionGhost(e.clientX, e.clientY);
-    });
 
-    // pointermove → update ghost + highlight target row
+        drag = {
+            row, tbody, handle,
+            name: tbody.id.replace('-tbody', ''),
+            ghost,
+            pointerId: e.pointerId,
+        };
+
+        // Capture pointer on the DOCUMENT so move/up fire even when cursor moves fast
+        try { handle.setPointerCapture(e.pointerId); } catch(_) {}
+
+        positionGhost(e.clientX, e.clientY);
+    }, true);
+
     document.addEventListener('pointermove', function (e) {
         if (!drag) return;
         e.preventDefault();
         positionGhost(e.clientX, e.clientY);
 
-        // hide ghost to hit-test underneath
-        drag.ghost.style.display = 'none';
+        // Temporarily hide ghost to hit-test what's under the cursor
+        drag.ghost.style.visibility = 'hidden';
         const el = document.elementFromPoint(e.clientX, e.clientY);
-        drag.ghost.style.display = '';
+        drag.ghost.style.visibility = '';
 
-        const target = el && el.closest('tr[data-id]');
+        if (overRow) { overRow.classList.remove('dnd-over'); overRow = null; }
 
-        if (overRow && overRow !== drag.row) overRow.classList.remove('dnd-over');
-        overRow = null;
-
+        if (!el) return;
+        const target = el.closest('tr[data-id]');
         if (target && target !== drag.row && target.closest('tbody') === drag.tbody) {
             target.classList.add('dnd-over');
             overRow = target;
         }
-    });
+    }, true);
 
-    // pointerup → commit reorder
     document.addEventListener('pointerup', function (e) {
         if (!drag) return;
 
-        drag.ghost.remove();
-        drag.row.classList.remove('dnd-dragging');
-        if (overRow) overRow.classList.remove('dnd-over');
-
         const target = overRow;
         const { row, tbody, name } = drag;
-        drag = null; overRow = null;
+        cleanup();
 
         if (!target || target === row) return;
 
-        // insert row before/after target based on vertical position
-        const rect = target.getBoundingClientRect();
+        // Insert above or below based on cursor position
+        const rect  = target.getBoundingClientRect();
         const after = e.clientY > rect.top + rect.height / 2;
         tbody.insertBefore(row, after ? target.nextSibling : target);
 
-        // flash moved row
-        row.style.transition = 'background 0.4s';
-        row.style.background = 'rgba(108,92,231,0.2)';
-        setTimeout(() => { row.style.background = ''; }, 500);
+        // Flash confirmation
+        row.style.transition = 'background 0.5s';
+        row.style.background = 'rgba(108,92,231,0.25)';
+        setTimeout(() => { row.style.background = ''; row.style.transition = ''; }, 600);
 
-        // show Save Order button
+        // Show Save Order button
         const btn = document.getElementById('save-order-' + name);
         if (btn) btn.style.display = 'inline-flex';
-    });
+    }, true);
 
-    // Escape cancels drag
+    document.addEventListener('pointercancel', function () { cleanup(); }, true);
+
     document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && drag) {
-            drag.ghost.remove();
-            drag.row.classList.remove('dnd-dragging');
-            if (overRow) { overRow.classList.remove('dnd-over'); overRow = null; }
-            drag = null;
-        }
+        if (e.key === 'Escape') cleanup();
     });
 
-    function positionGhost(x, y) {
-        if (!drag) return;
-        drag.ghost.style.left = (x + 16) + 'px';
-        drag.ghost.style.top  = (y - 12) + 'px';
-    }
+    const saving = {};
 
-    const reorderState = {};
-
-    // Global saveOrder called by Save Order buttons
-    window.saveOrder = async function (name, isAutoSave = false) {
-        if (reorderState[name]?.isSaving) {
-            reorderState[name].queued = true;
-            return;
-        }
-
-        const tbody = document.getElementById(`${name}-tbody`);
+    window.saveOrder = async function (name) {
+        const tbody = document.getElementById(name + '-tbody');
         if (!tbody) return;
 
         const rows    = [...tbody.querySelectorAll('tr[data-id]')];
-        const payload = rows.map((row, idx) => ({
-            id:    parseInt(row.dataset.id, 10),
-            order: idx + 1,
-        }));
-
-        const url = REORDER_URLS[name];
+        const payload = rows.map((r, i) => ({ id: parseInt(r.dataset.id, 10), order: i + 1 }));
+        const url     = REORDER_URLS[name];
         if (!url) return;
 
-        const saveBtn = document.getElementById(`save-order-${name}`);
-        reorderState[name] = { isSaving: true, queued: false };
-        if (saveBtn) { saveBtn.disabled = true; saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...'; }
+        const btn = document.getElementById('save-order-' + name);
+        if (saving[name]) return;
+        saving[name] = true;
+        if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...'; }
 
         try {
-            const res  = await fetch(url, {
-                method:  'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body:    JSON.stringify(payload),
-            });
+            const res  = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
             const data = await res.json();
             if (res.ok) {
-                if (isAutoSave) {
-                    showNotification(`${name.charAt(0).toUpperCase() + name.slice(1)} order auto-saved!`, 'success');
-                } else {
-                    showNotification(`${name.charAt(0).toUpperCase() + name.slice(1)} order saved!`, 'success');
-                }
-                if (saveBtn) saveBtn.style.display = 'none';
+                showNotification(name.charAt(0).toUpperCase() + name.slice(1) + ' order saved!', 'success');
+                if (btn) btn.style.display = 'none';
             } else {
-                showNotification('Error saving order: ' + (data.error || 'Unknown error'), 'error');
-                if (saveBtn) saveBtn.style.display = 'inline-flex';
+                showNotification('Error: ' + (data.error || 'Unknown'), 'error');
             }
         } catch (err) {
             showNotification('Network error saving order.', 'error');
-            if (saveBtn) saveBtn.style.display = 'inline-flex';
         } finally {
-            const shouldSaveAgain = reorderState[name]?.queued;
-            reorderState[name] = { isSaving: false, queued: false };
-            if (saveBtn) { saveBtn.disabled = false; saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Order'; }
-
-            if (shouldSaveAgain) {
-                window.saveOrder(name, true);
-            }
+            saving[name] = false;
+            if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Order'; }
         }
     };
 })();
