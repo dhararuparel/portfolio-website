@@ -576,7 +576,7 @@ window.onclick = function(event) {
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  DRAG-AND-DROP ROW REORDERING
+//  DRAG-AND-DROP ROW REORDERING  (pointer events — no HTML5 drag)
 // ═══════════════════════════════════════════════════════════════
 (function () {
     const REORDER_URLS = {
@@ -587,82 +587,119 @@ window.onclick = function(event) {
         internships:    '/api/internships/reorder',
     };
 
-    const reorderState = {};
-
-    function getTbodyName(tbody) {
-        return tbody.id.replace('-tbody', '');
-    }
-
-    function attachDragListeners(tbody) {
-        const name = getTbodyName(tbody);
-        if (typeof Sortable !== 'undefined') {
-            Sortable.create(tbody, {
-                animation: 180,
-                handle: '.drag-handle',
-                draggable: 'tr[data-id]',
-                ghostClass: 'drag-over',
-                chosenClass: 'dragging',
-                onEnd: function (evt) {
-                    if (evt.oldIndex !== evt.newIndex) {
-                        window.saveOrder(name, true);
-                    }
-                }
-            });
-            return;
+    // inject DnD styles
+    const dndStyle = document.createElement('style');
+    dndStyle.textContent = `
+        .drag-handle { cursor: grab; user-select: none; touch-action: none; color: #6c5ce7; }
+        .drag-handle:hover { color: #a29bfe; transform: scale(1.2); }
+        .drag-handle:active { cursor: grabbing; }
+        .dnd-dragging { opacity: 0.35; }
+        .dnd-over { outline: 2px dashed #6c5ce7; outline-offset: -2px; background: rgba(108,92,231,0.12) !important; }
+        .dnd-ghost {
+            position: fixed; pointer-events: none; z-index: 99999;
+            background: #1a1a2e; border: 1px solid #6c5ce7; border-radius: 8px;
+            padding: 8px 16px; color: #fff; font-size: 13px; font-family: Inter,sans-serif;
+            box-shadow: 0 8px 32px rgba(108,92,231,0.4);
+            white-space: nowrap; max-width: 280px; overflow: hidden; text-overflow: ellipsis;
         }
+    `;
+    document.head.appendChild(dndStyle);
 
-        // Fallback when CDN/library is unavailable.
-        let dragSrc = null;
-        const getRow = (el) => {
-            while (el && el.tagName !== 'TR') el = el.parentElement;
-            return el;
-        };
+    let drag = null;  // active drag state
+    let overRow = null;
 
-        tbody.querySelectorAll('tr[data-id]').forEach((row) => {
-            row.draggable = true;
-        });
+    // pointerdown on a handle → start drag
+    document.addEventListener('pointerdown', function (e) {
+        const handle = e.target.closest('.drag-handle');
+        if (!handle) return;
+        const row   = handle.closest('tr[data-id]');
+        const tbody = handle.closest('tbody.sortable-tbody');
+        if (!row || !tbody) return;
 
-        tbody.addEventListener('dragstart', function (e) {
-            const handle = e.target.closest('.drag-handle');
-            if (!handle) {
-                e.preventDefault();
-                return;
-            }
-            const row = getRow(handle);
-            if (!row) {
-                e.preventDefault();
-                return;
-            }
-            dragSrc = row;
-            row.classList.add('dragging');
-            e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/plain', row.dataset.id || '');
-        });
+        e.preventDefault();
+        handle.setPointerCapture(e.pointerId);
 
-        tbody.addEventListener('dragover', function (e) {
-            e.preventDefault();
-            const targetRow = getRow(e.target);
-            if (!dragSrc || !targetRow || targetRow === dragSrc) return;
-            const rect = targetRow.getBoundingClientRect();
-            const insertBefore = e.clientY < rect.top + rect.height / 2;
-            if (insertBefore) {
-                tbody.insertBefore(dragSrc, targetRow);
-            } else {
-                tbody.insertBefore(dragSrc, targetRow.nextSibling);
-            }
-        });
+        // ghost label = first non-empty cell text after the handle cell
+        const cells = [...row.querySelectorAll('td')].slice(1);
+        const label = cells.map(c => c.textContent.trim()).find(t => t) || 'Row';
+        const ghost = document.createElement('div');
+        ghost.className = 'dnd-ghost';
+        ghost.textContent = '\u283f  ' + label;
+        document.body.appendChild(ghost);
 
-        tbody.addEventListener('dragend', function () {
-            if (dragSrc) dragSrc.classList.remove('dragging');
-            dragSrc = null;
-            window.saveOrder(name, true);
-        });
+        row.classList.add('dnd-dragging');
+        drag = { row, tbody, name: tbody.id.replace('-tbody',''), ghost, id: e.pointerId };
+        positionGhost(e.clientX, e.clientY);
+    });
+
+    // pointermove → update ghost + highlight target row
+    document.addEventListener('pointermove', function (e) {
+        if (!drag) return;
+        e.preventDefault();
+        positionGhost(e.clientX, e.clientY);
+
+        // hide ghost to hit-test underneath
+        drag.ghost.style.display = 'none';
+        const el = document.elementFromPoint(e.clientX, e.clientY);
+        drag.ghost.style.display = '';
+
+        const target = el && el.closest('tr[data-id]');
+
+        if (overRow && overRow !== drag.row) overRow.classList.remove('dnd-over');
+        overRow = null;
+
+        if (target && target !== drag.row && target.closest('tbody') === drag.tbody) {
+            target.classList.add('dnd-over');
+            overRow = target;
+        }
+    });
+
+    // pointerup → commit reorder
+    document.addEventListener('pointerup', function (e) {
+        if (!drag) return;
+
+        drag.ghost.remove();
+        drag.row.classList.remove('dnd-dragging');
+        if (overRow) overRow.classList.remove('dnd-over');
+
+        const target = overRow;
+        const { row, tbody, name } = drag;
+        drag = null; overRow = null;
+
+        if (!target || target === row) return;
+
+        // insert row before/after target based on vertical position
+        const rect = target.getBoundingClientRect();
+        const after = e.clientY > rect.top + rect.height / 2;
+        tbody.insertBefore(row, after ? target.nextSibling : target);
+
+        // flash moved row
+        row.style.transition = 'background 0.4s';
+        row.style.background = 'rgba(108,92,231,0.2)';
+        setTimeout(() => { row.style.background = ''; }, 500);
+
+        // show Save Order button
+        const btn = document.getElementById('save-order-' + name);
+        if (btn) btn.style.display = 'inline-flex';
+    });
+
+    // Escape cancels drag
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && drag) {
+            drag.ghost.remove();
+            drag.row.classList.remove('dnd-dragging');
+            if (overRow) { overRow.classList.remove('dnd-over'); overRow = null; }
+            drag = null;
+        }
+    });
+
+    function positionGhost(x, y) {
+        if (!drag) return;
+        drag.ghost.style.left = (x + 16) + 'px';
+        drag.ghost.style.top  = (y - 12) + 'px';
     }
 
-    // Attach to all sortable tbodies on load
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.sortable-tbody').forEach(attachDragListeners);
-    });
+    const reorderState = {};
 
     // Global saveOrder called by Save Order buttons
     window.saveOrder = async function (name, isAutoSave = false) {

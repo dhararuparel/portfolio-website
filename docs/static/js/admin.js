@@ -192,33 +192,15 @@ const api = new AdminAPI();
 // Utility functions
 function showNotification(message, type = 'success') {
     const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.innerHTML = `
-        <div class="notification-content">
-            <span>${message}</span>
-            <button class="notification-close" onclick="this.parentElement.parentElement.remove()">&times;</button>
-        </div>
-    `;
-    
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: ${type === 'success' ? 'rgba(40, 167, 69, 0.9)' : 'rgba(220, 53, 69, 0.9)'};
-        color: white;
-        padding: 15px 20px;
-        border-radius: 10px;
-        z-index: 10001;
-        animation: slideInRight 0.3s ease-out;
-        max-width: 400px;
-    `;
-    
+    document.querySelectorAll('.admin-toast').forEach(n => n.remove());
+    notification.className = `admin-toast ${type === 'error' ? 'error' : 'success'}`;
+    notification.textContent = message;
     document.body.appendChild(notification);
     setTimeout(() => notification.remove(), 5000);
 }
 
 function openModal(modalId) {
-    document.getElementById(modalId).style.display = 'block';
+    document.getElementById(modalId).style.display = 'flex';
 }
 
 function closeModal(modalId) {
@@ -594,7 +576,7 @@ window.onclick = function(event) {
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  DRAG-AND-DROP ROW REORDERING
+//  DRAG-AND-DROP ROW REORDERING  (pointer events — no HTML5 drag)
 // ═══════════════════════════════════════════════════════════════
 (function () {
     const REORDER_URLS = {
@@ -605,97 +587,127 @@ window.onclick = function(event) {
         internships:    '/api/internships/reorder',
     };
 
-    let dragSrc = null;
+    // inject DnD styles
+    const dndStyle = document.createElement('style');
+    dndStyle.textContent = `
+        .drag-handle { cursor: grab; user-select: none; touch-action: none; color: #6c5ce7; }
+        .drag-handle:hover { color: #a29bfe; transform: scale(1.2); }
+        .drag-handle:active { cursor: grabbing; }
+        .dnd-dragging { opacity: 0.35; }
+        .dnd-over { outline: 2px dashed #6c5ce7; outline-offset: -2px; background: rgba(108,92,231,0.12) !important; }
+        .dnd-ghost {
+            position: fixed; pointer-events: none; z-index: 99999;
+            background: #1a1a2e; border: 1px solid #6c5ce7; border-radius: 8px;
+            padding: 8px 16px; color: #fff; font-size: 13px; font-family: Inter,sans-serif;
+            box-shadow: 0 8px 32px rgba(108,92,231,0.4);
+            white-space: nowrap; max-width: 280px; overflow: hidden; text-overflow: ellipsis;
+        }
+    `;
+    document.head.appendChild(dndStyle);
 
-    function getRow(el) {
-        // Walk up to find the <tr>
-        while (el && el.tagName !== 'TR') el = el.parentElement;
-        return el;
-    }
+    let drag = null;  // active drag state
+    let overRow = null;
 
-    function getTbodyName(tbody) {
-        return tbody.id.replace('-tbody', '');
-    }
+    // pointerdown on a handle → start drag
+    document.addEventListener('pointerdown', function (e) {
+        const handle = e.target.closest('.drag-handle');
+        if (!handle) return;
+        const row   = handle.closest('tr[data-id]');
+        const tbody = handle.closest('tbody.sortable-tbody');
+        if (!row || !tbody) return;
 
-    function attachDragListeners(tbody) {
-        const name = getTbodyName(tbody);
+        e.preventDefault();
+        handle.setPointerCapture(e.pointerId);
 
-        // Make rows draggable only when mousedown is on the handle
-        tbody.addEventListener('mousedown', function (e) {
-            const handle = e.target.closest('.drag-handle');
-            if (!handle) {
-                // Disable dragging if not clicking the handle
-                const row = getRow(e.target);
-                if (row) row.draggable = false;
-                return;
-            }
-            const row = getRow(handle);
-            if (row) row.draggable = true;
-        });
+        // ghost label = first non-empty cell text after the handle cell
+        const cells = [...row.querySelectorAll('td')].slice(1);
+        const label = cells.map(c => c.textContent.trim()).find(t => t) || 'Row';
+        const ghost = document.createElement('div');
+        ghost.className = 'dnd-ghost';
+        ghost.textContent = '\u283f  ' + label;
+        document.body.appendChild(ghost);
 
-        tbody.addEventListener('dragstart', function (e) {
-            const row = getRow(e.target);
-            if (!row || !row.draggable) { e.preventDefault(); return; }
-            dragSrc = row;
-            row.classList.add('dragging');
-            e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/plain', row.dataset.id || '');
-        });
-
-        tbody.addEventListener('dragend', function (e) {
-            const row = getRow(e.target);
-            if (row) { row.classList.remove('dragging'); row.draggable = false; }
-            tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
-            dragSrc = null;
-        });
-
-        tbody.addEventListener('dragover', function (e) {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-            const row = getRow(e.target);
-            if (row && row !== dragSrc) {
-                tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
-                row.classList.add('drag-over');
-            }
-        });
-
-        tbody.addEventListener('dragleave', function (e) {
-            // Only clear if leaving the tbody entirely
-            if (!tbody.contains(e.relatedTarget)) {
-                tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
-            }
-        });
-
-        tbody.addEventListener('drop', function (e) {
-            e.preventDefault();
-            const targetRow = getRow(e.target);
-            tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
-
-            if (!dragSrc || !targetRow || dragSrc === targetRow) return;
-
-            const rows    = [...tbody.querySelectorAll('tr')];
-            const srcIdx  = rows.indexOf(dragSrc);
-            const tgtIdx  = rows.indexOf(targetRow);
-
-            if (srcIdx < tgtIdx) {
-                tbody.insertBefore(dragSrc, targetRow.nextSibling);
-            } else {
-                tbody.insertBefore(dragSrc, targetRow);
-            }
-
-            // Show Save Order button
-            const saveBtn = document.getElementById(`save-order-${name}`);
-            if (saveBtn) saveBtn.style.display = 'inline-flex';
-        });
-    }
-
-    // Attach to all sortable tbodies on load
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.sortable-tbody').forEach(attachDragListeners);
+        row.classList.add('dnd-dragging');
+        drag = { row, tbody, name: tbody.id.replace('-tbody',''), ghost, id: e.pointerId };
+        positionGhost(e.clientX, e.clientY);
     });
 
+    // pointermove → update ghost + highlight target row
+    document.addEventListener('pointermove', function (e) {
+        if (!drag) return;
+        e.preventDefault();
+        positionGhost(e.clientX, e.clientY);
+
+        // hide ghost to hit-test underneath
+        drag.ghost.style.display = 'none';
+        const el = document.elementFromPoint(e.clientX, e.clientY);
+        drag.ghost.style.display = '';
+
+        const target = el && el.closest('tr[data-id]');
+
+        if (overRow && overRow !== drag.row) overRow.classList.remove('dnd-over');
+        overRow = null;
+
+        if (target && target !== drag.row && target.closest('tbody') === drag.tbody) {
+            target.classList.add('dnd-over');
+            overRow = target;
+        }
+    });
+
+    // pointerup → commit reorder
+    document.addEventListener('pointerup', function (e) {
+        if (!drag) return;
+
+        drag.ghost.remove();
+        drag.row.classList.remove('dnd-dragging');
+        if (overRow) overRow.classList.remove('dnd-over');
+
+        const target = overRow;
+        const { row, tbody, name } = drag;
+        drag = null; overRow = null;
+
+        if (!target || target === row) return;
+
+        // insert row before/after target based on vertical position
+        const rect = target.getBoundingClientRect();
+        const after = e.clientY > rect.top + rect.height / 2;
+        tbody.insertBefore(row, after ? target.nextSibling : target);
+
+        // flash moved row
+        row.style.transition = 'background 0.4s';
+        row.style.background = 'rgba(108,92,231,0.2)';
+        setTimeout(() => { row.style.background = ''; }, 500);
+
+        // show Save Order button
+        const btn = document.getElementById('save-order-' + name);
+        if (btn) btn.style.display = 'inline-flex';
+    });
+
+    // Escape cancels drag
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && drag) {
+            drag.ghost.remove();
+            drag.row.classList.remove('dnd-dragging');
+            if (overRow) { overRow.classList.remove('dnd-over'); overRow = null; }
+            drag = null;
+        }
+    });
+
+    function positionGhost(x, y) {
+        if (!drag) return;
+        drag.ghost.style.left = (x + 16) + 'px';
+        drag.ghost.style.top  = (y - 12) + 'px';
+    }
+
+    const reorderState = {};
+
     // Global saveOrder called by Save Order buttons
-    window.saveOrder = async function (name) {
+    window.saveOrder = async function (name, isAutoSave = false) {
+        if (reorderState[name]?.isSaving) {
+            reorderState[name].queued = true;
+            return;
+        }
+
         const tbody = document.getElementById(`${name}-tbody`);
         if (!tbody) return;
 
@@ -709,6 +721,7 @@ window.onclick = function(event) {
         if (!url) return;
 
         const saveBtn = document.getElementById(`save-order-${name}`);
+        reorderState[name] = { isSaving: true, queued: false };
         if (saveBtn) { saveBtn.disabled = true; saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...'; }
 
         try {
@@ -719,15 +732,27 @@ window.onclick = function(event) {
             });
             const data = await res.json();
             if (res.ok) {
-                showNotification(`${name.charAt(0).toUpperCase() + name.slice(1)} order saved!`, 'success');
+                if (isAutoSave) {
+                    showNotification(`${name.charAt(0).toUpperCase() + name.slice(1)} order auto-saved!`, 'success');
+                } else {
+                    showNotification(`${name.charAt(0).toUpperCase() + name.slice(1)} order saved!`, 'success');
+                }
                 if (saveBtn) saveBtn.style.display = 'none';
             } else {
                 showNotification('Error saving order: ' + (data.error || 'Unknown error'), 'error');
+                if (saveBtn) saveBtn.style.display = 'inline-flex';
             }
         } catch (err) {
             showNotification('Network error saving order.', 'error');
+            if (saveBtn) saveBtn.style.display = 'inline-flex';
         } finally {
+            const shouldSaveAgain = reorderState[name]?.queued;
+            reorderState[name] = { isSaving: false, queued: false };
             if (saveBtn) { saveBtn.disabled = false; saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Order'; }
+
+            if (shouldSaveAgain) {
+                window.saveOrder(name, true);
+            }
         }
     };
 })();
