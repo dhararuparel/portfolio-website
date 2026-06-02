@@ -20,27 +20,56 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Mobile menu toggle
     const hamburger = document.querySelector('.hamburger');
-    const navMenu = document.querySelector('.nav-menu');
+    const navRight  = document.querySelector('.nav-right');
     
-    if (hamburger && navMenu) {
+    if (hamburger && navRight) {
         hamburger.addEventListener('click', function() {
             hamburger.classList.toggle('active');
-            navMenu.classList.toggle('active');
+            navRight.classList.toggle('active');
         });
     }
 
-    // Navbar background on scroll
-    window.addEventListener('scroll', function() {
-        const navbar = document.querySelector('.navbar');
-        const isLight = document.body.classList.contains('light-mode');
-        if (window.scrollY > 50) {
-            navbar.style.background = isLight
-                ? 'rgba(244, 244, 248, 0.99)'
-                : 'rgba(10, 10, 10, 0.98)';
-        } else {
-            navbar.style.background = '';
+    // Scroll progress, navbar, back-to-top, active nav
+    const navbar = document.querySelector('.navbar');
+    const scrollProgress = document.getElementById('scrollProgress');
+    const backToTop = document.getElementById('backToTop');
+    const sections = document.querySelectorAll('section[id]');
+
+    function onScroll() {
+        const scrollY = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+
+        if (scrollProgress && docHeight > 0) {
+            scrollProgress.style.width = (scrollY / docHeight) * 100 + '%';
         }
-    });
+
+        if (navbar) {
+            navbar.classList.toggle('scrolled', scrollY > 50);
+        }
+
+        if (backToTop) {
+            backToTop.classList.toggle('visible', scrollY > 400);
+        }
+
+        let current = '';
+        sections.forEach(section => {
+            if (scrollY >= section.offsetTop - 120) {
+                current = section.getAttribute('id');
+            }
+        });
+        navLinks.forEach(link => {
+            link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+        });
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    if (backToTop) {
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
 
     // Skills section - no animation needed for tag-style skills
 
@@ -107,63 +136,6 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         
         // Add styles
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: ${type === 'success' ? 'rgba(40, 167, 69, 0.9)' : 'rgba(220, 53, 69, 0.9)'};
-            color: white;
-            padding: 15px 20px;
-            border-radius: 10px;
-            backdrop-filter: blur(10px);
-            border: 1px solid ${type === 'success' ? 'rgba(40, 167, 69, 0.3)' : 'rgba(220, 53, 69, 0.3)'};
-            z-index: 10000;
-            animation: slideInRight 0.3s ease-out;
-            max-width: 400px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        `;
-        
-        // Add animation styles
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideInRight {
-                from {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-            }
-            
-            .notification-content {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                gap: 15px;
-            }
-            
-            .notification-close {
-                background: none;
-                border: none;
-                color: white;
-                font-size: 20px;
-                cursor: pointer;
-                padding: 0;
-                width: 20px;
-                height: 20px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            
-            .notification-close:hover {
-                opacity: 0.7;
-            }
-        `;
-        
-        document.head.appendChild(style);
         document.body.appendChild(notification);
         
         // Close button functionality
@@ -289,52 +261,60 @@ document.addEventListener('DOMContentLoaded', function() {
     // Hero title displays immediately - no typing effect needed
 });
 
-// Add mobile menu styles
-const mobileMenuStyles = `
-    @media (max-width: 768px) {
-        .nav-menu {
-            position: fixed;
-            left: -100%;
-            top: 70px;
-            flex-direction: column;
-            background: rgba(10, 10, 10, 0.98);
-            backdrop-filter: blur(10px);
-            width: 100%;
-            text-align: center;
-            transition: 0.3s;
-            box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
-            padding: 20px 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+// Mobile menu styles (injected once)
+if (!document.getElementById('mobile-nav-styles')) {
+    const styleSheet = document.createElement('style');
+    styleSheet.id = 'mobile-nav-styles';
+    styleSheet.textContent = `
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
-
-        .nav-menu.active {
-            left: 0;
+        @media (max-width: 768px) {
+            .nav-right {
+                display: none;
+            }
+            .nav-right.active {
+                display: flex;
+                flex-direction: column;
+                position: fixed;
+                left: 0;
+                top: 70px;
+                width: 100%;
+                background: rgba(10, 10, 10, 0.98);
+                backdrop-filter: blur(12px);
+                padding: 16px 0 20px;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+                box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+                z-index: 999;
+                align-items: center;
+                gap: 0;
+            }
+            .nav-right.active .nav-menu {
+                display: flex !important;
+                flex-direction: column;
+                width: 100%;
+                text-align: center;
+                gap: 0;
+            }
+            .nav-right.active .nav-menu .nav-link {
+                padding: 14px 20px;
+                display: block;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            }
+            .nav-right.active .nav-actions {
+                margin-top: 16px;
+                margin-left: 0;
+                justify-content: center;
+                padding-bottom: 4px;
+            }
+            .hamburger.active span:nth-child(2) { opacity: 0; }
+            .hamburger.active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+            .hamburger.active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
         }
-
-        .nav-menu .nav-link {
-            padding: 15px;
-            display: block;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .hamburger.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .hamburger.active span:nth-child(1) {
-            transform: translateY(8px) rotate(45deg);
-        }
-
-        .hamburger.active span:nth-child(3) {
-            transform: translateY(-8px) rotate(-45deg);
-        }
-    }
-`;
-
-// Add the mobile menu styles to the document
-const styleSheet = document.createElement('style');
-styleSheet.textContent = mobileMenuStyles;
-document.head.appendChild(styleSheet);
+    `;
+    document.head.appendChild(styleSheet);
+}
 
 // ===== LIGHT / DARK MODE TOGGLE =====
 (function () {

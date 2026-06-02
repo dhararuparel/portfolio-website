@@ -20,12 +20,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Mobile menu toggle
     const hamburger = document.querySelector('.hamburger');
-    const navMenu = document.querySelector('.nav-menu');
+    const navRight  = document.querySelector('.nav-right');
     
-    if (hamburger && navMenu) {
+    if (hamburger && navRight) {
         hamburger.addEventListener('click', function() {
             hamburger.classList.toggle('active');
-            navMenu.classList.toggle('active');
+            navRight.classList.toggle('active');
         });
     }
 
@@ -271,26 +271,42 @@ if (!document.getElementById('mobile-nav-styles')) {
             to { transform: translateX(0); opacity: 1; }
         }
         @media (max-width: 768px) {
-            .nav-menu {
-                position: fixed;
-                left: -100%;
-                top: 70px;
+            .nav-right {
+                display: none;
+            }
+            .nav-right.active {
+                display: flex;
                 flex-direction: column;
-                background: var(--navbar-bg);
+                position: fixed;
+                left: 0;
+                top: 70px;
+                width: 100%;
+                background: rgba(10, 10, 10, 0.98);
                 backdrop-filter: blur(12px);
+                padding: 16px 0 20px;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+                box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+                z-index: 999;
+                align-items: center;
+                gap: 0;
+            }
+            .nav-right.active .nav-menu {
+                display: flex !important;
+                flex-direction: column;
                 width: 100%;
                 text-align: center;
-                transition: left 0.3s ease;
-                box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
-                padding: 20px 0;
-                border-top: 1px solid var(--border-color);
-                z-index: 999;
+                gap: 0;
             }
-            .nav-menu.active { left: 0; display: flex; }
-            .nav-menu .nav-link {
-                padding: 15px;
+            .nav-right.active .nav-menu .nav-link {
+                padding: 14px 20px;
                 display: block;
-                border-bottom: 1px solid var(--border-color);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            }
+            .nav-right.active .nav-actions {
+                margin-top: 16px;
+                margin-left: 0;
+                justify-content: center;
+                padding-bottom: 4px;
             }
             .hamburger.active span:nth-child(2) { opacity: 0; }
             .hamburger.active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
