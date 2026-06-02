@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 
 {% block title %}Admin Dashboard - Portfolio{% endblock %}
 
@@ -381,7 +381,7 @@
                                 <i class="fas fa-folder-open"></i> Browse File
                             </label>
                             <input type="file" id="resumeFile" name="resume" accept=".pdf" style="display:none">
-                            <p class="resume-hint">Only PDF files · Max 10 MB</p>
+                            <p class="resume-hint">Only PDF files Â· Max 10 MB</p>
                         </div>
                         <div id="resumeFileName" class="resume-file-name" style="display:none"></div>
                         <div class="resume-actions">
@@ -660,7 +660,7 @@
             if (data.exists) {
                 statusIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
                 statusIcon.className = 'resume-status-icon ok';
-                statusText.textContent = 'Resume on file — last updated: ' + data.last_updated;
+                statusText.textContent = 'Resume on file â€” last updated: ' + data.last_updated;
                 downloadBtn.style.display = 'inline-flex';
             } else {
                 statusIcon.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
@@ -743,7 +743,7 @@
                 statusIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
                 statusIcon.className = 'resume-status-icon ok';
                 const now = new Date();
-                statusText.textContent = 'Resume on file — last updated: ' + now.toLocaleString();
+                statusText.textContent = 'Resume on file â€” last updated: ' + now.toLocaleString();
                 downloadBtn.style.display = 'inline-flex';
             } else {
                 showMsg(data.error || 'Upload failed.', 'error');
@@ -764,6 +764,5 @@
     }
 })();
 </script>
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
 {% endblock %}
