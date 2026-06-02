@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 
 {% block content %}
 <!-- Navigation -->
@@ -102,16 +102,9 @@
                 <div class="card-accent"></div>
                 <div class="project-header">
                     <h3>{{ project.title }}</h3>
-                    <div class="project-meta">
-                        <span class="duration">{{ project.duration }}</span>
-                        <span class="team-size">Team: {{ project.team_size }}</span>
                     </div>
-                </div>
                 <div class="project-content">
                     <p class="project-description">{{ project.description }}</p>
-                    <div class="project-role">
-                        <strong>Role:</strong> {{ project.role }}
-                    </div>
                     <div class="project-tech">
                         <h4>Technologies Used:</h4>
                         <div class="tech-tags">

@@ -97,9 +97,7 @@
                             <tr>
                                 <th class="drag-col"></th>
                                 <th>Title</th>
-                                <th>Duration</th>
-                                <th>Team Size</th>
-                                <th>Role</th>
+                                
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -108,9 +106,7 @@
                             <tr data-id="{{ project.id }}">
                                 <td class="drag-handle"><i class="fas fa-grip-vertical" style="pointer-events:none"></i></td>
                                 <td>{{ project.title }}</td>
-                                <td>{{ project.duration }}</td>
-                                <td>{{ project.team_size }}</td>
-                                <td>{{ project.role }}</td>
+                                
                                 <td class="actions">
                                     <button class="btn-icon btn-edit" onclick="editProject({{ project.id }})">
                                         <i class="fas fa-edit"></i>
@@ -422,20 +418,6 @@
             <div class="form-group">
                 <label for="projectTechnologies">Technologies (comma-separated) *</label>
                 <input type="text" id="projectTechnologies" name="technologies" required>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="projectDuration">Duration *</label>
-                    <input type="text" id="projectDuration" name="duration" required>
-                </div>
-                <div class="form-group">
-                    <label for="projectTeamSize">Team Size *</label>
-                    <input type="text" id="projectTeamSize" name="team_size" required>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="projectRole">Role *</label>
-                <input type="text" id="projectRole" name="role" required>
             </div>
             <div class="form-group">
                 <label>Project Link <span style="color:#888;font-weight:400">(optional)</span></label>
@@ -766,5 +748,7 @@
 </script>
 <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
 {% endblock %}
+
+
 
 

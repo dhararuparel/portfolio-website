@@ -173,9 +173,9 @@ def api_projects():
             title=data['title'],
             description=data['description'],
             technologies=data['technologies'],
-            duration=data['duration'],
-            team_size=data['team_size'],
-            role=data['role'],
+            duration=data.get('duration', ''),
+            team_size=data.get('team_size', ''),
+            role=data.get('role', ''),
             link_url=data.get('link_url', ''),
             link_label=data.get('link_label', '')
         )
