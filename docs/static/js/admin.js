@@ -222,9 +222,6 @@ async function editProject(id) {
         document.getElementById('projectTitle').value = project.title;
         document.getElementById('projectDescription').value = project.description;
         document.getElementById('projectTechnologies').value = project.technologies;
-        document.getElementById('projectDuration').value = project.duration;
-        document.getElementById('projectTeamSize').value = project.team_size;
-        document.getElementById('projectRole').value = project.role;
         document.getElementById('projectLinkUrl').value = project.link_url || '';
         document.getElementById('projectLinkLabel').value = project.link_label || '';
         
