@@ -576,7 +576,7 @@ window.onclick = function(event) {
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  DRAG-AND-DROP ROW REORDERING  (pointer events — no HTML5 drag)
+//  DRAG-AND-DROP ROW REORDERING  (mouse events, maximally simple)
 // ═══════════════════════════════════════════════════════════════
 (function () {
     const REORDER_URLS = {
@@ -587,144 +587,118 @@ window.onclick = function(event) {
         internships:    '/api/internships/reorder',
     };
 
-    // Inject DnD styles
-    const dndStyle = document.createElement('style');
-    dndStyle.textContent = `
-        .drag-handle { cursor: grab !important; user-select: none; touch-action: none; color: #6c5ce7; padding: 0 8px; }
-        .drag-handle:hover { color: #a29bfe; }
-        .dnd-dragging { opacity: 0.35 !important; }
-        .dnd-over td { background: rgba(108,92,231,0.18) !important; }
+    const style = document.createElement('style');
+    style.textContent = `
+        .drag-handle { cursor: grab; color: #6c5ce7; padding: 0 8px; font-size: 15px; }
+        .drag-handle i { pointer-events: none; }
+        .dnd-src  { opacity: 0.4; }
+        .dnd-over td { background: rgba(108,92,231,0.2) !important; }
         .dnd-ghost {
-            position: fixed; pointer-events: none; z-index: 99999;
-            background: #1a1a2e; border: 1.5px solid #6c5ce7; border-radius: 8px;
-            padding: 8px 18px; color: #fff; font-size: 13px; font-family: Inter,sans-serif;
-            box-shadow: 0 8px 32px rgba(108,92,231,0.45); white-space: nowrap;
-            max-width: 300px; overflow: hidden; text-overflow: ellipsis;
+            position: fixed; z-index: 99999; pointer-events: none;
+            background: #1a1a2e; border: 1.5px solid #6c5ce7;
+            border-radius: 8px; padding: 7px 16px;
+            color: #fff; font-size: 13px; font-family: Inter,sans-serif;
+            box-shadow: 0 6px 24px rgba(108,92,231,0.5);
+            white-space: nowrap; max-width: 300px;
+            overflow: hidden; text-overflow: ellipsis;
         }
     `;
-    document.head.appendChild(dndStyle);
+    document.head.appendChild(style);
 
-    let drag = null;
+    let state = null;  // { row, tbody, name, ghost }
     let overRow = null;
 
-    function positionGhost(x, y) {
-        if (!drag) return;
-        drag.ghost.style.left = (x + 18) + 'px';
-        drag.ghost.style.top  = (y - 14) + 'px';
-    }
-
-    function cleanup() {
-        if (!drag) return;
-        drag.ghost.remove();
-        drag.row.classList.remove('dnd-dragging');
-        drag.handle.releasePointerCapture(drag.pointerId);
-        drag = null;
-        if (overRow) { overRow.classList.remove('dnd-over'); overRow = null; }
-    }
-
-    // Use event delegation on document for pointerdown
-    document.addEventListener('pointerdown', function (e) {
+    /* ── mousedown on grip ─────────────────────────────── */
+    document.addEventListener('mousedown', function (e) {
         const handle = e.target.closest('.drag-handle');
         if (!handle) return;
-
         const row   = handle.closest('tr[data-id]');
         const tbody = handle.closest('tbody.sortable-tbody');
         if (!row || !tbody) return;
 
         e.preventDefault();
-        e.stopPropagation();
+        document.body.style.userSelect = 'none';
+        document.body.style.cursor = 'grabbing';
 
-        // Build ghost
         const cells = [...row.querySelectorAll('td')].slice(1);
-        const label = cells.map(c => c.textContent.trim()).find(t => t) || 'Row';
+        const label = cells.map(c => c.textContent.trim()).find(Boolean) || '';
         const ghost = document.createElement('div');
         ghost.className = 'dnd-ghost';
         ghost.textContent = '⠿  ' + label;
         document.body.appendChild(ghost);
+        moveGhost(e.clientX, e.clientY);
 
-        row.classList.add('dnd-dragging');
+        row.classList.add('dnd-src');
+        state = { row, tbody, name: tbody.id.replace('-tbody',''), ghost };
+    });
 
-        drag = {
-            row, tbody, handle,
-            name: tbody.id.replace('-tbody', ''),
-            ghost,
-            pointerId: e.pointerId,
-        };
-
-        // Capture pointer on the DOCUMENT so move/up fire even when cursor moves fast
-        try { handle.setPointerCapture(e.pointerId); } catch(_) {}
-
-        positionGhost(e.clientX, e.clientY);
-    }, true);
-
-    document.addEventListener('pointermove', function (e) {
-        if (!drag) return;
-        e.preventDefault();
-        positionGhost(e.clientX, e.clientY);
-
-        // Temporarily hide ghost to hit-test what's under the cursor
-        drag.ghost.style.visibility = 'hidden';
-        const el = document.elementFromPoint(e.clientX, e.clientY);
-        drag.ghost.style.visibility = '';
+    /* ── mousemove ─────────────────────────────────────── */
+    document.addEventListener('mousemove', function (e) {
+        if (!state) return;
+        moveGhost(e.clientX, e.clientY);
 
         if (overRow) { overRow.classList.remove('dnd-over'); overRow = null; }
 
+        // find the tr under the cursor (skip ghost)
+        state.ghost.style.display = 'none';
+        const el = document.elementFromPoint(e.clientX, e.clientY);
+        state.ghost.style.display = '';
         if (!el) return;
+
         const target = el.closest('tr[data-id]');
-        if (target && target !== drag.row && target.closest('tbody') === drag.tbody) {
+        if (target && target !== state.row && target.closest('tbody') === state.tbody) {
             target.classList.add('dnd-over');
             overRow = target;
         }
-    }, true);
+    });
 
-    document.addEventListener('pointerup', function (e) {
-        if (!drag) return;
+    /* ── mouseup ───────────────────────────────────────── */
+    document.addEventListener('mouseup', function (e) {
+        if (!state) return;
 
         const target = overRow;
-        const { row, tbody, name } = drag;
-        cleanup();
+        const { row, tbody, name, ghost } = state;
+
+        ghost.remove();
+        row.classList.remove('dnd-src');
+        if (overRow) { overRow.classList.remove('dnd-over'); overRow = null; }
+        document.body.style.userSelect = '';
+        document.body.style.cursor = '';
+        state = null;
 
         if (!target || target === row) return;
 
-        // Insert above or below based on cursor position
         const rect  = target.getBoundingClientRect();
         const after = e.clientY > rect.top + rect.height / 2;
         tbody.insertBefore(row, after ? target.nextSibling : target);
 
-        // Flash confirmation
         row.style.transition = 'background 0.5s';
         row.style.background = 'rgba(108,92,231,0.25)';
         setTimeout(() => { row.style.background = ''; row.style.transition = ''; }, 600);
 
-        // Show Save Order button
         const btn = document.getElementById('save-order-' + name);
         if (btn) btn.style.display = 'inline-flex';
-    }, true);
-
-    document.addEventListener('pointercancel', function () { cleanup(); }, true);
-
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') cleanup();
     });
 
-    const saving = {};
+    function moveGhost(x, y) {
+        if (!state) return;
+        state.ghost.style.left = (x + 16) + 'px';
+        state.ghost.style.top  = (y - 10) + 'px';
+    }
 
+    /* ── Save Order ────────────────────────────────────── */
     window.saveOrder = async function (name) {
         const tbody = document.getElementById(name + '-tbody');
         if (!tbody) return;
-
         const rows    = [...tbody.querySelectorAll('tr[data-id]')];
         const payload = rows.map((r, i) => ({ id: parseInt(r.dataset.id, 10), order: i + 1 }));
-        const url     = REORDER_URLS[name];
-        if (!url) return;
-
-        const btn = document.getElementById('save-order-' + name);
-        if (saving[name]) return;
-        saving[name] = true;
+        const btn     = document.getElementById('save-order-' + name);
         if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...'; }
-
         try {
-            const res  = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            const res  = await fetch(REORDER_URLS[name], {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
             const data = await res.json();
             if (res.ok) {
                 showNotification(name.charAt(0).toUpperCase() + name.slice(1) + ' order saved!', 'success');
@@ -732,10 +706,8 @@ window.onclick = function(event) {
             } else {
                 showNotification('Error: ' + (data.error || 'Unknown'), 'error');
             }
-        } catch (err) {
-            showNotification('Network error saving order.', 'error');
-        } finally {
-            saving[name] = false;
+        } catch { showNotification('Network error.', 'error'); }
+        finally {
             if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Order'; }
         }
     };
