@@ -563,7 +563,8 @@ document.addEventListener('DOMContentLoaded', function() {
             this.classList.add('active');
             
             const sectionId = this.getAttribute('data-section') + '-section';
-            document.getElementById(sectionId).classList.add('active');
+            const sectionEl = document.getElementById(sectionId);
+            if (sectionEl) sectionEl.classList.add('active');
         });
     });
 });
