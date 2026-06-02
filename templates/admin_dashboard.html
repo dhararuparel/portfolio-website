@@ -106,7 +106,7 @@
                         <tbody id="projects-tbody" class="sortable-tbody">
                             {% for project in projects %}
                             <tr data-id="{{ project.id }}">
-                                <td class="drag-handle"><i class="fas fa-grip-vertical"></i></td>
+                                <td class="drag-handle"><i class="fas fa-grip-vertical" style="pointer-events:none"></i></td>
                                 <td>{{ project.title }}</td>
                                 <td>{{ project.duration }}</td>
                                 <td>{{ project.team_size }}</td>
@@ -152,7 +152,7 @@
                         <tbody id="skills-tbody" class="sortable-tbody">
                             {% for skill in skills %}
                             <tr data-id="{{ skill.id }}">
-                                <td class="drag-handle"><i class="fas fa-grip-vertical"></i></td>
+                                <td class="drag-handle"><i class="fas fa-grip-vertical" style="pointer-events:none"></i></td>
                                 <td>{{ skill.name }}</td>
                                 <td>{{ skill.category }}</td>
                                 <td class="actions">
@@ -198,7 +198,7 @@
                         <tbody id="internships-tbody" class="sortable-tbody">
                             {% for internship in internships %}
                             <tr data-id="{{ internship.id }}">
-                                <td class="drag-handle"><i class="fas fa-grip-vertical"></i></td>
+                                <td class="drag-handle"><i class="fas fa-grip-vertical" style="pointer-events:none"></i></td>
                                 <td>{{ internship.position }}</td>
                                 <td>{{ internship.company }}</td>
                                 <td>{{ internship.duration }}</td>
@@ -246,7 +246,7 @@
                         <tbody id="education-tbody" class="sortable-tbody">
                             {% for edu in education %}
                             <tr data-id="{{ edu.id }}">
-                                <td class="drag-handle"><i class="fas fa-grip-vertical"></i></td>
+                                <td class="drag-handle"><i class="fas fa-grip-vertical" style="pointer-events:none"></i></td>
                                 <td>{{ edu.degree }}</td>
                                 <td>{{ edu.institution }}</td>
                                 <td>{{ edu.year }}</td>
@@ -294,7 +294,7 @@
                         <tbody id="certifications-tbody" class="sortable-tbody">
                             {% for cert in certifications %}
                             <tr data-id="{{ cert.id }}">
-                                <td class="drag-handle"><i class="fas fa-grip-vertical"></i></td>
+                                <td class="drag-handle"><i class="fas fa-grip-vertical" style="pointer-events:none"></i></td>
                                 <td>{{ cert.title }}</td>
                                 <td>{{ cert.issuer }}</td>
                                 <td>{{ cert.percentage or 'N/A' }}</td>
@@ -766,4 +766,5 @@
 </script>
 <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
 {% endblock %}
+
 
