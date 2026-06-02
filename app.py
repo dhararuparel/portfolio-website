@@ -221,9 +221,9 @@ def api_project(project_id):
         project.title = data['title']
         project.description = data['description']
         project.technologies = data['technologies']
-        project.duration = data['duration']
-        project.team_size = data['team_size']
-        project.role = data['role']
+        project.duration = data.get('duration', project.duration or '')
+        project.team_size = data.get('team_size', project.team_size or '')
+        project.role = data.get('role', project.role or '')
         project.link_url = data.get('link_url', '')
         project.link_label = data.get('link_label', '')
         db.session.commit()
