@@ -1,4 +1,4 @@
-﻿{% extends "base.html" %}
+{% extends "base.html" %}
 
 {% block title %}Admin Dashboard - Portfolio{% endblock %}
 
@@ -108,10 +108,10 @@
                                 <td>{{ project.title }}</td>
                                 
                                 <td class="actions">
-                                    <button class="btn-icon btn-edit" onclick="editProject({{ project.id }})">
+                                    <button class="btn-icon btn-edit" onclick="editProject('{{ project.id }}')">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button class="btn-icon btn-delete" onclick="deleteProject({{ project.id }})">
+                                    <button class="btn-icon btn-delete" onclick="deleteProject('{{ project.id }}')">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </td>
@@ -152,10 +152,10 @@
                                 <td>{{ skill.name }}</td>
                                 <td>{{ skill.category }}</td>
                                 <td class="actions">
-                                    <button class="btn-icon btn-edit" onclick="editSkill({{ skill.id }})">
+                                    <button class="btn-icon btn-edit" onclick="editSkill('{{ skill.id }}')">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button class="btn-icon btn-delete" onclick="deleteSkill({{ skill.id }})">
+                                    <button class="btn-icon btn-delete" onclick="deleteSkill('{{ skill.id }}')">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </td>
@@ -200,10 +200,10 @@
                                 <td>{{ internship.duration }}</td>
                                 <td>{{ internship.location }}</td>
                                 <td class="actions">
-                                    <button class="btn-icon btn-edit" onclick="editInternship({{ internship.id }})">
+                                    <button class="btn-icon btn-edit" onclick="editInternship('{{ internship.id }}')">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button class="btn-icon btn-delete" onclick="deleteInternship({{ internship.id }})">
+                                    <button class="btn-icon btn-delete" onclick="deleteInternship('{{ internship.id }}')">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </td>
@@ -248,10 +248,10 @@
                                 <td>{{ edu.year }}</td>
                                 <td>{{ edu.percentage or 'N/A' }}</td>
                                 <td class="actions">
-                                    <button class="btn-icon btn-edit" onclick="editEducation({{ edu.id }})">
+                                    <button class="btn-icon btn-edit" onclick="editEducation('{{ edu.id }}')">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button class="btn-icon btn-delete" onclick="deleteEducation({{ edu.id }})">
+                                    <button class="btn-icon btn-delete" onclick="deleteEducation('{{ edu.id }}')">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </td>
@@ -296,10 +296,10 @@
                                 <td>{{ cert.percentage or 'N/A' }}</td>
                                 <td>{{ cert.date_range or 'N/A' }}</td>
                                 <td class="actions">
-                                    <button class="btn-icon btn-edit" onclick="editCertification({{ cert.id }})">
+                                    <button class="btn-icon btn-edit" onclick="editCertification('{{ cert.id }}')">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button class="btn-icon btn-delete" onclick="deleteCertification({{ cert.id }})">
+                                    <button class="btn-icon btn-delete" onclick="deleteCertification('{{ cert.id }}')">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </td>
@@ -315,7 +315,7 @@
                 <div class="section-header">
                     <h2>Manage Contact Information</h2>
                     {% if contact %}
-                    <button class="btn btn-primary" onclick="editContact({{ contact.id }})">
+                    <button class="btn btn-primary" onclick="editContact('{{ contact.id }}')">
                         <i class="fas fa-edit"></i> Edit Contact Info
                     </button>
                     {% else %}
@@ -458,12 +458,13 @@
                 <select id="skillCategory" name="category" required>
                     <option value="">Select Category</option>
                     <option value="Programming Languages">Programming Languages</option>
-                    <option value="Web Technologies">Web Technologies</option>
-                    <option value="Web Frameworks">Web Frameworks</option>
-                    <option value="Databases">Databases</option>
+                    <option value="AI & Machine Learning">AI & Machine Learning</option>
                     <option value="Libraries & Frameworks">Libraries & Frameworks</option>
-                    <option value="Tools & Technologies">Tools & Technologies</option>
-                    <option value="AI Tools">AI Tools</option>
+                    <option value="Web Frameworks">Web Frameworks</option>
+                    <option value="Databases & Backend Services">Databases & Backend Services</option>
+                    <option value="Web Technologies">Web Technologies</option>
+                    <option value="Developer & AI Tools">Developer & AI Tools</option>
+                    <option value="Version Control & Deployment">Version Control & Deployment</option>
                 </select>
             </div>
             <div class="modal-actions">
@@ -746,7 +747,7 @@
     }
 })();
 </script>
-<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+<script src="{{ url_for('static', filename='js/admin.js') }}?v=1.0.4"></script>
 {% endblock %}
 
 
