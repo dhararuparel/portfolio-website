@@ -6,441 +6,1058 @@
     <title>Dhara Ruparel - Portfolio</title>
     <link rel="stylesheet" href="static/css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+    
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <h2>DHARA RUPAREL</h2>
+    <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+    <!-- ===== LOADING SCREEN ===== -->
+    <div id="loader-overlay">
+        <!-- Background grid (matches hero section) -->
+        <div class="loader-grid"></div>
+
+        <div class="loader-body">
+            <!-- Logo mark — matches nav logo style -->
+            <div class="loader-logo">
+                <span class="loader-logo-text">DR</span>
+                <div class="loader-logo-dot"></div>
             </div>
+
+            <!-- Name + tagline -->
+            <div class="loader-name">DHARA RUPAREL</div>
+            <div class="loader-tagline">Computer Engineer &amp; AI Enthusiast</div>
+
+            <!-- Progress bar -->
+            <div class="loader-bar-wrap">
+                <div class="loader-bar-fill"></div>
+            </div>
+            <div class="loader-status">
+                <span class="loader-status-label">INITIALIZING</span>
+                <span id="loader-pct">0%</span>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* ── Loader overlay ─────────────────────────────────── */
+        #loader-overlay {
+            position: fixed;
+            inset: 0;
+            background: #0a0a0a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            transition: opacity 0.7s ease, visibility 0.7s ease;
+        }
+        #loader-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* ── Background grid (same as hero::before) ─────────── */
+        .loader-grid {
+            position: absolute;
+            inset: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="%23ffffff" stroke-width="0.5" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        /* ── Centered content ───────────────────────────────── */
+        .loader-body {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+            z-index: 1;
+        }
+
+        /* ── Logo mark ──────────────────────────────────────── */
+        .loader-logo {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(108, 92, 231, 0.35);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 40px rgba(108, 92, 231, 0.15),
+                        inset 0 1px 0 rgba(255,255,255,0.06);
+            animation: loader-float 3s ease-in-out infinite;
+            margin-bottom: 6px;
+        }
+
+        /* Spinning border accent */
+        .loader-logo::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 26px;
+            background: conic-gradient(
+                from 0deg,
+                #6c5ce7 0%,
+                #a29bfe 25%,
+                transparent 50%,
+                transparent 100%
+            );
+            animation: loader-spin 2s linear infinite;
+            z-index: -1;
+        }
+        .loader-logo::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 24px;
+            background: #0a0a0a;
+            z-index: -1;
+        }
+
+        .loader-logo-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #ffffff 0%, #6c5ce7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Small dot accent — matches nav logo style */
+        .loader-logo-dot {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 8px;
+            height: 8px;
+            background: #6c5ce7;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #6c5ce7;
+            animation: loader-blink 1.4s ease-in-out infinite;
+        }
+
+        /* ── Name ───────────────────────────────────────────── */
+        .loader-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            color: #ffffff;
+            text-transform: uppercase;
+        }
+
+        /* ── Tagline ────────────────────────────────────────── */
+        .loader-tagline {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 400;
+            color: #888888;
+            letter-spacing: 0.06em;
+        }
+
+        /* ── Progress bar ───────────────────────────────────── */
+        .loader-bar-wrap {
+            width: 260px;
+            height: 2px;
+            background: rgba(108, 92, 231, 0.15);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        .loader-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #6c5ce7, #a29bfe);
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(108, 92, 231, 0.6);
+            transition: width 0.12s ease;
+        }
+
+        /* ── Status text ────────────────────────────────────── */
+        .loader-status {
+            display: flex;
+            gap: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+        .loader-status-label { color: #555; }
+        #loader-pct { color: #6c5ce7; font-weight: 600; }
+
+        /* ── Keyframes ──────────────────────────────────────── */
+        @keyframes loader-spin {
+            to { transform: rotate(360deg); }
+        }
+        @keyframes loader-float {
+            0%, 100% { transform: translateY(0); }
+            50%       { transform: translateY(-8px); }
+        }
+        @keyframes loader-blink {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.2; }
+        }
+    </style>
+
+    <script>
+        (function () {
+            const overlay  = document.getElementById('loader-overlay');
+            const bar      = document.querySelector('.loader-bar-fill');
+            const pctLabel = document.getElementById('loader-pct');
+            let pct = 0;
+
+            const tick = setInterval(function () {
+                const step = pct < 70 ? Math.random() * 8 + 4
+                           : pct < 88 ? Math.random() * 3 + 1
+                           : 0;
+                pct = Math.min(pct + step, 90);
+                bar.style.width = pct + '%';
+                pctLabel.textContent = Math.round(pct) + '%';
+                if (pct >= 90) clearInterval(tick);
+            }, 120);
+
+            window.addEventListener('load', function () {
+                clearInterval(tick);
+                pct = 100;
+                bar.style.width = '100%';
+                pctLabel.textContent = '100%';
+                setTimeout(function () {
+                    overlay.classList.add('hidden');
+                }, 500);
+            });
+        })();
+    </script>
+    <!-- ===== END LOADING SCREEN ===== -->
+
+    
+<!-- Navigation -->
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="nav-logo">
+            <h2>DHARA RUPAREL</h2>
+        </div>
+        <div class="nav-right">
             <div class="nav-menu">
-                <a href="#home" class="nav-link">Home</a>
-                <a href="#about" class="nav-link">About</a>
                 <a href="#projects" class="nav-link">Projects</a>
                 <a href="#skills" class="nav-link">Skills</a>
+                <a href="#internships" class="nav-link">Internships</a>
                 <a href="#education" class="nav-link">Education</a>
                 <a href="#certifications" class="nav-link">Certifications</a>
                 <a href="#contact" class="nav-link">Contact</a>
             </div>
-            <div class="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
+            <div class="nav-actions">
+                <!-- Resume button -->
+                <a href="static/Dhara_Ruparel_Resume.pdf" 
+                   class="btn-resume">
+                    <i class="fas fa-download"></i>
+                    Resume
+                </a>
+                <!-- Theme toggle -->
+                <button id="theme-toggle" class="theme-btn" title="Toggle light/dark mode" aria-label="Toggle theme">
+                    <i class="fas fa-sun" id="theme-icon"></i>
+                </button>
             </div>
         </div>
-    </nav>
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+</nav>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-container">
-            <div class="hero-content">
-                <h1 class="hero-title">
-                    Hii, I'm <span class="highlight">Dhara Ruparel</span>
-                </h1>
-                <p class="hero-subtitle">Computer Science Student & AI Enthusiast</p>
-                <p class="hero-description">
-                    Passionate about Python, Machine Learning, and creating innovative solutions 
-                    through technology. Currently pursuing B.E. in Computer Science.
+<!-- Hero Section -->
+<section id="home" class="hero">
+    <div class="hero-glow hero-glow-1" aria-hidden="true"></div>
+    <div class="hero-glow hero-glow-2" aria-hidden="true"></div>
+    <div class="hero-container">
+        <div class="hero-content">
+            <span class="hero-badge"><i class="fas fa-bolt"></i> Open to opportunities</span>
+            <h1 class="hero-title">
+                Hi, I'm <span class="text-gradient">Dhara Ruparel</span>.
+            </h1>
+            <p class="hero-subtitle">Computer Engineer & AI Enthusiast</p>
+            <p class="hero-description">
+                Passionate about Python, Machine Learning, and creating innovative solutions 
+                through technology. Currently pursuing B.E. in Computer Science.
+            </p>
+            <div class="hero-buttons">
+                <a href="#projects" class="btn btn-primary">View My Work</a>
+                <a href="#contact" class="btn btn-secondary">Get In Touch</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="profile-card">
+                <div class="profile-avatar">
+                    <img src="static/images/DHARA.jpg" alt="Dhara Ruparel" class="profile-image">
+                </div>
+                <div class="floating-elements">
+                    <div class="floating-icon python"><i class="fab fa-python"></i></div>
+                    <div class="floating-icon js"><i class="fab fa-js-square"></i></div>
+                    <div class="floating-icon react"><i class="fab fa-react"></i></div>
+                    <div class="floating-icon database"><i class="fas fa-database"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section id="about" class="about">
+    <div class="container">
+        <p class="section-eyebrow">Introduction</p>
+        <h2 class="section-title">About Me</h2>
+        <div class="about-content">
+            <div class="about-text">
+                <p>
+                    AI/ML-focused Computer Engineering student passionate about building intelligent and real-time applications using Artificial Intelligence, Computer Vision, and NLP. Skilled in developing AI-powered solutions such as motion detection, gesture recognition, emotion analysis, and workflow automation using Python, Flask, OpenCV, MediaPipe, and Scikit-learn.
                 </p>
-                <div class="hero-buttons">
-                    <a href="#projects" class="btn btn-primary">View My Work</a>
-                    <a href="#contact" class="btn btn-secondary">Get In Touch</a>
-                </div>
-            </div>
-            <div class="hero-image">
-                <div class="profile-card">
-                    <div class="profile-avatar">
-                        <img src="static/images/DHARA.jpg" alt="Dhara Ruparel" class="profile-image">
-                    </div>
-                    <div class="floating-elements">
-                        <div class="floating-icon python"><i class="fab fa-python"></i></div>
-                        <div class="floating-icon js"><i class="fab fa-js-square"></i></div>
-                        <div class="floating-icon react"><i class="fab fa-react"></i></div>
-                        <div class="floating-icon database"><i class="fas fa-database"></i></div>
-                    </div>
-                </div>
+                <p>
+                    Experienced in creating scalable and user-friendly systems with strong knowledge of PostgreSQL, APIs, and automation tools like Gemini API and n8n. Dedicated to transforming innovative ideas into impactful technology solutions that solve real-world problems.
+                </p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- About Section -->
-    <section id="about" class="about">
-        <div class="container">
-            <h2 class="section-title">About Me</h2>
-            <div class="about-content">
-                <div class="about-text">
-                    <p>
-                        I'm a dedicated Computer Science student with a passion for artificial intelligence, 
-                        machine learning, and web development. My journey in technology has led me to work 
-                        on various projects involving motion sensing, gesture recognition, and emotion detection.
-                    </p>
-                    <p>
-                        With experience in Python, Flask, PostgreSQL, and modern web technologies, I enjoy 
-                        creating solutions that bridge the gap between complex algorithms and user-friendly interfaces.
-                    </p>
-                </div>
-                <div class="about-image">
-                    <div class="about-stats">
-                        <div class="stat">
-                            <h3>3</h3>
-                            <p>Projects Completed</p>
-                        </div>
-                        <div class="stat">
-                            <h3>0</h3>
-                            <p>Internships</p>
-                        </div>
-                        <div class="stat">
-                            <h3>5</h3>
-                            <p>Certifications</p>
-                        </div>
+<!-- Projects Section -->
+<section id="projects" class="projects">
+    <div class="container">
+        <p class="section-eyebrow">Portfolio</p>
+        <h2 class="section-title">Work Experience & Projects</h2>
+        <div class="projects-grid">
+            
+            <div class="project-card">
+                <div class="card-accent"></div>
+                <div class="project-header">
+                    <h3>LEXARA AI - LLM-POWERED RAG PLATFORM</h3>
                     </div>
-                    <div class="about-card">
-                        <div class="languages">
-                            <h4>Languages</h4>
-                            <div class="language-list">
-                                <span class="language-tag">English</span>
-                                <span class="language-tag">Hindi</span>
-                                <span class="language-tag">Gujarati</span>
-                            </div>
+                <div class="project-content">
+                    <p class="project-description">Developed an advanced RAG platform enabling conversational knowledge retrieval from documents and web sources using hybrid semantic search, AI-powered responses, multi-format content ingestion, team collaboration features, and analytics.</p>
+                    <div class="project-tech">
+                        <h4>Technologies Used:</h4>
+                        <div class="tech-tags">
+                            
+                            <span class="tech-tag">Python</span>
+                            
+                            <span class="tech-tag">Flask</span>
+                            
+                            <span class="tech-tag">FAISS</span>
+                            
+                            <span class="tech-tag">Gemini 2.5 Flash</span>
+                            
+                            <span class="tech-tag">Supabase</span>
+                            
+                            <span class="tech-tag">Render</span>
+                            
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Projects Section -->
-    <section id="projects" class="projects">
-        <div class="container">
-            <h2 class="section-title">Work Experience & Projects</h2>
-            <div class="projects-grid">
-                <div class="project-card">
-                    <div class="project-header">
-                        <h3>CAMERA MOTION SENSING PROJECT</h3>
-                        <div class="project-meta">
-                            <span class="duration">6 months</span>
-                            <span class="team-size">Team: 4 persons</span>
-                        </div>
-                    </div>
-                    <div class="project-content">
-                        <p class="project-description">A smart surveillance system that detects and responds to motion using real-time camera sensing and Python-based automation.</p>
-                        <div class="project-role">
-                            <strong>Role:</strong> Member
-                        </div>
-                        <div class="project-tech">
-                            <h4>Technologies Used:</h4>
-                            <div class="tech-tags">
-                                <span class="tech-tag">HTML</span>
-                                <span class="tech-tag">CSS</span>
-                                <span class="tech-tag">Flask</span>
-                                <span class="tech-tag">Python</span>
-                                <span class="tech-tag">PostgreSQL</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="project-card">
-                    <div class="project-header">
-                        <h3>HAND GESTURE RECOGNITION SYSTEM</h3>
-                        <div class="project-meta">
-                            <span class="duration">1 Month</span>
-                            <span class="team-size">Team: 1 person</span>
-                        </div>
-                    </div>
-                    <div class="project-content">
-                        <p class="project-description">A real-time hand gesture recognition system that detects and classifies 5 distinct hand gestures using computer vision and Media Pipe.</p>
-                        <div class="project-role">
-                            <strong>Role:</strong> Individual
-                        </div>
-                        <div class="project-tech">
-                            <h4>Technologies Used:</h4>
-                            <div class="tech-tags">
-                                <span class="tech-tag">Python</span>
-                                <span class="tech-tag">OpenCV</span>
-                                <span class="tech-tag">Media Pipe</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="project-card">
-                    <div class="project-header">
-                        <h3>EMOTION DETECTION FROM TEXT</h3>
-                        <div class="project-meta">
-                            <span class="duration">3 weeks</span>
-                            <span class="team-size">Team: 1 person</span>
-                        </div>
-                    </div>
-                    <div class="project-content">
-                        <p class="project-description">A sentiment analysis project that classifies user emotions from textual input using a machine learning model trained on the Twitter Emotion Dataset.</p>
-                        <div class="project-role">
-                            <strong>Role:</strong> Individual
-                        </div>
-                        <div class="project-tech">
-                            <h4>Technologies Used:</h4>
-                            <div class="tech-tags">
-                                <span class="tech-tag">Python</span>
-                                <span class="tech-tag">Scikit-learn</span>
-                                <span class="tech-tag">Pandas</span>
-                                <span class="tech-tag">NLTK</span>
-                                <span class="tech-tag">Streamlit</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Skills Section -->
-    <section id="skills" class="skills">
-        <div class="container">
-            <h2 class="section-title">Skills & Technologies</h2>
-            <div class="skills-container">
-                <div class="skill-category">
-                    <h3>Programming Languages</h3>
-                    <div class="skills-list">
-                        <div class="skill-item"><span class="skill-name">Python</span></div>
-                    </div>
-                </div>
-                
-                <div class="skill-category">
-                    <h3>AI & Machine Learning</h3>
-                    <div class="skills-list">
-                        <div class="skill-item"><span class="skill-name">Machine Learning</span></div>
-                        <div class="skill-item"><span class="skill-name">AI</span></div>
-                    </div>
-                </div>
-                
-                <div class="skill-category">
-                    <h3>Libraries & Frameworks</h3>
-                    <div class="skills-list">
-                        <div class="skill-item"><span class="skill-name">OpenCV</span></div>
-                        <div class="skill-item"><span class="skill-name">MediaPipe</span></div>
-                        <div class="skill-item"><span class="skill-name">Scikit-learn</span></div>
-                        <div class="skill-item"><span class="skill-name">Pandas</span></div>
-                        <div class="skill-item"><span class="skill-name">NLTK</span></div>
-                        <div class="skill-item"><span class="skill-name">Streamlit</span></div>
-                    </div>
-                </div>
-                
-                <div class="skill-category">
-                    <h3>Web Frameworks</h3>
-                    <div class="skills-list">
-                        <div class="skill-item"><span class="skill-name">Flask</span></div>
-                        <div class="skill-item"><span class="skill-name">Django</span></div>
-                    </div>
-                </div>
-                
-                <div class="skill-category">
-                    <h3>Databases & Backend Services</h3>
-                    <div class="skills-list">
-                        <div class="skill-item"><span class="skill-name">PostgreSQL</span></div>
-                        <div class="skill-item"><span class="skill-name">Supabase</span></div>
-                        <div class="skill-item"><span class="skill-name">MySQL</span></div>
-                    </div>
-                </div>
-                
-                <div class="skill-category">
-                    <h3>Web Technologies</h3>
-                    <div class="skills-list">
-                        <div class="skill-item"><span class="skill-name">HTML</span></div>
-                        <div class="skill-item"><span class="skill-name">CSS</span></div>
-                        <div class="skill-item"><span class="skill-name">JavaScript</span></div>
-                    </div>
-                </div>
-                
-                <div class="skill-category">
-                    <h3>Developer & AI Tools</h3>
-                    <div class="skills-list">
-                        <div class="skill-item"><span class="skill-name">ChatGPT</span></div>
-                        <div class="skill-item"><span class="skill-name">GitHub Copilot</span></div>
-                        <div class="skill-item"><span class="skill-name">Kiro</span></div>
-                        <div class="skill-item"><span class="skill-name">Gemini</span></div>
-                        <div class="skill-item"><span class="skill-name">Midjourney</span></div>
-                        <div class="skill-item"><span class="skill-name">Cursor</span></div>
-                    </div>
-                </div>
-                
-                <div class="skill-category">
-                    <h3>Version Control & Deployment</h3>
-                    <div class="skills-list">
-                        <div class="skill-item"><span class="skill-name">Git</span></div>
-                        <div class="skill-item"><span class="skill-name">GitHub</span></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Education Section -->
-    <section id="education" class="education">
-        <div class="container">
-            <h2 class="section-title">Education</h2>
-            <div class="education-timeline">
-                <div class="education-item">
-                    <div class="education-year">2022-2026</div>
-                    <div class="education-content">
-                        <h3>B.E.(COMPUTER) - KSV</h3>
-                        <p class="institution">KSV University</p>
-                        <div class="percentage">8.44</div>
-                    </div>
-                </div>
-                
-                <div class="education-item">
-                    <div class="education-year">2020-2022</div>
-                    <div class="education-content">
-                        <h3>H.S.C - C.B.S.E</h3>
-                        <p class="institution">CBSE Board</p>
-                        <div class="percentage">87%</div>
-                    </div>
-                </div>
-                
-                <div class="education-item">
-                    <div class="education-year">2020</div>
-                    <div class="education-content">
-                        <h3>S.S.C - C.B.S.E</h3>
-                        <p class="institution">CBSE Board</p>
-                        <div class="percentage">94.2%</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Certifications Section -->
-    <section id="certifications" class="certifications">
-        <div class="container">
-            <h2 class="section-title">Certifications</h2>
-            <div class="certifications-grid">
-                <div class="certification-card">
-                    <div class="cert-icon">
-                        <i class="fas fa-certificate"></i>
-                    </div>
-                    <div class="cert-content">
-                        <h3>NPTEL Certification on "Enhancing Soft Skills and Personality"</h3>
-                        <p class="cert-issuer">NPTEL</p>
-                        <div class="cert-score">Score: 77%</div>
-                    </div>
-                </div>
-                
-                <div class="certification-card">
-                    <div class="cert-icon">
-                        <i class="fas fa-certificate"></i>
-                    </div>
-                    <div class="cert-content">
-                        <h3>NPTEL Certification on "Python for Data Science"</h3>
-                        <p class="cert-issuer">NPTEL</p>
-                        <div class="cert-score">Score: 68%</div>
-                    </div>
-                </div>
-                
-                <div class="certification-card">
-                    <div class="cert-icon">
-                        <i class="fas fa-certificate"></i>
-                    </div>
-                    <div class="cert-content">
-                        <h3>5 Days Hands-on Series on Laravel Framework and Wordpress CMS</h3>
-                        <p class="cert-issuer">LDRP ITR</p>
-                        <div class="cert-date">20/01/2025 to 24/01/2025</div>
-                    </div>
-                </div>
-                
-                <div class="certification-card">
-                    <div class="cert-icon">
-                        <i class="fas fa-certificate"></i>
-                    </div>
-                    <div class="cert-content">
-                        <h3>Institute of Plasma Research Project Completion Certificate</h3>
-                        <p class="cert-issuer">Institute of Plasma Research</p>
-                    </div>
-                </div>
-                
-                <div class="certification-card">
-                    <div class="cert-icon">
-                        <i class="fas fa-certificate"></i>
-                    </div>
-                    <div class="cert-content">
-                        <h3>TCS iON Career Edge - Young Professional Program</h3>
-                        <p class="cert-issuer">TCS iON</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
-        <div class="container">
-            <h2 class="section-title">Get In Touch</h2>
-            <div class="contact-content">
-                <div class="contact-info">
-                    <h3>Let's Connect</h3>
-                    <p>I'm always open to discussing new opportunities, interesting projects, or just having a chat about technology.</p>
                     
-                    <div class="contact-details">
-                        <div class="contact-item">
-                            <i class="fas fa-phone"></i>
-                            <span>+91 6352732968</span>
+                    <div class="project-link">
+                        <a href="https://lexara-ai.onrender.com/" target="_blank" rel="noopener noreferrer" class="btn-project-link">
+                            <i class="fas fa-external-link-alt"></i>
+                            Live Demo
+                        </a>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="project-card">
+                <div class="card-accent"></div>
+                <div class="project-header">
+                    <h3>CAMERA MOTION SENSING SYSTEM</h3>
+                    </div>
+                <div class="project-content">
+                    <p class="project-description">A smart surveillance system that detects and responds to motion using real-time camera sensing and Python-based automation.</p>
+                    <div class="project-tech">
+                        <h4>Technologies Used:</h4>
+                        <div class="tech-tags">
+                            
+                            <span class="tech-tag">HTML</span>
+                            
+                            <span class="tech-tag">CSS</span>
+                            
+                            <span class="tech-tag">Flask</span>
+                            
+                            <span class="tech-tag">Python</span>
+                            
+                            <span class="tech-tag">PostgreSQL</span>
+                            
                         </div>
-                        <div class="contact-item">
-                            <i class="fas fa-envelope"></i>
-                            <span>dhararuparel16@gmail.com</span>
+                    </div>
+                    
+                    <div class="project-link">
+                        <a href="https://github.com/dhararuparel/Camera-Motion-Sensing-Project.git" target="_blank" rel="noopener noreferrer" class="btn-project-link">
+                            <i class="fas fa-external-link-alt"></i>
+                            View On Github
+                        </a>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="project-card">
+                <div class="card-accent"></div>
+                <div class="project-header">
+                    <h3>EMOTION DETECTION FROM TEXT</h3>
+                    </div>
+                <div class="project-content">
+                    <p class="project-description">A sentiment analysis project that classifies user emotions from textual input using a machine learning model trained on the Twitter Emotion Dataset, deployed through an interactive web interface.</p>
+                    <div class="project-tech">
+                        <h4>Technologies Used:</h4>
+                        <div class="tech-tags">
+                            
+                            <span class="tech-tag">Python</span>
+                            
+                            <span class="tech-tag">Scikit-learn</span>
+                            
+                            <span class="tech-tag">Pandas</span>
+                            
+                            <span class="tech-tag">NLTK</span>
+                            
+                            <span class="tech-tag">Streamlit</span>
+                            
                         </div>
-                        <div class="contact-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>Gandhinagar</span>
+                    </div>
+                    
+                    <div class="project-link">
+                        <a href="https://github.com/dhararuparel/emo_sense" target="_blank" rel="noopener noreferrer" class="btn-project-link">
+                            <i class="fas fa-external-link-alt"></i>
+                            View on Github
+                        </a>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="project-card">
+                <div class="card-accent"></div>
+                <div class="project-header">
+                    <h3>AI CONTENT FACTORY</h3>
+                    </div>
+                <div class="project-content">
+                    <p class="project-description">Developed an AI-powered workflow to generate content ideas and automate storage and notifications.</p>
+                    <div class="project-tech">
+                        <h4>Technologies Used:</h4>
+                        <div class="tech-tags">
+                            
+                            <span class="tech-tag">n8n</span>
+                            
+                            <span class="tech-tag">Google Gemini</span>
+                            
+                            <span class="tech-tag">Google Sheets API</span>
+                            
+                            <span class="tech-tag">Gmail API</span>
+                            
+                            <span class="tech-tag">Automation</span>
+                            
+                            <span class="tech-tag">Low-Code</span>
+                            
                         </div>
-                        <div class="contact-item social-media">
-                            <span class="social-label">Connect with me:</span>
-                            <div class="social-icons-inline">
-                                <a href="https://www.instagram.com/dhara_ruparel16?igsh=emRwZTJyc2h6cnN3" class="social-icon-small instagram" title="Instagram" target="_blank">
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="project-card">
+                <div class="card-accent"></div>
+                <div class="project-header">
+                    <h3>HAND GESTURE RECOGNITION SYSTEM</h3>
+                    </div>
+                <div class="project-content">
+                    <p class="project-description">A real-time hand gesture recognition system that detects and classifies 5 distinct hand gestures using computer vision and Media pipe.</p>
+                    <div class="project-tech">
+                        <h4>Technologies Used:</h4>
+                        <div class="tech-tags">
+                            
+                            <span class="tech-tag">Python</span>
+                            
+                            <span class="tech-tag">OpenCV</span>
+                            
+                            <span class="tech-tag">Media Pipe</span>
+                            
+                        </div>
+                    </div>
+                    
+                    <div class="project-link">
+                        <a href="https://github.com/dhararuparel/Hand-Gesture-Project.git" target="_blank" rel="noopener noreferrer" class="btn-project-link">
+                            <i class="fas fa-external-link-alt"></i>
+                            View on Github
+                        </a>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="project-card">
+                <div class="card-accent"></div>
+                <div class="project-header">
+                    <h3>HOUSE PRICE PREDICTION SYSTEM</h3>
+                    </div>
+                <div class="project-content">
+                    <p class="project-description">ML-powered real estate platform for predicting property prices across major Indian cities( Mumbai, Delhi, Bangalore, Chennai, Hyderabad, Kolkata) with interactive web interface.</p>
+                    <div class="project-tech">
+                        <h4>Technologies Used:</h4>
+                        <div class="tech-tags">
+                            
+                            <span class="tech-tag">Python</span>
+                            
+                            <span class="tech-tag">Machine Learning</span>
+                            
+                            <span class="tech-tag">Scikit-learn</span>
+                            
+                            <span class="tech-tag">Flask</span>
+                            
+                            <span class="tech-tag">HTML</span>
+                            
+                            <span class="tech-tag">CSS</span>
+                            
+                            <span class="tech-tag">JavaScript</span>
+                            
+                            <span class="tech-tag">PostgreSQL</span>
+                            
+                            <span class="tech-tag">REST APIs</span>
+                            
+                            <span class="tech-tag">Pickle</span>
+                            
+                        </div>
+                    </div>
+                    
+                    <div class="project-link">
+                        <a href="https://github.com/dhararuparel/house-price-prediction.git" target="_blank" rel="noopener noreferrer" class="btn-project-link">
+                            <i class="fas fa-external-link-alt"></i>
+                            View On Github
+                        </a>
+                    </div>
+                    
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+<!-- Skills Section -->
+<section id="skills" class="skills">
+    <div class="container">
+        <p class="section-eyebrow">Expertise</p>
+        <h2 class="section-title">Skills & Technologies</h2>
+        <div class="skills-container">
+            
+
+            
+                
+                
+                <div class="skill-category">
+                    <h3><i class="fas fa-layer-group category-icon"></i> Programming Languages</h3>
+                    <div class="skills-list">
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">Python</span>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">JavaScript</span>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">SQL</span>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+            
+                
+                
+                <div class="skill-category">
+                    <h3><i class="fas fa-layer-group category-icon"></i> AI &amp; Machine Learning</h3>
+                    <div class="skills-list">
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">Machine Learning</span>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">AI</span>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">NLP</span>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">RAG</span>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">LLM </span>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">Computer Vision</span>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+            
+                
+                
+                <div class="skill-category">
+                    <h3><i class="fas fa-layer-group category-icon"></i> Libraries &amp; Frameworks</h3>
+                    <div class="skills-list">
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">OpenCV</span>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">MediaPipe</span>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">Scikit-learn</span>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">Pandas</span>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">NLTK</span>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">Streamlit</span>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+            
+                
+                
+                <div class="skill-category">
+                    <h3><i class="fas fa-layer-group category-icon"></i> Web Frameworks</h3>
+                    <div class="skills-list">
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">Flask</span>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">Django</span>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+            
+                
+                
+                <div class="skill-category">
+                    <h3><i class="fas fa-layer-group category-icon"></i> Databases &amp; Backend Services</h3>
+                    <div class="skills-list">
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">MySQL</span>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">PostgreSQL</span>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">Supabase</span>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+            
+                
+                
+                <div class="skill-category">
+                    <h3><i class="fas fa-layer-group category-icon"></i> Web Technologies</h3>
+                    <div class="skills-list">
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">HTML</span>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">CSS</span>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">JavaScript</span>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+            
+                
+                
+                <div class="skill-category">
+                    <h3><i class="fas fa-layer-group category-icon"></i> Developer &amp; AI Tools</h3>
+                    <div class="skills-list">
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">ChatGPT</span>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">GitHub Copilot</span>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">Kiro</span>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">Gemini</span>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">Cursor</span>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">Git</span>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">GitHub</span>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+            
+                
+                
+                <div class="skill-category">
+                    <h3><i class="fas fa-layer-group category-icon"></i> Version Control &amp; Deployment</h3>
+                    <div class="skills-list">
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">Docker</span>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">Git</span>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">Render</span>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">GitHub</span>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <span class="skill-name">Vercel</span>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+            
+        </div>
+
+    </div>
+</section>
+
+<!-- Internships Section -->
+<section id="internships" class="internships">
+    <div class="container">
+        <p class="section-eyebrow">Experience</p>
+        <h2 class="section-title">Internships</h2>
+        <div class="internships-grid">
+            
+            <div class="internship-card">
+                <div class="card-accent"></div>
+                <div class="internship-header">
+                    <h3>Python With Django</h3>
+                    <div class="company-info">
+                        <span class="company">iTechbrains Pvt. Ltd.</span>
+                        <span class="location">Virtual</span>
+                    </div>
+                    <div class="duration">1 Month</div>
+                </div>
+                <div class="internship-content">
+                    <p class="internship-description"></p>
+                    
+                    <div class="internship-tech">
+                        <h4>Technologies Used:</h4>
+                        <div class="tech-tags">
+                            
+                            <span class="tech-tag">Python</span>
+                            
+                            <span class="tech-tag">Django</span>
+                            
+                            <span class="tech-tag">PostgreSQL</span>
+                            
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="internship-card">
+                <div class="card-accent"></div>
+                <div class="internship-header">
+                    <h3>Summer Internship</h3>
+                    <div class="company-info">
+                        <span class="company">TatvaSoft Pvt. Ltd.</span>
+                        <span class="location">TatvaSoft Pvt. Ltd.</span>
+                    </div>
+                    <div class="duration">15  Days</div>
+                </div>
+                <div class="internship-content">
+                    <p class="internship-description"></p>
+                    
+                    <div class="internship-tech">
+                        <h4>Technologies Used:</h4>
+                        <div class="tech-tags">
+                            
+                            <span class="tech-tag">PostgreSQL</span>
+                            
+                            <span class="tech-tag">.NET</span>
+                            
+                            <span class="tech-tag">Angular</span>
+                            
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            
+        </div>
+        
+    </div>
+</section>
+
+<!-- Education Section -->
+<section id="education" class="education">
+    <div class="container">
+        <p class="section-eyebrow">Background</p>
+        <h2 class="section-title">Education</h2>
+        <div class="education-timeline">
+            
+            <div class="education-item">
+                <div class="education-year">2022-2026</div>
+                <div class="education-content">
+                    <h3>B.E.(COMPUTER) - KSV</h3>
+                    <p class="institution">LDRP-ITR, Gandhinagar</p>
+                    
+                    <div class="percentage">8.55</div>
+                    
+                </div>
+            </div>
+            
+            <div class="education-item">
+                <div class="education-year">2020-2022</div>
+                <div class="education-content">
+                    <h3>H.S.C - C.B.S.E</h3>
+                    <p class="institution">CBSE Board</p>
+                    
+                    <div class="percentage">87%</div>
+                    
+                </div>
+            </div>
+            
+            <div class="education-item">
+                <div class="education-year">2020</div>
+                <div class="education-content">
+                    <h3>S.S.C - C.B.S.E</h3>
+                    <p class="institution">CBSE Board</p>
+                    
+                    <div class="percentage">94.2%</div>
+                    
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+<!-- Certifications Section -->
+<section id="certifications" class="certifications">
+    <div class="container">
+        <p class="section-eyebrow">Achievements</p>
+        <h2 class="section-title">Certifications</h2>
+        <div class="certifications-grid">
+            
+            <div class="certification-card">
+                <div class="cert-icon">
+                    <i class="fas fa-certificate"></i>
+                </div>
+                <div class="cert-content">
+                    <h3>NPTEL Certification on &#34;Enhancing Soft Skills and Personality&#34;</h3>
+                    <p class="cert-issuer">NPTEL</p>
+                    
+                    <div class="cert-score">Score: 77%</div>
+                    
+                    
+                </div>
+            </div>
+            
+            <div class="certification-card">
+                <div class="cert-icon">
+                    <i class="fas fa-certificate"></i>
+                </div>
+                <div class="cert-content">
+                    <h3>NPTEL Certification on &#34;Python for Data Science&#34;</h3>
+                    <p class="cert-issuer">NPTEL</p>
+                    
+                    <div class="cert-score">Score: 68%</div>
+                    
+                    
+                </div>
+            </div>
+            
+            <div class="certification-card">
+                <div class="cert-icon">
+                    <i class="fas fa-certificate"></i>
+                </div>
+                <div class="cert-content">
+                    <h3>Institute of Plasma Research Project Completion Certificate</h3>
+                    <p class="cert-issuer">Institute of Plasma Research</p>
+                    
+                    
+                </div>
+            </div>
+            
+            <div class="certification-card">
+                <div class="cert-icon">
+                    <i class="fas fa-certificate"></i>
+                </div>
+                <div class="cert-content">
+                    <h3>TCS iON Career Edge - Young Professional Program</h3>
+                    <p class="cert-issuer">TCS iON</p>
+                    
+                    
+                </div>
+            </div>
+            
+            <div class="certification-card">
+                <div class="cert-icon">
+                    <i class="fas fa-certificate"></i>
+                </div>
+                <div class="cert-content">
+                    <h3>5 Days Hands-on Series on Laravel Framework and Wordpress CMS</h3>
+                    <p class="cert-issuer">LDRP ITR</p>
+                    
+                    
+                    <div class="cert-date">20/01/2025 to 24/01/2025</div>
+                    
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="contact">
+    <div class="container">
+        <p class="section-eyebrow">Contact</p>
+        <h2 class="section-title">Get In Touch</h2>
+        <div class="contact-content">
+            <div class="contact-info">
+                <h3>Let's Connect</h3>
+                <p>I'm always open to discussing new opportunities, interesting projects, or just having a chat about technology.</p>
+                
+                
+                <div class="contact-details">
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>dhararuparel16@gmail.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Ahmedabad</span>
+                    </div>
+                    <div class="contact-item social-media">
+                        <span class="social-label">Connect with me:</span>
+                        <div class="social-links-vertical">
+                            <a href="https://www.instagram.com/dhara_ruparel16?igsh=emRwZTJyc2h6cnN3" class="social-link-row instagram" title="Instagram" target="_blank">
+                                <span class="social-icon-glass">
                                     <i class="fab fa-instagram"></i>
-                                </a>
-                                <a href="https://www.linkedin.com/in/dhara-ruparel/" class="social-icon-small linkedin" title="LinkedIn" target="_blank">
+                                </span>
+                                <span class="social-platform-name">Instagram</span>
+                            </a>
+                            <a href="https://www.linkedin.com/in/dhara-ruparel/" class="social-link-row linkedin" title="LinkedIn" target="_blank">
+                                <span class="social-icon-glass">
                                     <i class="fab fa-linkedin"></i>
-                                </a>
-                                <a href="https://github.com/dhararuparel" class="social-icon-small github" title="GitHub" target="_blank">
+                                </span>
+                                <span class="social-platform-name">LinkedIn</span>
+                            </a>
+                            <a href="https://github.com/dhararuparel" class="social-link-row github" title="GitHub" target="_blank">
+                                <span class="social-icon-glass">
                                     <i class="fab fa-github"></i>
-                                </a>
-                            </div>
+                                </span>
+                                <span class="social-platform-name">GitHub</span>
+                            </a>
                         </div>
                     </div>
                 </div>
                 
-                <div class="contact-form">
-                    <form id="contactForm">
-                        <div class="form-group">
-                            <input type="text" id="name" name="name" placeholder="Your Name" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="email" id="email" name="email" placeholder="Your Email" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" id="subject" name="subject" placeholder="Subject" required>
-                        </div>
-                        <div class="form-group">
-                            <textarea id="message" name="message" placeholder="Your Message" rows="5" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Send Message</button>
-                    </form>
-                </div>
+            </div>
+            <div class="contact-form">
+                <form id="contactForm">
+                    <div class="form-group">
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Your Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input type="text" id="subject" name="subject" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-send">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
+                </form>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <p>&copy; 2025 Dhara Ruparel. All rights reserved.</p>
-            </div>
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <p>&copy; 2025 Dhara Ruparel. All rights reserved.</p>
         </div>
-    </footer>
+    </div>
+</footer>
 
+<button type="button" class="back-to-top" id="backToTop" aria-label="Back to top" title="Back to top">
+    <i class="fas fa-arrow-up"></i>
+</button>
+
+    
     <script src="static/js/script.js"></script>
+    
 </body>
 </html>
