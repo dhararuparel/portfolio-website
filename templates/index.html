@@ -18,8 +18,7 @@
             </div>
             <div class="nav-actions">
                 <!-- Resume button -->
-                <a href="{{ url_for('download_resume') }}" 
-                   class="btn-resume">
+                <a href="{{ url_for('download_resume') }}" class="btn-resume">
                     <i class="fas fa-download"></i>
                     Resume
                 </a>
@@ -47,10 +46,11 @@
             <h1 class="hero-title">
                 Hi, I'm <span class="text-gradient">Dhara Ruparel</span>.
             </h1>
-            <p class="hero-subtitle">Computer Engineer & AI Enthusiast</p>
+            <p class="hero-subtitle">
+                AI Engineer • Machine Learning • LLM Applications
+            </p>
             <p class="hero-description">
-                Passionate about Python, Machine Learning, and creating innovative solutions 
-                through technology. Currently pursuing B.E. in Computer Science.
+                AI Engineer specializing in Python, Machine Learning, and Large Language Models. I build AI agents, intelligent automation, and end-to-end AI applications that solve real-world problems with scalable, user-focused solutions.
             </p>
             <div class="hero-buttons">
                 <a href="#projects" class="btn btn-primary">View My Work</a>
@@ -60,7 +60,8 @@
         <div class="hero-image">
             <div class="profile-card">
                 <div class="profile-avatar">
-                    <img src="{{ url_for('static', filename='images/DHARA.jpg') }}" alt="Dhara Ruparel" class="profile-image">
+                    <img src="{{ url_for('static', filename='images/DHARA.jpg') }}" alt="Dhara Ruparel"
+                        class="profile-image">
                 </div>
                 <div class="floating-elements">
                     <div class="floating-icon python"><i class="fab fa-python"></i></div>
@@ -81,10 +82,15 @@
         <div class="about-content">
             <div class="about-text">
                 <p>
-                    AI/ML-focused Computer Engineering student passionate about building intelligent and real-time applications using Artificial Intelligence, Computer Vision, and NLP. Skilled in developing AI-powered solutions such as motion detection, gesture recognition, emotion analysis, and workflow automation using Python, Flask, OpenCV, MediaPipe, and Scikit-learn.
+                    AI/ML-focused Computer Engineering student passionate about building intelligent and real-time
+                    applications using Artificial Intelligence, Computer Vision, and NLP. Skilled in developing
+                    AI-powered solutions such as motion detection, gesture recognition, emotion analysis, and workflow
+                    automation using Python, Flask, OpenCV, MediaPipe, and Scikit-learn.
                 </p>
                 <p>
-                    Experienced in creating scalable and user-friendly systems with strong knowledge of PostgreSQL, APIs, and automation tools like Gemini API and n8n. Dedicated to transforming innovative ideas into impactful technology solutions that solve real-world problems.
+                    Experienced in creating scalable and user-friendly systems with strong knowledge of PostgreSQL,
+                    APIs, and automation tools like Gemini API and n8n. Dedicated to transforming innovative ideas into
+                    impactful technology solutions that solve real-world problems.
                 </p>
             </div>
         </div>
@@ -102,7 +108,7 @@
                 <div class="card-accent"></div>
                 <div class="project-header">
                     <h3>{{ project.title }}</h3>
-                    </div>
+                </div>
                 <div class="project-content">
                     <p class="project-description">{{ project.description }}</p>
                     <div class="project-tech">
@@ -115,7 +121,8 @@
                     </div>
                     {% if project.link_url %}
                     <div class="project-link">
-                        <a href="{{ project.link_url }}" target="_blank" rel="noopener noreferrer" class="btn-project-link">
+                        <a href="{{ project.link_url }}" target="_blank" rel="noopener noreferrer"
+                            class="btn-project-link">
                             <i class="fas fa-external-link-alt"></i>
                             {{ project.link_label or 'View Project' }}
                         </a>
@@ -135,30 +142,30 @@
         <h2 class="section-title">Skills & Technologies</h2>
         <div class="skills-container">
             {% set category_order = [
-                "Programming Languages",
-                "AI & Machine Learning",
-                "Libraries & Frameworks",
-                "Web Frameworks",
-                "Databases & Backend Services",
-                "Web Technologies",
-                "Developer & AI Tools",
-                "Version Control & Deployment"
+            "Programming Languages",
+            "AI & Machine Learning",
+            "Libraries & Frameworks",
+            "Web Frameworks",
+            "Databases & Backend Services",
+            "Web Technologies",
+            "Developer & AI Tools",
+            "Version Control & Deployment"
             ] %}
 
             {% for category in category_order %}
-                {% set category_skills = skills | selectattr("category", "equalto", category) | list %}
-                {% if category_skills %}
-                <div class="skill-category">
-                    <h3><i class="fas fa-layer-group category-icon"></i> {{ category }}</h3>
-                    <div class="skills-list">
-                        {% for skill in category_skills %}
-                        <div class="skill-item">
-                            <span class="skill-name">{{ skill.name }}</span>
-                        </div>
-                        {% endfor %}
+            {% set category_skills = skills | selectattr("category", "equalto", category) | list %}
+            {% if category_skills %}
+            <div class="skill-category">
+                <h3><i class="fas fa-layer-group category-icon"></i> {{ category }}</h3>
+                <div class="skills-list">
+                    {% for skill in category_skills %}
+                    <div class="skill-item">
+                        <span class="skill-name">{{ skill.name }}</span>
                     </div>
+                    {% endfor %}
                 </div>
-                {% endif %}
+            </div>
+            {% endif %}
             {% endfor %}
         </div>
 
@@ -264,8 +271,9 @@
         <div class="contact-content">
             <div class="contact-info">
                 <h3>Let's Connect</h3>
-                <p>I'm always open to discussing new opportunities, interesting projects, or just having a chat about technology.</p>
-                
+                <p>I'm always open to discussing new opportunities, interesting projects, or just having a chat about
+                    technology.</p>
+
                 {% if contact %}
                 <div class="contact-details">
                     <div class="contact-item">
@@ -279,19 +287,22 @@
                     <div class="contact-item social-media">
                         <span class="social-label">Connect with me:</span>
                         <div class="social-links-vertical">
-                            <a href="https://www.instagram.com/dhara_ruparel16?igsh=emRwZTJyc2h6cnN3" class="social-link-row instagram" title="Instagram" target="_blank">
+                            <a href="https://www.instagram.com/dhara_ruparel16?igsh=emRwZTJyc2h6cnN3"
+                                class="social-link-row instagram" title="Instagram" target="_blank">
                                 <span class="social-icon-glass">
                                     <i class="fab fa-instagram"></i>
                                 </span>
                                 <span class="social-platform-name">Instagram</span>
                             </a>
-                            <a href="https://www.linkedin.com/in/dhara-ruparel/" class="social-link-row linkedin" title="LinkedIn" target="_blank">
+                            <a href="https://www.linkedin.com/in/dhara-ruparel/" class="social-link-row linkedin"
+                                title="LinkedIn" target="_blank">
                                 <span class="social-icon-glass">
                                     <i class="fab fa-linkedin"></i>
                                 </span>
                                 <span class="social-platform-name">LinkedIn</span>
                             </a>
-                            <a href="https://github.com/dhararuparel" class="social-link-row github" title="GitHub" target="_blank">
+                            <a href="https://github.com/dhararuparel" class="social-link-row github" title="GitHub"
+                                target="_blank">
                                 <span class="social-icon-glass">
                                     <i class="fab fa-github"></i>
                                 </span>
