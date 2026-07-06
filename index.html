@@ -4,80 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dhara Ruparel - Portfolio</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="static/css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-
-    <!-- ===== LOADING SCREEN ===== -->
-    <div id="loader-overlay">
-        <div class="loader-grid"></div>
-        <div class="loader-body">
-            <div class="loader-logo">
-                <span class="loader-logo-text">DR</span>
-                <div class="loader-logo-dot"></div>
-            </div>
-            <div class="loader-name">DHARA RUPAREL</div>
-            <div class="loader-tagline">Computer Engineer &amp; AI Enthusiast</div>
-            <div class="loader-bar-wrap"><div class="loader-bar-fill"></div></div>
-            <div class="loader-status"><span class="loader-status-label">INITIALIZING</span><span id="loader-pct">0%</span></div>
-        </div>
-    </div>
-    <style>
-        #loader-overlay{position:fixed;inset:0;background:#0a0a0a;display:flex;align-items:center;justify-content:center;z-index:99999;transition:opacity .7s ease,visibility .7s ease}
-        #loader-overlay.hidden{opacity:0;visibility:hidden;pointer-events:none}
-        .loader-grid{position:absolute;inset:0;background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="g" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="%23ffffff" stroke-width="0.5" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23g)"/></svg>');opacity:.15;pointer-events:none}
-        .loader-body{position:relative;display:flex;flex-direction:column;align-items:center;gap:16px;z-index:1}
-        .loader-logo{position:relative;width:100px;height:100px;background:rgba(255,255,255,.04);border:1px solid rgba(108,92,231,.35);border-radius:24px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);box-shadow:0 0 40px rgba(108,92,231,.15),inset 0 1px 0 rgba(255,255,255,.06);animation:lf 3s ease-in-out infinite;margin-bottom:4px}
-        .loader-logo::before{content:'';position:absolute;inset:-2px;border-radius:26px;background:conic-gradient(from 0deg,#6c5ce7 0%,#a29bfe 25%,transparent 50%,transparent 100%);animation:ls 2s linear infinite;z-index:-1}
-        .loader-logo::after{content:'';position:absolute;inset:0;border-radius:24px;background:#0a0a0a;z-index:-1}
-        .loader-logo-text{font-family:'Inter',sans-serif;font-size:2.2rem;font-weight:700;letter-spacing:-.02em;background:linear-gradient(135deg,#fff 0%,#6c5ce7 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-        .loader-logo-dot{position:absolute;bottom:10px;right:10px;width:8px;height:8px;background:#6c5ce7;border-radius:50%;box-shadow:0 0 8px #6c5ce7;animation:lb 1.4s ease-in-out infinite}
-        .loader-name{font-family:'Inter',sans-serif;font-size:1.05rem;font-weight:700;letter-spacing:.18em;color:#fff;text-transform:uppercase}
-        .loader-tagline{font-family:'Inter',sans-serif;font-size:.75rem;color:#888;letter-spacing:.06em}
-        .loader-bar-wrap{width:260px;height:2px;background:rgba(108,92,231,.15);border-radius:2px;overflow:hidden;margin-top:6px}
-        .loader-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,#6c5ce7,#a29bfe);border-radius:2px;box-shadow:0 0 10px rgba(108,92,231,.6);transition:width .12s ease}
-        .loader-status{display:flex;gap:10px;font-family:'Inter',sans-serif;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase}
-        .loader-status-label{color:#555}
-        #loader-pct{color:#6c5ce7;font-weight:600}
-        @keyframes ls{to{transform:rotate(360deg)}}
-        @keyframes lf{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-        @keyframes lb{0%,100%{opacity:1}50%{opacity:.2}}
-    </style>
-    <script>
-        (function(){
-            var o=document.getElementById('loader-overlay'),b=document.querySelector('.loader-bar-fill'),p=document.getElementById('loader-pct'),pct=0;
-            var t=setInterval(function(){var s=pct<70?Math.random()*8+4:pct<88?Math.random()*3+1:0;pct=Math.min(pct+s,90);b.style.width=pct+'%';p.textContent=Math.round(pct)+'%';if(pct>=90)clearInterval(t);},120);
-            window.addEventListener('load',function(){clearInterval(t);pct=100;b.style.width='100%';p.textContent='100%';setTimeout(function(){o.classList.add('hidden');},500);});
-        })();
-    </script>
-    <!-- ===== END LOADING SCREEN ===== -->
-
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
                 <h2>DHARA RUPAREL</h2>
             </div>
-            <div class="nav-right">
-                <div class="nav-menu">
-                    <a href="#projects" class="nav-link">Projects</a>
-                    <a href="#skills" class="nav-link">Skills</a>
-                    <a href="#internships" class="nav-link">Internships</a>
-                    <a href="#education" class="nav-link">Education</a>
-                    <a href="#certifications" class="nav-link">Certifications</a>
-                    <a href="#contact" class="nav-link">Contact</a>
-                </div>
-                <div class="nav-actions">
-                    <a href="static/Dhara_Ruparel_Resume.pdf" download="Dhara_Ruparel_Resume.pdf" type="application/pdf" class="btn-resume">
-                        <i class="fas fa-download"></i>
-                        Resume
-                    </a>
-                    <button id="theme-toggle" class="theme-btn" title="Toggle light/dark mode" aria-label="Toggle theme">
-                        <i class="fas fa-sun" id="theme-icon"></i>
-                    </button>
-                </div>
+            <div class="nav-menu">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#projects" class="nav-link">Projects</a>
+                <a href="#skills" class="nav-link">Skills</a>
+                <a href="#education" class="nav-link">Education</a>
+                <a href="#certifications" class="nav-link">Certifications</a>
+                <a href="#contact" class="nav-link">Contact</a>
             </div>
             <div class="hamburger">
                 <span></span>
@@ -107,7 +52,7 @@
             <div class="hero-image">
                 <div class="profile-card">
                     <div class="profile-avatar">
-                        <img src="images/DHARA.jpg" alt="Dhara Ruparel" class="profile-image">
+                        <img src="static/images/DHARA.jpg" alt="Dhara Ruparel" class="profile-image">
                     </div>
                     <div class="floating-elements">
                         <div class="floating-icon python"><i class="fab fa-python"></i></div>
@@ -127,24 +72,27 @@
             <div class="about-content">
                 <div class="about-text">
                     <p>
-                        Driven Computer Engineering student passionate about building intelligent, real-world solutions using AI, Machine Learning, and Full-Stack Development. Experienced in developing LLM-powered applications, RAG-based AI systems, handwriting recognition tools, gesture & emotion detection projects, and predictive analytics platforms.
+                        I'm a dedicated Computer Science student with a passion for artificial intelligence, 
+                        machine learning, and web development. My journey in technology has led me to work 
+                        on various projects involving motion sensing, gesture recognition, and emotion detection.
                     </p>
                     <p>
-                        Skilled in Python, Flask, React, Django, PostgreSQL, FAISS, Gemini AI, and modern automation workflows with n8n, I focus on creating scalable, user-centric applications that combine powerful AI capabilities with seamless user experiences. Passionate about innovation, problem-solving, and continuously exploring emerging technologies to build impactful digital products.
+                        With experience in Python, Flask, PostgreSQL, and modern web technologies, I enjoy 
+                        creating solutions that bridge the gap between complex algorithms and user-friendly interfaces.
                     </p>
                 </div>
                 <div class="about-image">
                     <div class="about-stats">
                         <div class="stat">
-                            <h3 id="projects-count">0</h3>
+                            <h3>3</h3>
                             <p>Projects Completed</p>
                         </div>
                         <div class="stat">
-                            <h3 id="internships-count">0</h3>
+                            <h3>0</h3>
                             <p>Internships</p>
                         </div>
                         <div class="stat">
-                            <h3 id="certifications-count">0</h3>
+                            <h3>5</h3>
                             <p>Certifications</p>
                         </div>
                     </div>
@@ -167,8 +115,82 @@
     <section id="projects" class="projects">
         <div class="container">
             <h2 class="section-title">Work Experience & Projects</h2>
-            <div class="projects-grid" id="projects-container">
-                <!-- Projects will be loaded dynamically -->
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-header">
+                        <h3>CAMERA MOTION SENSING PROJECT</h3>
+                        <div class="project-meta">
+                            <span class="duration">6 months</span>
+                            <span class="team-size">Team: 4 persons</span>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <p class="project-description">A smart surveillance system that detects and responds to motion using real-time camera sensing and Python-based automation.</p>
+                        <div class="project-role">
+                            <strong>Role:</strong> Member
+                        </div>
+                        <div class="project-tech">
+                            <h4>Technologies Used:</h4>
+                            <div class="tech-tags">
+                                <span class="tech-tag">HTML</span>
+                                <span class="tech-tag">CSS</span>
+                                <span class="tech-tag">Flask</span>
+                                <span class="tech-tag">Python</span>
+                                <span class="tech-tag">PostgreSQL</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-header">
+                        <h3>HAND GESTURE RECOGNITION SYSTEM</h3>
+                        <div class="project-meta">
+                            <span class="duration">1 Month</span>
+                            <span class="team-size">Team: 1 person</span>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <p class="project-description">A real-time hand gesture recognition system that detects and classifies 5 distinct hand gestures using computer vision and Media Pipe.</p>
+                        <div class="project-role">
+                            <strong>Role:</strong> Individual
+                        </div>
+                        <div class="project-tech">
+                            <h4>Technologies Used:</h4>
+                            <div class="tech-tags">
+                                <span class="tech-tag">Python</span>
+                                <span class="tech-tag">OpenCV</span>
+                                <span class="tech-tag">Media Pipe</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-header">
+                        <h3>EMOTION DETECTION FROM TEXT</h3>
+                        <div class="project-meta">
+                            <span class="duration">3 weeks</span>
+                            <span class="team-size">Team: 1 person</span>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <p class="project-description">A sentiment analysis project that classifies user emotions from textual input using a machine learning model trained on the Twitter Emotion Dataset.</p>
+                        <div class="project-role">
+                            <strong>Role:</strong> Individual
+                        </div>
+                        <div class="project-tech">
+                            <h4>Technologies Used:</h4>
+                            <div class="tech-tags">
+                                <span class="tech-tag">Python</span>
+                                <span class="tech-tag">Scikit-learn</span>
+                                <span class="tech-tag">Pandas</span>
+                                <span class="tech-tag">NLTK</span>
+                                <span class="tech-tag">Streamlit</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -177,18 +199,79 @@
     <section id="skills" class="skills">
         <div class="container">
             <h2 class="section-title">Skills & Technologies</h2>
-            <div class="skills-container" id="skills-container">
-                <!-- Skills will be loaded dynamically -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Internships Section -->
-    <section id="internships" class="internships">
-        <div class="container">
-            <h2 class="section-title">Internships</h2>
-            <div class="internships-grid" id="internships-container">
-                <!-- Internships will be loaded dynamically -->
+            <div class="skills-container">
+                <div class="skill-category">
+                    <h3>Programming Languages</h3>
+                    <div class="skills-list">
+                        <div class="skill-item"><span class="skill-name">Python</span></div>
+                    </div>
+                </div>
+                
+                <div class="skill-category">
+                    <h3>AI & Machine Learning</h3>
+                    <div class="skills-list">
+                        <div class="skill-item"><span class="skill-name">Machine Learning</span></div>
+                        <div class="skill-item"><span class="skill-name">AI</span></div>
+                    </div>
+                </div>
+                
+                <div class="skill-category">
+                    <h3>Libraries & Frameworks</h3>
+                    <div class="skills-list">
+                        <div class="skill-item"><span class="skill-name">OpenCV</span></div>
+                        <div class="skill-item"><span class="skill-name">MediaPipe</span></div>
+                        <div class="skill-item"><span class="skill-name">Scikit-learn</span></div>
+                        <div class="skill-item"><span class="skill-name">Pandas</span></div>
+                        <div class="skill-item"><span class="skill-name">NLTK</span></div>
+                        <div class="skill-item"><span class="skill-name">Streamlit</span></div>
+                    </div>
+                </div>
+                
+                <div class="skill-category">
+                    <h3>Web Frameworks</h3>
+                    <div class="skills-list">
+                        <div class="skill-item"><span class="skill-name">Flask</span></div>
+                        <div class="skill-item"><span class="skill-name">Django</span></div>
+                    </div>
+                </div>
+                
+                <div class="skill-category">
+                    <h3>Databases & Backend Services</h3>
+                    <div class="skills-list">
+                        <div class="skill-item"><span class="skill-name">PostgreSQL</span></div>
+                        <div class="skill-item"><span class="skill-name">Supabase</span></div>
+                        <div class="skill-item"><span class="skill-name">MySQL</span></div>
+                    </div>
+                </div>
+                
+                <div class="skill-category">
+                    <h3>Web Technologies</h3>
+                    <div class="skills-list">
+                        <div class="skill-item"><span class="skill-name">HTML</span></div>
+                        <div class="skill-item"><span class="skill-name">CSS</span></div>
+                        <div class="skill-item"><span class="skill-name">JavaScript</span></div>
+                    </div>
+                </div>
+                
+                <div class="skill-category">
+                    <h3>Developer & AI Tools</h3>
+                    <div class="skills-list">
+                        <div class="skill-item"><span class="skill-name">ChatGPT</span></div>
+                        <div class="skill-item"><span class="skill-name">GitHub Copilot</span></div>
+                        <div class="skill-item"><span class="skill-name">Kiro</span></div>
+                        <div class="skill-item"><span class="skill-name">Gemini</span></div>
+                        <div class="skill-item"><span class="skill-name">Midjourney</span></div>
+                        <div class="skill-item"><span class="skill-name">Cursor</span></div>
+                    </div>
+                </div>
+                
+                <div class="skill-category">
+                    <h3>Version Control & Deployment</h3>
+                    <div class="skills-list">
+                        <div class="skill-item"><span class="skill-name">Git</span></div>
+                        <div class="skill-item"><span class="skill-name">GitHub</span></div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -197,8 +280,33 @@
     <section id="education" class="education">
         <div class="container">
             <h2 class="section-title">Education</h2>
-            <div class="education-timeline" id="education-container">
-                <!-- Education will be loaded dynamically -->
+            <div class="education-timeline">
+                <div class="education-item">
+                    <div class="education-year">2022-2026</div>
+                    <div class="education-content">
+                        <h3>B.E.(COMPUTER) - KSV</h3>
+                        <p class="institution">KSV University</p>
+                        <div class="percentage">8.44</div>
+                    </div>
+                </div>
+                
+                <div class="education-item">
+                    <div class="education-year">2020-2022</div>
+                    <div class="education-content">
+                        <h3>H.S.C - C.B.S.E</h3>
+                        <p class="institution">CBSE Board</p>
+                        <div class="percentage">87%</div>
+                    </div>
+                </div>
+                
+                <div class="education-item">
+                    <div class="education-year">2020</div>
+                    <div class="education-content">
+                        <h3>S.S.C - C.B.S.E</h3>
+                        <p class="institution">CBSE Board</p>
+                        <div class="percentage">94.2%</div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -207,8 +315,59 @@
     <section id="certifications" class="certifications">
         <div class="container">
             <h2 class="section-title">Certifications</h2>
-            <div class="certifications-grid" id="certifications-container">
-                <!-- Certifications will be loaded dynamically -->
+            <div class="certifications-grid">
+                <div class="certification-card">
+                    <div class="cert-icon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <div class="cert-content">
+                        <h3>NPTEL Certification on "Enhancing Soft Skills and Personality"</h3>
+                        <p class="cert-issuer">NPTEL</p>
+                        <div class="cert-score">Score: 77%</div>
+                    </div>
+                </div>
+                
+                <div class="certification-card">
+                    <div class="cert-icon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <div class="cert-content">
+                        <h3>NPTEL Certification on "Python for Data Science"</h3>
+                        <p class="cert-issuer">NPTEL</p>
+                        <div class="cert-score">Score: 68%</div>
+                    </div>
+                </div>
+                
+                <div class="certification-card">
+                    <div class="cert-icon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <div class="cert-content">
+                        <h3>5 Days Hands-on Series on Laravel Framework and Wordpress CMS</h3>
+                        <p class="cert-issuer">LDRP ITR</p>
+                        <div class="cert-date">20/01/2025 to 24/01/2025</div>
+                    </div>
+                </div>
+                
+                <div class="certification-card">
+                    <div class="cert-icon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <div class="cert-content">
+                        <h3>Institute of Plasma Research Project Completion Certificate</h3>
+                        <p class="cert-issuer">Institute of Plasma Research</p>
+                    </div>
+                </div>
+                
+                <div class="certification-card">
+                    <div class="cert-icon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <div class="cert-content">
+                        <h3>TCS iON Career Edge - Young Professional Program</h3>
+                        <p class="cert-issuer">TCS iON</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -222,24 +381,49 @@
                     <h3>Let's Connect</h3>
                     <p>I'm always open to discussing new opportunities, interesting projects, or just having a chat about technology.</p>
                     
-                    <div class="contact-details" id="contact-details">
-                        <!-- Contact details will be loaded dynamically -->
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span>+91 6352732968</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>dhararuparel16@gmail.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Gandhinagar</span>
+                        </div>
+                        <div class="contact-item social-media">
+                            <span class="social-label">Connect with me:</span>
+                            <div class="social-icons-inline">
+                                <a href="https://www.instagram.com/dhara_ruparel16?igsh=emRwZTJyc2h6cnN3" class="social-icon-small instagram" title="Instagram" target="_blank">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="https://www.linkedin.com/in/dhara-ruparel/" class="social-icon-small linkedin" title="LinkedIn" target="_blank">
+                                    <i class="fab fa-linkedin"></i>
+                                </a>
+                                <a href="https://github.com/dhararuparel" class="social-icon-small github" title="GitHub" target="_blank">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="contact-form">
                     <form id="contactForm">
                         <div class="form-group">
-                            <input type="text" id="name" name="name" required>
+                            <input type="text" id="name" name="name" placeholder="Your Name" required>
                         </div>
                         <div class="form-group">
-                            <input type="email" id="email" name="email" required>
+                            <input type="email" id="email" name="email" placeholder="Your Email" required>
                         </div>
                         <div class="form-group">
-                            <input type="text" id="subject" name="subject" required>
+                            <input type="text" id="subject" name="subject" placeholder="Subject" required>
                         </div>
                         <div class="form-group">
-                            <textarea id="message" name="message" rows="5" required></textarea>
+                            <textarea id="message" name="message" placeholder="Your Message" rows="5" required></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary">Send Message</button>
                     </form>
@@ -257,6 +441,6 @@
         </div>
     </footer>
 
-    <script src="js/script.js"></script>
+    <script src="static/js/script.js"></script>
 </body>
 </html>

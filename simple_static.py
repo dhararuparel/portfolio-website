@@ -220,16 +220,43 @@ def create_simple_static():
                     <h3>Programming Languages</h3>
                     <div class="skills-list">
                         <div class="skill-item"><span class="skill-name">Python</span></div>
+                    </div>
+                </div>
+                
+                <div class="skill-category">
+                    <h3>AI & Machine Learning</h3>
+                    <div class="skills-list">
                         <div class="skill-item"><span class="skill-name">Machine Learning</span></div>
                         <div class="skill-item"><span class="skill-name">AI</span></div>
                     </div>
                 </div>
                 
                 <div class="skill-category">
-                    <h3>Databases</h3>
+                    <h3>Libraries & Frameworks</h3>
+                    <div class="skills-list">
+                        <div class="skill-item"><span class="skill-name">OpenCV</span></div>
+                        <div class="skill-item"><span class="skill-name">MediaPipe</span></div>
+                        <div class="skill-item"><span class="skill-name">Scikit-learn</span></div>
+                        <div class="skill-item"><span class="skill-name">Pandas</span></div>
+                        <div class="skill-item"><span class="skill-name">NLTK</span></div>
+                        <div class="skill-item"><span class="skill-name">Streamlit</span></div>
+                    </div>
+                </div>
+                
+                <div class="skill-category">
+                    <h3>Web Frameworks</h3>
+                    <div class="skills-list">
+                        <div class="skill-item"><span class="skill-name">Flask</span></div>
+                        <div class="skill-item"><span class="skill-name">Django</span></div>
+                    </div>
+                </div>
+                
+                <div class="skill-category">
+                    <h3>Databases & Backend Services</h3>
                     <div class="skills-list">
                         <div class="skill-item"><span class="skill-name">PostgreSQL</span></div>
-                        <div class="skill-item"><span class="skill-name">SQL</span></div>
+                        <div class="skill-item"><span class="skill-name">Supabase</span></div>
+                        <div class="skill-item"><span class="skill-name">MySQL</span></div>
                     </div>
                 </div>
                 
@@ -243,22 +270,22 @@ def create_simple_static():
                 </div>
                 
                 <div class="skill-category">
-                    <h3>Web Frameworks</h3>
+                    <h3>Developer & AI Tools</h3>
                     <div class="skills-list">
-                        <div class="skill-item"><span class="skill-name">Flask</span></div>
-                        <div class="skill-item"><span class="skill-name">Django</span></div>
+                        <div class="skill-item"><span class="skill-name">ChatGPT</span></div>
+                        <div class="skill-item"><span class="skill-name">GitHub Copilot</span></div>
+                        <div class="skill-item"><span class="skill-name">Kiro</span></div>
+                        <div class="skill-item"><span class="skill-name">Gemini</span></div>
+                        <div class="skill-item"><span class="skill-name">Midjourney</span></div>
+                        <div class="skill-item"><span class="skill-name">Cursor</span></div>
                     </div>
                 </div>
                 
                 <div class="skill-category">
-                    <h3>Libraries & Frameworks</h3>
+                    <h3>Version Control & Deployment</h3>
                     <div class="skills-list">
-                        <div class="skill-item"><span class="skill-name">OpenCV</span></div>
-                        <div class="skill-item"><span class="skill-name">MediaPipe</span></div>
-                        <div class="skill-item"><span class="skill-name">Scikit-learn</span></div>
-                        <div class="skill-item"><span class="skill-name">Pandas</span></div>
-                        <div class="skill-item"><span class="skill-name">NLTK</span></div>
-                        <div class="skill-item"><span class="skill-name">Streamlit</span></div>
+                        <div class="skill-item"><span class="skill-name">Git</span></div>
+                        <div class="skill-item"><span class="skill-name">GitHub</span></div>
                     </div>
                 </div>
             </div>

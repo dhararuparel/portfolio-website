@@ -663,7 +663,7 @@ if __name__ == '__main__':
             admin = Admin(username='admin', password_hash=generate_password_hash('admin123'))
             db.session.add(admin)
             db.session.commit()
-    app.run(debug=False)
+    app.run(debug=True)
 
 
 # Auto-run on gunicorn startup (Render) - just create tables and admin

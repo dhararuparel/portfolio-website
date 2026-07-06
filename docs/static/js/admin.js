@@ -568,15 +568,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Close modal when clicking outside
 window.onclick = function(event) {
-    if (event.target.classList.contains('modal')) {
+    if (event && event.target && event.target.classList && event.target.classList.contains('modal')) {
         event.target.style.display = 'none';
     }
-}
+};
 
 // ═══════════════════════════════════════════════════════════════
 //  DRAG-AND-DROP ROW REORDERING  (mouse events, maximally simple)
 // ═══════════════════════════════════════════════════════════════
-(function () {
+;(function () {
     const REORDER_URLS = {
         projects:       '/api/projects/reorder',
         skills:         '/api/skills/reorder',
@@ -585,12 +585,9 @@ window.onclick = function(event) {
         internships:    '/api/internships/reorder',
     };
 
+    // Inject ghost styling (other styles are already in admin.css)
     const style = document.createElement('style');
     style.textContent = `
-        .drag-handle { cursor: grab; color: #6c5ce7; padding: 0 8px; font-size: 15px; }
-        .drag-handle i { pointer-events: none; }
-        .dnd-src  { opacity: 0.4; }
-        .dnd-over td { background: rgba(108,92,231,0.2) !important; }
         .dnd-ghost {
             position: fixed; z-index: 99999; pointer-events: none;
             background: #1a1a2e; border: 1.5px solid #6c5ce7;
@@ -605,6 +602,12 @@ window.onclick = function(event) {
 
     let state = null;  // { row, tbody, name, ghost }
     let overRow = null;
+
+    function moveGhost(x, y) {
+        if (!state) return;
+        state.ghost.style.left = (x + 16) + 'px';
+        state.ghost.style.top  = (y - 10) + 'px';
+    }
 
     /* ── mousedown on grip ─────────────────────────────── */
     document.addEventListener('mousedown', function (e) {
@@ -624,10 +627,10 @@ window.onclick = function(event) {
         ghost.className = 'dnd-ghost';
         ghost.textContent = '⠿  ' + label;
         document.body.appendChild(ghost);
-        moveGhost(e.clientX, e.clientY);
 
-        row.classList.add('dnd-src');
+        row.classList.add('dragging');
         state = { row, tbody, name: tbody.id.replace('-tbody',''), ghost };
+        moveGhost(e.clientX, e.clientY);
     });
 
     /* ── mousemove ─────────────────────────────────────── */
@@ -635,9 +638,9 @@ window.onclick = function(event) {
         if (!state) return;
         moveGhost(e.clientX, e.clientY);
 
-        if (overRow) { overRow.classList.remove('dnd-over'); overRow = null; }
+        if (overRow) { overRow.classList.remove('drag-over'); overRow = null; }
 
-        // find the tr under the cursor (skip ghost)
+        // Find the element under the cursor (temporarily hide ghost to prevent hit-testing it in all environments)
         state.ghost.style.display = 'none';
         const el = document.elementFromPoint(e.clientX, e.clientY);
         state.ghost.style.display = '';
@@ -645,7 +648,7 @@ window.onclick = function(event) {
 
         const target = el.closest('tr[data-id]');
         if (target && target !== state.row && target.closest('tbody') === state.tbody) {
-            target.classList.add('dnd-over');
+            target.classList.add('drag-over');
             overRow = target;
         }
     });
@@ -658,8 +661,8 @@ window.onclick = function(event) {
         const { row, tbody, name, ghost } = state;
 
         ghost.remove();
-        row.classList.remove('dnd-src');
-        if (overRow) { overRow.classList.remove('dnd-over'); overRow = null; }
+        row.classList.remove('dragging');
+        if (overRow) { overRow.classList.remove('drag-over'); overRow = null; }
         document.body.style.userSelect = '';
         document.body.style.cursor = '';
         state = null;
@@ -668,7 +671,7 @@ window.onclick = function(event) {
 
         const rect  = target.getBoundingClientRect();
         const after = e.clientY > rect.top + rect.height / 2;
-        tbody.insertBefore(row, after ? target.nextSibling : target);
+        tbody.insertBefore(row, after ? target.nextElementSibling : target);
 
         row.style.transition = 'background 0.5s';
         row.style.background = 'rgba(108,92,231,0.25)';
@@ -677,12 +680,6 @@ window.onclick = function(event) {
         const btn = document.getElementById('save-order-' + name);
         if (btn) btn.style.display = 'inline-flex';
     });
-
-    function moveGhost(x, y) {
-        if (!state) return;
-        state.ghost.style.left = (x + 16) + 'px';
-        state.ghost.style.top  = (y - 10) + 'px';
-    }
 
     /* ── Save Order ────────────────────────────────────── */
     window.saveOrder = async function (name) {

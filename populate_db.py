@@ -62,9 +62,11 @@ def populate_database():
         # Add Skills from resume
         skills = [
             {'name': 'Python', 'category': 'Programming Languages', 'proficiency': 90},
-            {'name': 'Machine Learning', 'category': 'Programming Languages', 'proficiency': 85},
-            {'name': 'AI', 'category': 'Programming Languages', 'proficiency': 80},
-            {'name': 'PostgreSQL', 'category': 'Databases', 'proficiency': 85},
+            {'name': 'Machine Learning', 'category': 'AI & Machine Learning', 'proficiency': 85},
+            {'name': 'AI', 'category': 'AI & Machine Learning', 'proficiency': 80},
+            {'name': 'PostgreSQL', 'category': 'Databases & Backend Services', 'proficiency': 85},
+            {'name': 'Supabase', 'category': 'Databases & Backend Services', 'proficiency': 85},
+            {'name': 'MySQL', 'category': 'Databases & Backend Services', 'proficiency': 80},
             {'name': 'OpenCV', 'category': 'Libraries & Frameworks', 'proficiency': 80},
             {'name': 'MediaPipe', 'category': 'Libraries & Frameworks', 'proficiency': 75},
             {'name': 'Flask', 'category': 'Web Frameworks', 'proficiency': 85},
@@ -76,14 +78,17 @@ def populate_database():
             {'name': 'Pandas', 'category': 'Libraries & Frameworks', 'proficiency': 90},
             {'name': 'NLTK', 'category': 'Libraries & Frameworks', 'proficiency': 80},
             {'name': 'Streamlit', 'category': 'Libraries & Frameworks', 'proficiency': 75},
-            {'name': 'ChatGPT', 'category': 'AI Tools', 'proficiency': 90},
-            {'name': 'GitHub Copilot', 'category': 'AI Tools', 'proficiency': 85},
-            {'name': 'Kiro', 'category': 'AI Tools', 'proficiency': 85},
-            {'name': 'Gemini', 'category': 'AI Tools', 'proficiency': 80},
-            {'name': 'Midjourney', 'category': 'AI Tools', 'proficiency': 75},
+            {'name': 'ChatGPT', 'category': 'Developer & AI Tools', 'proficiency': 90},
+            {'name': 'GitHub Copilot', 'category': 'Developer & AI Tools', 'proficiency': 85},
+            {'name': 'Kiro', 'category': 'Developer & AI Tools', 'proficiency': 85},
+            {'name': 'Gemini', 'category': 'Developer & AI Tools', 'proficiency': 80},
+            {'name': 'Midjourney', 'category': 'Developer & AI Tools', 'proficiency': 75},
+            {'name': 'Cursor', 'category': 'Developer & AI Tools', 'proficiency': 85},
+            {'name': 'Git', 'category': 'Version Control & Deployment', 'proficiency': 85},
+            {'name': 'GitHub', 'category': 'Version Control & Deployment', 'proficiency': 85},
         ]
         
-        # Only add skills if they don't already exist
+        # Add skills if they don't exist; update category if they do exist and it has changed
         for skill_data in skills:
             existing = Skill.query.filter_by(name=skill_data['name']).first()
             if not existing:
@@ -91,7 +96,12 @@ def populate_database():
                 db.session.add(skill)
                 print(f"Added skill: {skill_data['name']}")
             else:
-                print(f"Skill already exists: {skill_data['name']}")
+                if existing.category != skill_data['category']:
+                    old_cat = existing.category
+                    existing.category = skill_data['category']
+                    print(f"Updated category of skill '{skill_data['name']}' from '{old_cat}' to '{skill_data['category']}'")
+                else:
+                    print(f"Skill already exists: {skill_data['name']}")
         
         # Add Education from resume
         education_data = [

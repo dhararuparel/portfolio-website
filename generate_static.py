@@ -39,11 +39,14 @@ def create_static_portfolio():
     ]
     
     skills_data = {
-        'Programming Languages': ['Python', 'Machine Learning', 'AI'],
-        'Databases': ['PostgreSQL', 'SQL'],
-        'Web Technologies': ['HTML', 'CSS', 'JavaScript'],
+        'Programming Languages': ['Python'],
+        'AI & Machine Learning': ['Machine Learning', 'AI'],
+        'Libraries & Frameworks': ['OpenCV', 'MediaPipe', 'Scikit-learn', 'Pandas', 'NLTK', 'Streamlit'],
         'Web Frameworks': ['Flask', 'Django'],
-        'Libraries & Frameworks': ['OpenCV', 'MediaPipe', 'Scikit-learn', 'Pandas', 'NLTK', 'Streamlit']
+        'Databases & Backend Services': ['PostgreSQL', 'Supabase', 'MySQL'],
+        'Web Technologies': ['HTML', 'CSS', 'JavaScript'],
+        'Developer & AI Tools': ['ChatGPT', 'GitHub Copilot', 'Kiro', 'Gemini', 'Midjourney', 'Cursor'],
+        'Version Control & Deployment': ['Git', 'GitHub']
     }
     
     education_data = [
