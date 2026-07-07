@@ -70,6 +70,10 @@
                     <i class="fas fa-file-pdf"></i>
                     <span>Resume</span>
                 </a>
+                <a href="#intro-video" class="menu-item" data-section="intro-video">
+                    <i class="fas fa-film"></i>
+                    <span>Intro Video</span>
+                </a>
             </nav>
         </aside>
 
@@ -393,6 +397,52 @@
                     <div id="resumeMsg" class="resume-msg" style="display:none"></div>
                 </div>
             </section>
+
+            <!-- Intro Video Section -->
+            <section id="intro-video-section" class="admin-section">
+                <div class="section-header">
+                    <h2>Manage Intro Video</h2>
+                </div>
+
+                <div class="resume-upload-card">
+                    <!-- Current status -->
+                    <div class="resume-status" id="videoStatus">
+                        <div class="resume-status-icon" id="videoStatusIcon">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                        <div class="resume-status-text" id="videoStatusText">Checking...</div>
+                    </div>
+
+                    <!-- Upload form -->
+                    <form id="videoUploadForm" enctype="multipart/form-data">
+                        <div class="resume-drop-zone" id="videoDropZone">
+                            <i class="fas fa-film"></i>
+                            <p>Drag &amp; drop your video here</p>
+                            <span>or</span>
+                            <label for="introVideoFile" class="btn btn-primary" style="cursor:pointer; margin-top:10px;">
+                                <i class="fas fa-folder-open"></i> Browse File
+                            </label>
+                            <input type="file" id="introVideoFile" name="intro_video"
+                                accept=".mp4,.webm,.ogg,.mov,video/*" style="display:none">
+                            <p class="resume-hint">MP4, WebM, MOV · Max 100 MB</p>
+                        </div>
+                        <div id="videoFileName" class="resume-file-name" style="display:none"></div>
+                        <!-- Video preview -->
+                        <div id="videoPreviewWrap" style="display:none; margin-top:16px; text-align:center;">
+                            <video id="videoPreview" controls muted
+                                style="max-width:100%; max-height:220px; border-radius:10px; border:1px solid var(--border-color,#333)">
+                            </video>
+                        </div>
+                        <div class="resume-actions">
+                            <button type="submit" class="btn btn-primary" id="videoUploadBtn" disabled>
+                                <i class="fas fa-upload"></i> Upload Video
+                            </button>
+                        </div>
+                    </form>
+
+                    <div id="videoMsg" class="resume-msg" style="display:none"></div>
+                </div>
+            </section>
         </main>
     </div>
 </div>
@@ -622,6 +672,116 @@
 </div>
 
 <script>
+// ===== Intro Video Upload =====
+(function () {
+    const dropZone   = document.getElementById('videoDropZone');
+    const fileInput  = document.getElementById('introVideoFile');
+    const fileNameEl = document.getElementById('videoFileName');
+    const uploadBtn  = document.getElementById('videoUploadBtn');
+    const form       = document.getElementById('videoUploadForm');
+    const msgEl      = document.getElementById('videoMsg');
+    const statusIcon = document.getElementById('videoStatusIcon');
+    const statusText = document.getElementById('videoStatusText');
+    const previewWrap= document.getElementById('videoPreviewWrap');
+    const preview    = document.getElementById('videoPreview');
+
+    if (!form) return;
+
+    // Check current video status
+    fetch('/api/intro-video/status')
+        .then(r => r.json())
+        .then(data => {
+            if (data.exists) {
+                statusIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                statusIcon.className = 'resume-status-icon ok';
+                statusText.textContent = 'Video on file — last updated: ' + (data.last_updated || 'unknown');
+            } else {
+                statusIcon.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
+                statusIcon.className = 'resume-status-icon missing';
+                statusText.textContent = 'No intro video uploaded yet.';
+            }
+        })
+        .catch(() => { statusText.textContent = 'Could not check video status.'; });
+
+    fileInput.addEventListener('change', function () {
+        if (this.files[0]) selectFile(this.files[0]);
+    });
+
+    dropZone.addEventListener('click', function (e) {
+        if (e.target.tagName !== 'LABEL' && e.target.tagName !== 'INPUT') fileInput.click();
+    });
+
+    dropZone.addEventListener('dragover', function (e) {
+        e.preventDefault(); dropZone.classList.add('drag-over');
+    });
+    dropZone.addEventListener('dragleave', function () {
+        dropZone.classList.remove('drag-over');
+    });
+    dropZone.addEventListener('drop', function (e) {
+        e.preventDefault(); dropZone.classList.remove('drag-over');
+        const file = e.dataTransfer.files[0];
+        if (file) selectFile(file);
+    });
+
+    function selectFile(file) {
+        const allowed = ['mp4','webm','ogg','mov'];
+        const ext = file.name.split('.').pop().toLowerCase();
+        if (!allowed.includes(ext)) {
+            showMsg('Only video files (.mp4, .webm, .ogg, .mov) are allowed.', 'error'); return;
+        }
+        if (file.size > 100 * 1024 * 1024) {
+            showMsg('File is too large. Maximum size is 100 MB.', 'error');
+            uploadBtn.disabled = true; return;
+        }
+        fileNameEl.innerHTML = '<i class="fas fa-film"></i> ' + file.name;
+        fileNameEl.style.display = 'flex';
+        uploadBtn.disabled = false;
+        // Show local preview
+        const url = URL.createObjectURL(file);
+        preview.src = url;
+        previewWrap.style.display = 'block';
+        // Assign to input
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        fileInput.files = dt.files;
+    }
+
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        if (!fileInput.files[0]) return;
+        uploadBtn.disabled = true;
+        uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+        const fd = new FormData();
+        fd.append('intro_video', fileInput.files[0]);
+        try {
+            const res = await fetch('/api/intro-video/upload', { method: 'POST', body: fd });
+            let data = {};
+            try { data = await res.json(); } catch (_) { data = { error: `Upload failed (HTTP ${res.status}).` }; }
+            if (res.ok) {
+                showMsg('Intro video uploaded successfully! Refresh the portfolio to see it.', 'success');
+                statusIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                statusIcon.className = 'resume-status-icon ok';
+                const now = new Date();
+                statusText.textContent = 'Video on file — last updated: ' + now.toLocaleString();
+            } else {
+                showMsg(data.error || 'Upload failed.', 'error');
+            }
+        } catch (err) {
+            showMsg('Network error. Please try again.', 'error');
+        } finally {
+            uploadBtn.disabled = false;
+            uploadBtn.innerHTML = '<i class="fas fa-upload"></i> Upload Video';
+        }
+    });
+
+    function showMsg(text, type) {
+        msgEl.textContent = text;
+        msgEl.className = 'resume-msg ' + type;
+        msgEl.style.display = 'block';
+        setTimeout(() => { msgEl.style.display = 'none'; }, 6000);
+    }
+})();
+
 // ===== Resume Upload =====
 (function () {
     const dropZone   = document.getElementById('resumeDropZone');

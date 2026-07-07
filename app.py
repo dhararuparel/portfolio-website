@@ -12,7 +12,7 @@ load_dotenv()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-secret-key-here')
-app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  # 10 MB
+app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100 MB (allows video uploads)
 
 # Render uses 'postgres://' but SQLAlchemy requires 'postgresql://'
 db_url = os.getenv('DATABASE_URL', 'postgresql://postgres:dhara16@localhost/portfolio_db')
@@ -97,6 +97,13 @@ class ResumeFile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(255), nullable=False, default='Dhara_Ruparel_Resume.pdf')
     content_type = db.Column(db.String(100), nullable=False, default='application/pdf')
+    data = db.Column(db.LargeBinary, nullable=False)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+class IntroVideo(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.String(255), nullable=False, default='intro_video.mp4')
+    content_type = db.Column(db.String(100), nullable=False, default='video/mp4')
     data = db.Column(db.LargeBinary, nullable=False)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -607,8 +614,96 @@ def upload_resume():
 @app.errorhandler(413)
 def file_too_large(_error):
     if request.path.startswith('/api/'):
-        return jsonify({'error': 'File is too large. Maximum size is 10 MB.'}), 413
-    return 'File is too large. Maximum size is 10 MB.', 413
+        return jsonify({'error': 'File is too large. Maximum size is 100 MB.'}), 413
+    return 'File is too large. Maximum size is 100 MB.', 413
+
+
+# ── Intro Video Routes ────────────────────────────────────────────────────────
+
+@app.route('/intro-video/stream')
+def stream_intro_video():
+    """Stream the intro video from DB; falls back to the static file."""
+    import mimetypes
+    video_blob = IntroVideo.query.order_by(IntroVideo.updated_at.desc(), IntroVideo.id.desc()).first()
+    if video_blob and video_blob.data:
+        return send_file(
+            io.BytesIO(video_blob.data),
+            mimetype=video_blob.content_type or 'video/mp4',
+            as_attachment=False,
+            download_name=video_blob.filename or 'intro_video.mp4'
+        )
+    # Fallback: serve from static folder
+    static_path = os.path.join(app.root_path, 'static', 'videos', 'intro_video.mp4')
+    if os.path.isfile(static_path):
+        return send_file(static_path, mimetype='video/mp4')
+    return 'Intro video not found. Please upload one via the admin panel.', 404
+
+
+@app.route('/api/intro-video/upload', methods=['POST'])
+def upload_intro_video():
+    """Upload a new intro video from the admin panel."""
+    if 'admin_logged_in' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    if 'intro_video' not in request.files:
+        return jsonify({'error': 'No file provided'}), 400
+
+    file = request.files['intro_video']
+    if file.filename == '':
+        return jsonify({'error': 'No file selected'}), 400
+
+    allowed_extensions = ('.mp4', '.webm', '.ogg', '.mov')
+    if not file.filename.lower().endswith(allowed_extensions):
+        return jsonify({'error': 'Only video files (.mp4, .webm, .ogg, .mov) are allowed'}), 400
+
+    try:
+        video_bytes = file.read()
+        if not video_bytes:
+            return jsonify({'error': 'Uploaded file is empty'}), 400
+
+        ext = file.filename.lower().rsplit('.', 1)[-1]
+        mime_map = {'mp4': 'video/mp4', 'webm': 'video/webm', 'ogg': 'video/ogg', 'mov': 'video/quicktime'}
+        content_type = mime_map.get(ext, 'video/mp4')
+
+        video_blob = IntroVideo.query.first()
+        if not video_blob:
+            video_blob = IntroVideo(
+                filename='intro_video.' + ext,
+                content_type=content_type,
+                data=video_bytes
+            )
+            db.session.add(video_blob)
+        else:
+            video_blob.filename = 'intro_video.' + ext
+            video_blob.content_type = content_type
+            video_blob.data = video_bytes
+            video_blob.updated_at = datetime.utcnow()
+
+        db.session.commit()
+        return jsonify({'message': 'Intro video uploaded successfully'})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': f'Could not save video: {str(e)}'}), 500
+
+
+@app.route('/api/intro-video/status', methods=['GET'])
+def intro_video_status():
+    """Return upload status for the admin panel."""
+    if 'admin_logged_in' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    video_blob = IntroVideo.query.order_by(IntroVideo.updated_at.desc(), IntroVideo.id.desc()).first()
+    if video_blob and video_blob.data:
+        last_updated = video_blob.updated_at.strftime('%d %b %Y, %H:%M') if video_blob.updated_at else None
+        return jsonify({'exists': True, 'last_updated': last_updated, 'filename': video_blob.filename})
+
+    # Check static fallback
+    static_path = os.path.join(app.root_path, 'static', 'videos', 'intro_video.mp4')
+    if os.path.isfile(static_path):
+        return jsonify({'exists': True, 'last_updated': 'static file (no DB record)', 'filename': 'intro_video.mp4'})
+
+    return jsonify({'exists': False, 'last_updated': None})
+# ─────────────────────────────────────────────────────────────────────────────
 
 
 @app.route('/api/resume/status', methods=['GET'])
@@ -686,6 +781,9 @@ with app.app_context():
         if 'link_label' not in proj_cols:
             db.session.execute(text("ALTER TABLE project ADD COLUMN link_label VARCHAR(100)"))
             db.session.commit()
+
+        # Ensure IntroVideo table exists
+        db.create_all()
 
         for model, table in [
             (Project, 'project'), (Skill, 'skill'),
