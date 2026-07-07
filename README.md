@@ -126,7 +126,7 @@ CONTACT_RECEIVER_EMAIL=your-gmail@gmail.com
 > 💡 **Gmail App Password**: Google Account → Security → 2-Step Verification → App Passwords
 
 Open → `http://127.0.0.1:5000`  
-Admin → `http://127.0.0.1:5000/admin` (default: `admin` / `admin123`)
+Admin → `http://127.0.0.1:5000/admin`
 
 ---
 
