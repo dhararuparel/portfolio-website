@@ -68,7 +68,11 @@ def create_simple_static():
             <div class="hero-image">
                 <div class="profile-card">
                     <div class="profile-avatar">
-                        <img src="static/images/DHARA.jpg" alt="Dhara Ruparel" class="profile-image">
+                        <video autoplay muted loop playsinline preload="auto" class="profile-image">
+                            <source src="static/videos/intro_video.mp4" type="video/mp4">
+                            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                            <img src="static/images/DHARA.jpg" alt="Dhara Ruparel" class="profile-image">
+                        </video>
                     </div>
                     <div class="floating-elements">
                         <div class="floating-icon python"><i class="fab fa-python"></i></div>

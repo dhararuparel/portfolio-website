@@ -242,10 +242,50 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.querySelectorAll('.sa-hidden').forEach(el => scrollObserver.observe(el));
 
-    // Trigger hero elements immediately (they're in viewport on load)
-    document.querySelectorAll('.hero-content, .hero-image').forEach(el => {
-        setTimeout(() => el.classList.add('sa-visible'), 100);
-    });
+    // Hero text block is animated via CSS keyframe (heroFadeUp) — no JS needed
+
+    // ── Hero video controls ──────────────────────────────────
+    const heroBgVideo  = document.getElementById('heroBgVideo');
+    const heroPlayBtn  = document.getElementById('heroPlayBtn');
+    const heroPlayIcon = document.getElementById('heroPlayIcon');
+    const heroMuteBtn  = document.getElementById('heroMuteBtn');
+    const heroMuteIcon = document.getElementById('heroMuteIcon');
+
+    if (heroBgVideo && heroPlayBtn) {
+        heroPlayBtn.addEventListener('click', () => {
+            if (heroBgVideo.paused) {
+                heroBgVideo.play();
+                heroPlayIcon.classList.replace('fa-play', 'fa-pause');
+                heroPlayBtn.setAttribute('aria-label', 'Pause video');
+            } else {
+                heroBgVideo.pause();
+                heroPlayIcon.classList.replace('fa-pause', 'fa-play');
+                heroPlayBtn.setAttribute('aria-label', 'Play video');
+            }
+        });
+    }
+
+    if (heroBgVideo && heroMuteBtn) {
+        heroMuteBtn.addEventListener('click', () => {
+            heroBgVideo.muted = !heroBgVideo.muted;
+            if (heroBgVideo.muted) {
+                heroMuteIcon.classList.replace('fa-volume-up', 'fa-volume-mute');
+                heroMuteBtn.setAttribute('aria-label', 'Unmute video');
+            } else {
+                heroMuteIcon.classList.replace('fa-volume-mute', 'fa-volume-up');
+                heroMuteBtn.setAttribute('aria-label', 'Mute video');
+            }
+        });
+    }
+
+    // Scroll indicator click — scroll to next section
+    const heroScroll = document.querySelector('.hero-scroll');
+    if (heroScroll) {
+        heroScroll.addEventListener('click', () => {
+            const nextSection = document.querySelector('#about') || document.querySelector('section:nth-of-type(2)');
+            if (nextSection) nextSection.scrollIntoView({ behavior: 'smooth' });
+        });
+    }
 
     // Subtle parallax on hero background grid only (no layout shift)
     const heroSection = document.querySelector('.hero');

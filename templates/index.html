@@ -38,39 +38,34 @@
 
 <!-- Hero Section -->
 <section id="home" class="hero">
-    <div class="hero-glow hero-glow-1" aria-hidden="true"></div>
-    <div class="hero-glow hero-glow-2" aria-hidden="true"></div>
-    <div class="hero-container">
-        <div class="hero-content">
-            <span class="hero-badge"><i class="fas fa-bolt"></i> Open to opportunities</span>
-            <h1 class="hero-title">
-                Hi, I'm <span class="text-gradient">Dhara Ruparel</span>.
-            </h1>
-            <p class="hero-subtitle">
-                AI Engineer • Machine Learning • LLM Applications
-            </p>
-            <p class="hero-description">
-                AI Engineer specializing in Python, Machine Learning, and Large Language Models. I build AI agents, intelligent automation, and end-to-end AI applications that solve real-world problems with scalable, user-focused solutions.
-            </p>
-            <div class="hero-buttons">
-                <a href="#projects" class="btn btn-primary">View My Work</a>
-                <a href="#contact" class="btn btn-secondary">Get In Touch</a>
-            </div>
-        </div>
-        <div class="hero-image">
-            <div class="profile-card">
-                <div class="profile-avatar">
-                    <img src="{{ url_for('static', filename='images/DHARA.jpg') }}" alt="Dhara Ruparel"
-                        class="profile-image">
-                </div>
-                <div class="floating-elements">
-                    <div class="floating-icon python"><i class="fab fa-python"></i></div>
-                    <div class="floating-icon js"><i class="fab fa-js-square"></i></div>
-                    <div class="floating-icon react"><i class="fab fa-react"></i></div>
-                    <div class="floating-icon database"><i class="fas fa-database"></i></div>
-                </div>
-            </div>
-        </div>
+    <!-- Full-screen video background -->
+    <video id="heroBgVideo" class="hero-video-bg" autoplay muted loop playsinline webkit-playsinline preload="auto">
+        <source src="{{ url_for('static', filename='videos/intro_video.mp4') }}" type="video/mp4">
+    </video>
+
+    <!-- Dark gradient overlay -->
+    <div class="hero-overlay" aria-hidden="true"></div>
+
+    <!-- Bottom-left text block -->
+    <div class="hero-text-block">
+        <h1 class="hero-name">Dhara<br>Ruparel</h1>
+        <p class="hero-role">AI ENGINEER &nbsp;·&nbsp; MACHINE LEARNING &nbsp;·&nbsp; LLM APPLICATIONS</p>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="hero-scroll" aria-label="Scroll down">
+        <span class="hero-scroll-text">SCROLL</span>
+        <div class="hero-scroll-line"><div class="hero-scroll-dot"></div></div>
+    </div>
+
+    <!-- Video controls: pause + mute -->
+    <div class="hero-controls">
+        <button id="heroPlayBtn" class="hero-ctrl-btn" aria-label="Pause video" title="Pause/Play">
+            <i class="fas fa-pause" id="heroPlayIcon"></i>
+        </button>
+        <button id="heroMuteBtn" class="hero-ctrl-btn" aria-label="Unmute video" title="Mute/Unmute">
+            <i class="fas fa-volume-mute" id="heroMuteIcon"></i>
+        </button>
     </div>
 </section>
 
@@ -344,4 +339,5 @@
 <button type="button" class="back-to-top" id="backToTop" aria-label="Back to top" title="Back to top">
     <i class="fas fa-arrow-up"></i>
 </button>
+
 {% endblock %}
