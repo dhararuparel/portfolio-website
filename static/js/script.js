@@ -404,3 +404,98 @@ if (!document.getElementById('mobile-nav-styles')) {
         }
     });
 })();
+
+/* ══════════════════════════════════════════════
+   ANIMATED COUNTERS — Engineering Snapshot
+   Fires once when section scrolls into view
+   ══════════════════════════════════════════════ */
+(function () {
+    function easeOutQuart(t) {
+        return 1 - Math.pow(1 - t, 4);
+    }
+
+    function animateCounter(el, target, duration) {
+        const start = performance.now();
+        function step(now) {
+            const elapsed = now - start;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = easeOutQuart(progress);
+            el.textContent = Math.round(eased * target);
+            if (progress < 1) requestAnimationFrame(step);
+            else el.textContent = target;
+        }
+        requestAnimationFrame(step);
+    }
+
+    const cards = document.querySelectorAll('.snapshot-card');
+    if (!cards.length) return;
+
+    let fired = false;
+    const observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+            if (entry.isIntersecting && !fired) {
+                fired = true;
+                cards.forEach(function (card) {
+                    const target = parseInt(card.dataset.target, 10);
+                    const counterEl = card.querySelector('.counter');
+                    if (counterEl && !isNaN(target)) {
+                        animateCounter(counterEl, target, 1400);
+                    }
+                });
+                observer.disconnect();
+            }
+        });
+    }, { threshold: 0.25 });
+
+    const section = document.getElementById('engineering-snapshot');
+    if (section) observer.observe(section);
+})();
+
+/* ══════════════════════════════════════════════
+   RECRUITER MODE TOGGLE
+   ══════════════════════════════════════════════ */
+function closeRecruiterMode() {
+    const panel    = document.getElementById('recruiter-panel');
+    const backdrop = document.getElementById('recruiter-backdrop');
+    if (!panel) return;
+    panel.classList.remove('open');
+    panel.setAttribute('aria-hidden', 'true');
+    backdrop.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+(function () {
+    const fabBtn   = document.getElementById('recruiter-mode-btn');
+    const panel    = document.getElementById('recruiter-panel');
+    const backdrop = document.getElementById('recruiter-backdrop');
+    const closeBtn = document.getElementById('recruiter-panel-close');
+
+    if (!fabBtn || !panel || !backdrop) return;
+
+    function openPanel() {
+        panel.classList.add('open');
+        panel.setAttribute('aria-hidden', 'false');
+        backdrop.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        // Focus the close button for accessibility
+        setTimeout(function () { if (closeBtn) closeBtn.focus(); }, 420);
+    }
+
+    fabBtn.addEventListener('click', function () {
+        const isOpen = panel.classList.contains('open');
+        if (isOpen) closeRecruiterMode();
+        else openPanel();
+    });
+
+    if (closeBtn) closeBtn.addEventListener('click', closeRecruiterMode);
+
+    backdrop.addEventListener('click', closeRecruiterMode);
+
+    // Keyboard: Escape key closes panel
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && panel.classList.contains('open')) {
+            closeRecruiterMode();
+            fabBtn.focus();
+        }
+    });
+})();
