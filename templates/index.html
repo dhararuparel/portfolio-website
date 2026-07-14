@@ -182,34 +182,122 @@
 <section id="projects" class="projects">
     <div class="container">
         <p class="section-eyebrow">Portfolio</p>
-        <h2 class="section-title">Work Experience & Projects</h2>
+        <h2 class="section-title">Work Experience &amp; Projects</h2>
+
+        {# ── Case study metadata keyed by project title ── #}
+        {% set cs_data = {
+            "LEXARA AI - LLM-POWERED RAG PLATFORM": {
+                "problem": "Finding information across large document collections is slow and keyword-dependent.",
+                "metric": "Full RAG pipeline serving PDF, DOCX, and web sources with team collaboration",
+                "github": "",
+                "arch": "PDF/DOCX/Web → Chunking → Embeddings → FAISS Index → Hybrid Search → Gemini 2.5 Flash → Streamed Response"
+            },
+            "CAMERA MOTION SENSING SYSTEM": {
+                "problem": "Need for affordable real-time surveillance without expensive hardware.",
+                "metric": "Real-time motion detection with instant automated alert notifications",
+                "github": "https://github.com/dhararuparel/Camera-Motion-Sensing-Project.git",
+                "arch": "Camera Feed → OpenCV Frame Diff → Motion Threshold → Alert Trigger → PostgreSQL Log → Flask Dashboard"
+            },
+            "EMOTION DETECTION FROM TEXT": {
+                "problem": "Manually analysing user sentiment at scale is time-consuming and inconsistent.",
+                "metric": "6-class emotion classifier trained on Twitter dataset, deployed as interactive web app",
+                "github": "https://github.com/dhararuparel/emo_sense",
+                "arch": "Raw Text → NLTK Preprocessing → TF-IDF Vectoriser → Scikit-learn Classifier → Streamlit UI"
+            },
+            "AI CONTENT FACTORY": {
+                "problem": "Content ideation and delivery is manual, repetitive, and error-prone.",
+                "metric": "Zero-touch pipeline: idea → structured content → Sheets → Gmail, fully automated",
+                "github": "",
+                "arch": "Trigger → n8n Workflow → Gemini AI Prompt → Structured Output → Google Sheets API → Gmail API"
+            },
+            "HAND GESTURE RECOGNITION SYSTEM": {
+                "problem": "Traditional input devices limit accessibility and natural human-computer interaction.",
+                "metric": "5 distinct gestures classified in real-time via webcam using MediaPipe landmark detection",
+                "github": "https://github.com/dhararuparel/Hand-Gesture-Project.git",
+                "arch": "Webcam Feed → MediaPipe Hand Landmarks → Feature Extraction → Rule-Based Classifier → Gesture Label"
+            },
+            "HOUSE PRICE PREDICTION SYSTEM": {
+                "problem": "Property buyers lack data-driven tools to estimate fair prices across Indian cities.",
+                "metric": "City-wise ML predictions across Mumbai, Delhi, Bangalore, Chennai, Hyderabad & Kolkata",
+                "github": "https://github.com/dhararuparel/house-price-prediction.git",
+                "arch": "User Input → REST API → Scikit-learn Model (Pickle) → Price Prediction → Flask Response → PostgreSQL History"
+            }
+        } %}
+
         <div class="projects-grid">
             {% for project in projects %}
-            <div class="project-card">
+            {% set cs = cs_data.get(project.title, {}) %}
+            {% set card_id = "proj-" ~ loop.index %}
+            <div class="project-card cs-card">
                 <div class="card-accent"></div>
-                <div class="project-header">
-                    <h3>{{ project.title }}</h3>
+
+                {# ── Header: title + link buttons ── #}
+                <div class="cs-header">
+                    <h3 class="cs-title">{{ project.title }}</h3>
+                    <div class="cs-links">
+                        {% if project.link_url %}
+                        <a href="{{ project.link_url }}" target="_blank" rel="noopener noreferrer" class="cs-link-btn live" title="Live Demo">
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                        {% endif %}
+                        {% if cs.github %}
+                        <a href="{{ cs.github }}" target="_blank" rel="noopener noreferrer" class="cs-link-btn gh" title="GitHub">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        {% endif %}
+                    </div>
                 </div>
-                <div class="project-content">
-                    <p class="project-description">{{ project.description }}</p>
-                    <div class="project-tech">
-                        <h4>Technologies Used:</h4>
-                        <div class="tech-tags">
-                            {% for tech in project.technologies.split(', ') %}
-                            <span class="tech-tag">{{ tech }}</span>
+
+                {# ── Problem ── #}
+                {% if cs.problem %}
+                <div class="cs-row">
+                    <span class="cs-label">Problem</span>
+                    <span class="cs-text">{{ cs.problem }}</span>
+                </div>
+                {% endif %}
+
+                {# ── What I Built ── #}
+                <div class="cs-row">
+                    <span class="cs-label">Built</span>
+                    <span class="cs-text">{{ project.description }}</span>
+                </div>
+
+                {# ── Stack ── #}
+                <div class="cs-row cs-row-stack">
+                    <span class="cs-label">Stack</span>
+                    <div class="tech-tags cs-tags">
+                        {% for tech in project.technologies.split(', ') %}
+                        <span class="tech-tag">{{ tech }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                {# ── Key Result ── #}
+                {% if cs.metric %}
+                <div class="cs-metric">
+                    <i class="fas fa-bolt"></i>
+                    <span>{{ cs.metric }}</span>
+                </div>
+                {% endif %}
+
+                {# ── Expand toggle ── #}
+                {% if cs.arch %}
+                <button class="cs-expand-btn" onclick="toggleArch('{{ card_id }}')" id="btn-{{ card_id }}" aria-expanded="false">
+                    <i class="fas fa-chevron-down cs-chevron" id="chev-{{ card_id }}"></i>
+                    Architecture Deep-Dive
+                </button>
+                <div class="cs-arch-panel" id="{{ card_id }}" aria-hidden="true">
+                    <div class="cs-arch-inner">
+                        <p class="cs-arch-label">Flow</p>
+                        <div class="cs-arch-flow">
+                            {% for step in cs.arch.split(' → ') %}
+                            <span class="arch-step">{{ step }}</span>
+                            {% if not loop.last %}<span class="arch-arrow">→</span>{% endif %}
                             {% endfor %}
                         </div>
                     </div>
-                    {% if project.link_url %}
-                    <div class="project-link">
-                        <a href="{{ project.link_url }}" target="_blank" rel="noopener noreferrer"
-                            class="btn-project-link">
-                            <i class="fas fa-external-link-alt"></i>
-                            {{ project.link_label or 'View Project' }}
-                        </a>
-                    </div>
-                    {% endif %}
                 </div>
+                {% endif %}
             </div>
             {% endfor %}
         </div>

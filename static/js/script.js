@@ -515,3 +515,30 @@ function closeRecruiterMode() {
         }
     });
 })();
+
+/* ══════════════════════════════════════════════
+   ARCHITECTURE PANEL TOGGLE (Case Studies)
+   ══════════════════════════════════════════════ */
+function toggleArch(panelId) {
+    const panel = document.getElementById(panelId);
+    const btn = document.getElementById('btn-' + panelId);
+    const chev = document.getElementById('chev-' + panelId);
+    
+    if (!panel || !btn) return;
+    
+    const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+    
+    if (isExpanded) {
+        panel.style.maxHeight = null;
+        panel.classList.remove('open');
+        panel.setAttribute('aria-hidden', 'true');
+        btn.setAttribute('aria-expanded', 'false');
+        if (chev) chev.classList.remove('rotated');
+    } else {
+        panel.classList.add('open');
+        panel.style.maxHeight = panel.scrollHeight + 'px';
+        panel.setAttribute('aria-hidden', 'false');
+        btn.setAttribute('aria-expanded', 'true');
+        if (chev) chev.classList.add('rotated');
+    }
+}

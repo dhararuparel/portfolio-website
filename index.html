@@ -420,219 +420,107 @@
         <p class="section-eyebrow">Portfolio</p>
         <h2 class="section-title">Work Experience & Projects</h2>
         <div class="projects-grid">
-            
-            <div class="project-card">
+
+            <!-- Project 1: Lexara AI -->
+            <div class="project-card cs-card">
                 <div class="card-accent"></div>
-                <div class="project-header">
-                    <h3>LEXARA AI - LLM-POWERED RAG PLATFORM</h3>
-                </div>
-                <div class="project-content">
-                    <p class="project-description">Developed an advanced RAG platform enabling conversational knowledge retrieval from documents and web sources using hybrid semantic search, AI-powered responses, multi-format content ingestion, team collaboration features, and analytics.</p>
-                    <div class="project-tech">
-                        <h4>Technologies Used:</h4>
-                        <div class="tech-tags">
-                            
-                            <span class="tech-tag">Python</span>
-                            
-                            <span class="tech-tag">Flask</span>
-                            
-                            <span class="tech-tag">FAISS</span>
-                            
-                            <span class="tech-tag">Gemini 2.5 Flash</span>
-                            
-                            <span class="tech-tag">Supabase</span>
-                            
-                            <span class="tech-tag">Render</span>
-                            
-                        </div>
+                <div class="cs-header">
+                    <h3 class="cs-title">LEXARA AI — LLM-POWERED RAG PLATFORM</h3>
+                    <div class="cs-links">
+                        <a href="https://lexara-ai.onrender.com/" target="_blank" rel="noopener noreferrer" class="cs-link-btn live" title="Live Demo"><i class="fas fa-external-link-alt"></i> Live</a>
                     </div>
-                    
-                    <div class="project-link">
-                        <a href="https://lexara-ai.onrender.com/" target="_blank" rel="noopener noreferrer"
-                            class="btn-project-link">
-                            <i class="fas fa-external-link-alt"></i>
-                            Live Demo
-                        </a>
-                    </div>
-                    
                 </div>
+                <div class="cs-row"><span class="cs-label">Problem</span><span class="cs-text">Finding information across large document collections is slow and keyword-dependent.</span></div>
+                <div class="cs-row"><span class="cs-label">Built</span><span class="cs-text">Production RAG platform with hybrid semantic search, multi-format ingestion (PDF, DOCX, web), Gemini-powered responses and team collaboration.</span></div>
+                <div class="cs-row cs-row-stack"><span class="cs-label">Stack</span><div class="tech-tags cs-tags"><span class="tech-tag">Python</span><span class="tech-tag">Flask</span><span class="tech-tag">FAISS</span><span class="tech-tag">Gemini 2.5 Flash</span><span class="tech-tag">Supabase</span><span class="tech-tag">Render</span></div></div>
+                <div class="cs-metric"><i class="fas fa-bolt"></i><span>Full RAG pipeline serving PDF, DOCX &amp; web sources with streamed AI responses</span></div>
+                <button class="cs-expand-btn" onclick="toggleArch('proj-1')" id="btn-proj-1" aria-expanded="false"><i class="fas fa-chevron-down cs-chevron" id="chev-proj-1"></i> Architecture Deep-Dive</button>
+                <div class="cs-arch-panel" id="proj-1" aria-hidden="true"><div class="cs-arch-inner"><p class="cs-arch-label">Flow</p><div class="cs-arch-flow"><span class="arch-step">PDF/DOCX/Web</span><span class="arch-arrow">→</span><span class="arch-step">Chunking</span><span class="arch-arrow">→</span><span class="arch-step">Embeddings</span><span class="arch-arrow">→</span><span class="arch-step">FAISS Index</span><span class="arch-arrow">→</span><span class="arch-step">Hybrid Search</span><span class="arch-arrow">→</span><span class="arch-step">Gemini 2.5 Flash</span><span class="arch-arrow">→</span><span class="arch-step">Streamed Response</span></div></div></div>
             </div>
-            
-            <div class="project-card">
+
+            <!-- Project 2: Camera Motion -->
+            <div class="project-card cs-card">
                 <div class="card-accent"></div>
-                <div class="project-header">
-                    <h3>CAMERA MOTION SENSING SYSTEM</h3>
-                </div>
-                <div class="project-content">
-                    <p class="project-description">A smart surveillance system that detects and responds to motion using real-time camera sensing and Python-based automation.</p>
-                    <div class="project-tech">
-                        <h4>Technologies Used:</h4>
-                        <div class="tech-tags">
-                            
-                            <span class="tech-tag">HTML</span>
-                            
-                            <span class="tech-tag">CSS</span>
-                            
-                            <span class="tech-tag">Flask</span>
-                            
-                            <span class="tech-tag">Python</span>
-                            
-                            <span class="tech-tag">PostgreSQL</span>
-                            
-                        </div>
+                <div class="cs-header">
+                    <h3 class="cs-title">CAMERA MOTION SENSING SYSTEM</h3>
+                    <div class="cs-links">
+                        <a href="https://github.com/dhararuparel/Camera-Motion-Sensing-Project.git" target="_blank" rel="noopener noreferrer" class="cs-link-btn gh" title="GitHub"><i class="fab fa-github"></i> GitHub</a>
                     </div>
-                    
-                    <div class="project-link">
-                        <a href="https://github.com/dhararuparel/Camera-Motion-Sensing-Project.git" target="_blank" rel="noopener noreferrer"
-                            class="btn-project-link">
-                            <i class="fas fa-external-link-alt"></i>
-                            View On Github
-                        </a>
-                    </div>
-                    
                 </div>
+                <div class="cs-row"><span class="cs-label">Problem</span><span class="cs-text">Need for affordable real-time surveillance without expensive dedicated hardware.</span></div>
+                <div class="cs-row"><span class="cs-label">Built</span><span class="cs-text">Smart surveillance system detecting and responding to motion using real-time camera sensing, Python automation, and a Flask dashboard with PostgreSQL logging.</span></div>
+                <div class="cs-row cs-row-stack"><span class="cs-label">Stack</span><div class="tech-tags cs-tags"><span class="tech-tag">Python</span><span class="tech-tag">OpenCV</span><span class="tech-tag">Flask</span><span class="tech-tag">PostgreSQL</span><span class="tech-tag">HTML</span><span class="tech-tag">CSS</span></div></div>
+                <div class="cs-metric"><i class="fas fa-bolt"></i><span>Real-time motion detection with instant automated alert notifications</span></div>
+                <button class="cs-expand-btn" onclick="toggleArch('proj-2')" id="btn-proj-2" aria-expanded="false"><i class="fas fa-chevron-down cs-chevron" id="chev-proj-2"></i> Architecture Deep-Dive</button>
+                <div class="cs-arch-panel" id="proj-2" aria-hidden="true"><div class="cs-arch-inner"><p class="cs-arch-label">Flow</p><div class="cs-arch-flow"><span class="arch-step">Camera Feed</span><span class="arch-arrow">→</span><span class="arch-step">OpenCV Frame Diff</span><span class="arch-arrow">→</span><span class="arch-step">Motion Threshold</span><span class="arch-arrow">→</span><span class="arch-step">Alert Trigger</span><span class="arch-arrow">→</span><span class="arch-step">PostgreSQL Log</span><span class="arch-arrow">→</span><span class="arch-step">Flask Dashboard</span></div></div></div>
             </div>
-            
-            <div class="project-card">
+
+            <!-- Project 3: Emotion Detection -->
+            <div class="project-card cs-card">
                 <div class="card-accent"></div>
-                <div class="project-header">
-                    <h3>EMOTION DETECTION FROM TEXT</h3>
-                </div>
-                <div class="project-content">
-                    <p class="project-description">A sentiment analysis project that classifies user emotions from textual input using a machine learning model trained on the Twitter Emotion Dataset, deployed through an interactive web interface.</p>
-                    <div class="project-tech">
-                        <h4>Technologies Used:</h4>
-                        <div class="tech-tags">
-                            
-                            <span class="tech-tag">Python</span>
-                            
-                            <span class="tech-tag">Scikit-learn</span>
-                            
-                            <span class="tech-tag">Pandas</span>
-                            
-                            <span class="tech-tag">NLTK</span>
-                            
-                            <span class="tech-tag">Streamlit</span>
-                            
-                        </div>
+                <div class="cs-header">
+                    <h3 class="cs-title">EMOTION DETECTION FROM TEXT</h3>
+                    <div class="cs-links">
+                        <a href="https://github.com/dhararuparel/emo_sense" target="_blank" rel="noopener noreferrer" class="cs-link-btn gh" title="GitHub"><i class="fab fa-github"></i> GitHub</a>
                     </div>
-                    
-                    <div class="project-link">
-                        <a href="https://github.com/dhararuparel/emo_sense" target="_blank" rel="noopener noreferrer"
-                            class="btn-project-link">
-                            <i class="fas fa-external-link-alt"></i>
-                            View on Github
-                        </a>
-                    </div>
-                    
                 </div>
+                <div class="cs-row"><span class="cs-label">Problem</span><span class="cs-text">Manually analysing user sentiment at scale is time-consuming and inconsistent.</span></div>
+                <div class="cs-row"><span class="cs-label">Built</span><span class="cs-text">ML classifier trained on Twitter Emotion Dataset to detect 6 emotions from text, deployed as an interactive Streamlit web app.</span></div>
+                <div class="cs-row cs-row-stack"><span class="cs-label">Stack</span><div class="tech-tags cs-tags"><span class="tech-tag">Python</span><span class="tech-tag">Scikit-learn</span><span class="tech-tag">Pandas</span><span class="tech-tag">NLTK</span><span class="tech-tag">Streamlit</span></div></div>
+                <div class="cs-metric"><i class="fas fa-bolt"></i><span>6-class emotion classifier deployed as an interactive web app</span></div>
+                <button class="cs-expand-btn" onclick="toggleArch('proj-3')" id="btn-proj-3" aria-expanded="false"><i class="fas fa-chevron-down cs-chevron" id="chev-proj-3"></i> Architecture Deep-Dive</button>
+                <div class="cs-arch-panel" id="proj-3" aria-hidden="true"><div class="cs-arch-inner"><p class="cs-arch-label">Flow</p><div class="cs-arch-flow"><span class="arch-step">Raw Text</span><span class="arch-arrow">→</span><span class="arch-step">NLTK Preprocessing</span><span class="arch-arrow">→</span><span class="arch-step">TF-IDF Vectoriser</span><span class="arch-arrow">→</span><span class="arch-step">Scikit-learn Classifier</span><span class="arch-arrow">→</span><span class="arch-step">Streamlit UI</span></div></div></div>
             </div>
-            
-            <div class="project-card">
+
+            <!-- Project 4: AI Content Factory -->
+            <div class="project-card cs-card">
                 <div class="card-accent"></div>
-                <div class="project-header">
-                    <h3>AI CONTENT FACTORY</h3>
+                <div class="cs-header">
+                    <h3 class="cs-title">AI CONTENT FACTORY</h3>
+                    <div class="cs-links"></div>
                 </div>
-                <div class="project-content">
-                    <p class="project-description">Developed an AI-powered workflow to generate content ideas and automate storage and notifications.</p>
-                    <div class="project-tech">
-                        <h4>Technologies Used:</h4>
-                        <div class="tech-tags">
-                            
-                            <span class="tech-tag">n8n</span>
-                            
-                            <span class="tech-tag">Google Gemini</span>
-                            
-                            <span class="tech-tag">Google Sheets API</span>
-                            
-                            <span class="tech-tag">Gmail API</span>
-                            
-                            <span class="tech-tag">Automation</span>
-                            
-                            <span class="tech-tag">Low-Code</span>
-                            
-                        </div>
-                    </div>
-                    
-                </div>
+                <div class="cs-row"><span class="cs-label">Problem</span><span class="cs-text">Content ideation and delivery is manual, repetitive, and error-prone at scale.</span></div>
+                <div class="cs-row"><span class="cs-label">Built</span><span class="cs-text">n8n automation workflow connecting Gemini AI to Google Sheets and Gmail — full content pipeline from idea to structured output to inbox delivery.</span></div>
+                <div class="cs-row cs-row-stack"><span class="cs-label">Stack</span><div class="tech-tags cs-tags"><span class="tech-tag">n8n</span><span class="tech-tag">Google Gemini</span><span class="tech-tag">Sheets API</span><span class="tech-tag">Gmail API</span><span class="tech-tag">Low-Code</span></div></div>
+                <div class="cs-metric"><i class="fas fa-bolt"></i><span>Zero-touch pipeline: idea → structured content → Sheets → Gmail, fully automated</span></div>
+                <button class="cs-expand-btn" onclick="toggleArch('proj-4')" id="btn-proj-4" aria-expanded="false"><i class="fas fa-chevron-down cs-chevron" id="chev-proj-4"></i> Architecture Deep-Dive</button>
+                <div class="cs-arch-panel" id="proj-4" aria-hidden="true"><div class="cs-arch-inner"><p class="cs-arch-label">Flow</p><div class="cs-arch-flow"><span class="arch-step">Trigger</span><span class="arch-arrow">→</span><span class="arch-step">n8n Workflow</span><span class="arch-arrow">→</span><span class="arch-step">Gemini AI Prompt</span><span class="arch-arrow">→</span><span class="arch-step">Structured Output</span><span class="arch-arrow">→</span><span class="arch-step">Google Sheets API</span><span class="arch-arrow">→</span><span class="arch-step">Gmail API</span></div></div></div>
             </div>
-            
-            <div class="project-card">
+
+            <!-- Project 5: Hand Gesture -->
+            <div class="project-card cs-card">
                 <div class="card-accent"></div>
-                <div class="project-header">
-                    <h3>HAND GESTURE RECOGNITION SYSTEM</h3>
-                </div>
-                <div class="project-content">
-                    <p class="project-description">A real-time hand gesture recognition system that detects and classifies 5 distinct hand gestures using computer vision and Media pipe.</p>
-                    <div class="project-tech">
-                        <h4>Technologies Used:</h4>
-                        <div class="tech-tags">
-                            
-                            <span class="tech-tag">Python</span>
-                            
-                            <span class="tech-tag">OpenCV</span>
-                            
-                            <span class="tech-tag">Media Pipe</span>
-                            
-                        </div>
+                <div class="cs-header">
+                    <h3 class="cs-title">HAND GESTURE RECOGNITION SYSTEM</h3>
+                    <div class="cs-links">
+                        <a href="https://github.com/dhararuparel/Hand-Gesture-Project.git" target="_blank" rel="noopener noreferrer" class="cs-link-btn gh" title="GitHub"><i class="fab fa-github"></i> GitHub</a>
                     </div>
-                    
-                    <div class="project-link">
-                        <a href="https://github.com/dhararuparel/Hand-Gesture-Project.git" target="_blank" rel="noopener noreferrer"
-                            class="btn-project-link">
-                            <i class="fas fa-external-link-alt"></i>
-                            View on Github
-                        </a>
-                    </div>
-                    
                 </div>
+                <div class="cs-row"><span class="cs-label">Problem</span><span class="cs-text">Traditional input devices limit accessibility and natural human-computer interaction.</span></div>
+                <div class="cs-row"><span class="cs-label">Built</span><span class="cs-text">Real-time system detecting 5 distinct hand gestures using computer vision and MediaPipe landmark tracking via standard webcam.</span></div>
+                <div class="cs-row cs-row-stack"><span class="cs-label">Stack</span><div class="tech-tags cs-tags"><span class="tech-tag">Python</span><span class="tech-tag">OpenCV</span><span class="tech-tag">MediaPipe</span></div></div>
+                <div class="cs-metric"><i class="fas fa-bolt"></i><span>5 gestures classified in real-time via webcam — no dedicated hardware needed</span></div>
+                <button class="cs-expand-btn" onclick="toggleArch('proj-5')" id="btn-proj-5" aria-expanded="false"><i class="fas fa-chevron-down cs-chevron" id="chev-proj-5"></i> Architecture Deep-Dive</button>
+                <div class="cs-arch-panel" id="proj-5" aria-hidden="true"><div class="cs-arch-inner"><p class="cs-arch-label">Flow</p><div class="cs-arch-flow"><span class="arch-step">Webcam Feed</span><span class="arch-arrow">→</span><span class="arch-step">MediaPipe Landmarks</span><span class="arch-arrow">→</span><span class="arch-step">Feature Extraction</span><span class="arch-arrow">→</span><span class="arch-step">Rule-Based Classifier</span><span class="arch-arrow">→</span><span class="arch-step">Gesture Label</span></div></div></div>
             </div>
-            
-            <div class="project-card">
+
+            <!-- Project 6: House Price Prediction -->
+            <div class="project-card cs-card">
                 <div class="card-accent"></div>
-                <div class="project-header">
-                    <h3>HOUSE PRICE PREDICTION SYSTEM</h3>
-                </div>
-                <div class="project-content">
-                    <p class="project-description">ML-powered real estate platform for predicting property prices across major Indian cities( Mumbai, Delhi, Bangalore, Chennai, Hyderabad, Kolkata) with interactive web interface.</p>
-                    <div class="project-tech">
-                        <h4>Technologies Used:</h4>
-                        <div class="tech-tags">
-                            
-                            <span class="tech-tag">Python</span>
-                            
-                            <span class="tech-tag">Machine Learning</span>
-                            
-                            <span class="tech-tag">Scikit-learn</span>
-                            
-                            <span class="tech-tag">Flask</span>
-                            
-                            <span class="tech-tag">HTML</span>
-                            
-                            <span class="tech-tag">CSS</span>
-                            
-                            <span class="tech-tag">JavaScript</span>
-                            
-                            <span class="tech-tag">PostgreSQL</span>
-                            
-                            <span class="tech-tag">REST APIs</span>
-                            
-                            <span class="tech-tag">Pickle</span>
-                            
-                        </div>
+                <div class="cs-header">
+                    <h3 class="cs-title">HOUSE PRICE PREDICTION SYSTEM</h3>
+                    <div class="cs-links">
+                        <a href="https://github.com/dhararuparel/house-price-prediction.git" target="_blank" rel="noopener noreferrer" class="cs-link-btn gh" title="GitHub"><i class="fab fa-github"></i> GitHub</a>
                     </div>
-                    
-                    <div class="project-link">
-                        <a href="https://github.com/dhararuparel/house-price-prediction.git" target="_blank" rel="noopener noreferrer"
-                            class="btn-project-link">
-                            <i class="fas fa-external-link-alt"></i>
-                            View On Github
-                        </a>
-                    </div>
-                    
                 </div>
+                <div class="cs-row"><span class="cs-label">Problem</span><span class="cs-text">Property buyers lack data-driven tools to estimate fair prices across Indian cities.</span></div>
+                <div class="cs-row"><span class="cs-label">Built</span><span class="cs-text">ML-powered real estate platform predicting property prices across 6 major Indian cities with interactive web interface and city-wise model selection.</span></div>
+                <div class="cs-row cs-row-stack"><span class="cs-label">Stack</span><div class="tech-tags cs-tags"><span class="tech-tag">Python</span><span class="tech-tag">Scikit-learn</span><span class="tech-tag">Flask</span><span class="tech-tag">PostgreSQL</span><span class="tech-tag">REST APIs</span><span class="tech-tag">Pickle</span></div></div>
+                <div class="cs-metric"><i class="fas fa-bolt"></i><span>City-wise predictions across Mumbai, Delhi, Bangalore, Chennai, Hyderabad &amp; Kolkata</span></div>
+                <button class="cs-expand-btn" onclick="toggleArch('proj-6')" id="btn-proj-6" aria-expanded="false"><i class="fas fa-chevron-down cs-chevron" id="chev-proj-6"></i> Architecture Deep-Dive</button>
+                <div class="cs-arch-panel" id="proj-6" aria-hidden="true"><div class="cs-arch-inner"><p class="cs-arch-label">Flow</p><div class="cs-arch-flow"><span class="arch-step">User Input</span><span class="arch-arrow">→</span><span class="arch-step">REST API</span><span class="arch-arrow">→</span><span class="arch-step">Scikit-learn Model</span><span class="arch-arrow">→</span><span class="arch-step">Price Prediction</span><span class="arch-arrow">→</span><span class="arch-step">Flask Response</span><span class="arch-arrow">→</span><span class="arch-step">PostgreSQL History</span></div></div></div>
             </div>
-            
+
         </div>
     </div>
 </section>
