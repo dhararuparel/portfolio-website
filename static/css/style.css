@@ -1750,6 +1750,137 @@ body.light-mode .btn-secondary:hover {
 }
 
 /* ═══════════════════════════════════════════════
+   HERO CURRENT STATUS CARD (floating, top-right)
+   ═══════════════════════════════════════════════ */
+.hero-status-card {
+    position: absolute;
+    top: 88px;          /* below navbar */
+    right: 40px;
+    z-index: 4;
+    width: 220px;
+    background: rgba(10, 10, 10, 0.55);
+    border: 1px solid rgba(108, 92, 231, 0.3);
+    border-radius: 16px;
+    padding: 18px 20px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4),
+                0 0 0 1px rgba(255,255,255,0.04) inset;
+    animation: hscFadeIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) both 0.4s;
+}
+
+@keyframes hscFadeIn {
+    from { opacity: 0; transform: translateY(-12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Subtle gradient border accent on top */
+.hero-status-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 16px; right: 16px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(108,92,231,0.6), transparent);
+}
+
+/* Header row: dot + "Open to Work" */
+.hsc-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.hsc-dot {
+    width: 8px;
+    height: 8px;
+    background: #f6c90e;        /* yellow = seeking */
+    border-radius: 50%;
+    box-shadow: 0 0 8px #f6c90e;
+    animation: statusPulse 2s ease-in-out infinite;
+    flex-shrink: 0;
+}
+
+.hsc-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #f6c90e;
+}
+
+/* Role line */
+.hsc-role {
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.8);
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+/* Thin separator */
+.hsc-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.08);
+    margin: 10px 0;
+}
+
+/* Location row */
+.hsc-location {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.55);
+}
+
+.hsc-location i {
+    color: var(--accent);
+    font-size: 10px;
+    flex-shrink: 0;
+}
+
+/* 3-line status list */
+.hsc-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.hsc-list li {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    font-size: 11px;
+    line-height: 1.3;
+}
+
+.hsc-key {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    flex-shrink: 0;
+    min-width: 46px;
+}
+
+.hsc-val {
+    color: rgba(255,255,255,0.75);
+    font-weight: 500;
+}
+
+/* Hide on small screens — hero is cramped */
+@media (max-width: 900px) {
+    .hero-status-card {
+        display: none;
+    }
+}
+
+/* ═══════════════════════════════════════════════
    ENGINEERING SNAPSHOT SECTION
    ═══════════════════════════════════════════════ */
 .eng-snapshot {
