@@ -541,4 +541,142 @@ function toggleArch(panelId) {
         btn.setAttribute('aria-expanded', 'true');
         if (chev) chev.classList.add('rotated');
     }
-}
+}
+
+/* ══════════════════════════════════════════════
+   INTERACTIVE TERMINAL CLI LOGIC
+   ══════════════════════════════════════════════ */
+(function () {
+    const launcher = document.getElementById('terminal-launcher');
+    const modal = document.getElementById('terminal-modal');
+    const backdrop = document.getElementById('terminal-backdrop');
+    const closeBtn = document.getElementById('terminal-close');
+    const input = document.getElementById('terminal-input');
+    const output = document.getElementById('terminal-output');
+    const container = document.getElementById('terminal-output-container');
+
+    if (!launcher || !modal || !backdrop || !input || !output) return;
+
+    // Toggle Modal
+    function openTerminal() {
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden', 'false');
+        backdrop.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => input.focus(), 150);
+    }
+
+    function closeTerminal() {
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+        backdrop.classList.remove('active');
+        document.body.style.overflow = '';
+        launcher.focus();
+    }
+
+    launcher.addEventListener('click', openTerminal);
+    closeBtn.addEventListener('click', closeTerminal);
+    backdrop.addEventListener('click', closeTerminal);
+
+    // Close on ESC
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && modal.classList.contains('open')) {
+            closeTerminal();
+        }
+    });
+
+    // Refocus input if user clicks inside terminal
+    modal.addEventListener('click', function (e) {
+        if (e.target !== closeBtn && !closeBtn.contains(e.target)) {
+            input.focus();
+        }
+    });
+
+    // Command registry
+    const commands = {
+        help: function () {
+            return `Available commands:
+  <span class="highlight">whoami</span>   - Brief bio overview
+  <span class="highlight">skills</span>   - Primary technologies & expertise
+  <span class="highlight">projects</span> - Showcase of featured case studies
+  <span class="highlight">resume</span>   - Direct link to resume PDF
+  <span class="highlight">contact</span>  - Contact info (Email, LinkedIn, GitHub)
+  <span class="highlight">clear</span>    - Clear terminal screen
+  <span class="highlight">help</span>     - Show this help menu`;
+        },
+        whoami: function () {
+            return `Profile: Dhara Ruparel
+Role: AI Engineer / Backend Engineer / Generative AI
+Location: Ahmedabad, India (Open to Remote)
+Bio: Recent Computer Engineering graduate specializing in LLMs, RAG platforms, computer vision, NLP, and REST APIs. Production-focused developer.`;
+        },
+        skills: function () {
+            return `Core Skillset & Stack:
+  - Languages: Python, C++, Java, JavaScript, HTML/CSS, SQL
+  - AI & ML: LLMs, RAG, NLP, Computer Vision, MediaPipe, FAISS, Scikit-learn
+  - Frameworks: Flask, FastAPI, Django, Streamlit
+  - Database & Cloud: PostgreSQL, Supabase, SQLite, Render, Git, Docker`;
+        },
+        projects: function () {
+            return `Featured Case Studies:
+  1. <span class="highlight">Lexara AI</span> - Full LLM RAG knowledge base. (FAISS / Gemini / Flask)
+  2. <span class="highlight">Camera Motion Sensing</span> - Surveillance alerts. (OpenCV / PostgreSQL)
+  3. <span class="highlight">Emotion Detection</span> - Sentiment ML. (Scikit-learn / Streamlit)
+  4. <span class="highlight">AI Content Factory</span> - Automated content. (n8n / Gemini)
+  5. <span class="highlight">Hand Gesture Recognition</span> - webcam CV. (MediaPipe / OpenCV)`;
+        },
+        resume: function () {
+            // Trigger download/view in new window
+            setTimeout(() => {
+                window.open('static/Dhara_Ruparel_Resume.pdf', '_blank');
+            }, 500);
+            return `Opening resume PDF in a new tab...`;
+        },
+        contact: function () {
+            return `Connect channels:
+  - Email:    dhararuparel16@gmail.com
+  - LinkedIn: linkedin.com/in/dhara-ruparel/
+  - GitHub:   github.com/dhararuparel`;
+        },
+        clear: function () {
+            output.innerHTML = '';
+            return '';
+        }
+    };
+
+    // Command listener
+    input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+            const rawVal = input.value;
+            const cmd = rawVal.trim().toLowerCase();
+            input.value = '';
+
+            if (cmd === '') return;
+
+            // Output command echo
+            const echoLine = document.createElement('div');
+            echoLine.className = 'terminal-line';
+            echoLine.innerHTML = `<span class="terminal-prompt">guest@dhara:~$</span> <span class="command-echo">${rawVal}</span>`;
+            output.appendChild(echoLine);
+
+            // Execute command
+            let responseHtml = '';
+            if (commands[cmd]) {
+                responseHtml = commands[cmd]();
+            } else {
+                responseHtml = `<span class="error">Command not found: "${rawVal}". Type 'help' for instructions.</span>`;
+            }
+
+            if (responseHtml !== '') {
+                const responseLine = document.createElement('div');
+                responseLine.className = 'terminal-line';
+                responseLine.innerHTML = responseHtml;
+                output.appendChild(responseLine);
+            }
+
+            // Scroll to bottom
+            container.scrollTop = container.scrollHeight;
+        }
+    });
+})();
+

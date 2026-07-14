@@ -518,9 +518,37 @@
     </div>
 </footer>
 
+
 <button type="button" class="back-to-top" id="backToTop" aria-label="Back to top" title="Back to top">
     <i class="fas fa-arrow-up"></i>
 </button>
+
+<!-- ===== INTERACTIVE TERMINAL WIDGET ===== -->
+<button id="terminal-launcher" class="terminal-fab" title="Open Interactive Terminal" aria-label="Terminal CLI">
+    <i class="fas fa-terminal"></i>
+    <span class="terminal-fab-label">CLI Terminal</span>
+</button>
+
+<div id="terminal-modal" class="terminal-modal" aria-hidden="true">
+    <div class="terminal-header">
+        <div class="terminal-controls">
+            <span class="t-dot close" id="terminal-close"></span>
+            <span class="t-dot minimize"></span>
+            <span class="t-dot maximize"></span>
+        </div>
+        <div class="terminal-title">dhara-ruparel-cli v1.0.0</div>
+    </div>
+    <div class="terminal-body" id="terminal-output-container">
+        <div class="terminal-line welcome">Welcome to Dhara's Interactive CLI. Type <span class="highlight">help</span> for a list of available commands.</div>
+        <div class="terminal-output" id="terminal-output"></div>
+        <div class="terminal-input-line">
+            <span class="terminal-prompt">guest@dhara:~$</span>
+            <input type="text" id="terminal-input" autofocus autocomplete="off" spellcheck="false" aria-label="Terminal Command Input">
+        </div>
+    </div>
+</div>
+<div id="terminal-backdrop" class="terminal-backdrop"></div>
+<!-- ===== END INTERACTIVE TERMINAL ===== -->
 
 <!-- ===== RECRUITER MODE TOGGLE ===== -->
 <button id="recruiter-mode-btn" class="recruiter-fab" title="Toggle Recruiter Mode" aria-label="Recruiter Mode">
