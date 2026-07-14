@@ -39,6 +39,8 @@ def create_static_portfolio():
             html = html.replace("src='/static/", "src='static/")
             html = html.replace('href="/resume/download"', 'href="static/Dhara_Ruparel_Resume.pdf"')
             html = html.replace("href='/resume/download'", "href='static/Dhara_Ruparel_Resume.pdf'")
+            html = html.replace('href="/resume/view"', 'href="static/Dhara_Ruparel_Resume.pdf"')
+            html = html.replace("href='/resume/view'", "href='static/Dhara_Ruparel_Resume.pdf'")
             
             # Ensure docs folder exists
             os.makedirs('docs', exist_ok=True)

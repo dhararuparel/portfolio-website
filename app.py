@@ -569,6 +569,27 @@ def download_resume():
     )
 
 
+@app.route('/resume/view')
+def view_resume():
+    """Serve the resume PDF inline for viewing in the browser."""
+    resume_blob = ResumeFile.query.order_by(ResumeFile.updated_at.desc(), ResumeFile.id.desc()).first()
+    if resume_blob and resume_blob.data:
+        return send_file(
+            io.BytesIO(resume_blob.data),
+            mimetype=resume_blob.content_type or 'application/pdf',
+            as_attachment=False
+        )
+
+    resume_path = os.path.join(app.root_path, 'static', 'Dhara_Ruparel_Resume.pdf')
+    if not os.path.isfile(resume_path):
+        return "Resume not found. Please upload it via the admin panel.", 404
+    return send_file(
+        resume_path,
+        mimetype='application/pdf',
+        as_attachment=False
+    )
+
+
 @app.route('/api/resume/upload', methods=['POST'])
 def upload_resume():
     if 'admin_logged_in' not in session:

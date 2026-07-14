@@ -18,8 +18,8 @@
             </div>
             <div class="nav-actions">
                 <!-- Resume button -->
-                <a href="{{ url_for('download_resume') }}" class="btn-resume">
-                    <i class="fas fa-download"></i>
+                <a href="{{ url_for('view_resume') }}" class="btn-resume" target="_blank" rel="noopener noreferrer">
+                    <i class="fas fa-file-pdf"></i>
                     Resume
                 </a>
                 <!-- Theme toggle -->
@@ -48,6 +48,13 @@
 
     <!-- Bottom-left text block -->
     <div class="hero-text-block">
+        <!-- Status Badge -->
+        <div class="hero-status-badge">
+            <span class="status-dot"></span>
+            <span class="status-text">Open to Work</span>
+            <span class="status-divider">·</span>
+            <span class="status-role">AI Engineer &amp; Backend Engineer</span>
+        </div>
         <h1 class="hero-name">Dhara<br>Ruparel</h1>
         <p class="hero-role">AI ENGINEER &nbsp;·&nbsp; MACHINE LEARNING &nbsp;·&nbsp; LLM APPLICATIONS</p>
     </div>
@@ -67,7 +74,94 @@
             <i class="fas fa-volume-mute" id="heroMuteIcon"></i>
         </button>
     </div>
+
+    <!-- Current Status Card (top-right) -->
+    <div class="hero-status-card">
+        <div class="hsc-header">
+            <span class="hsc-dot"></span>
+            <span class="hsc-title">Open to Work</span>
+        </div>
+        <div class="hsc-role">AI Engineer &nbsp;/&nbsp; Backend Engineer</div>
+        <div class="hsc-divider"></div>
+        <div class="hsc-location">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>Ahmedabad &nbsp;·&nbsp; Remote OK</span>
+        </div>
+        <div class="hsc-divider"></div>
+        <ul class="hsc-list">
+            <li><span class="hsc-key">Building</span><span class="hsc-val">GitScope AI</span></li>
+            <li><span class="hsc-key">Learning</span><span class="hsc-val">Go + System Design</span></li>
+            <li><span class="hsc-key">For</span><span class="hsc-val">Full-time Roles</span></li>
+        </ul>
+    </div>
 </section>
+
+<!-- ===== ENGINEERING SNAPSHOT ===== -->
+<section id="engineering-snapshot" class="eng-snapshot">
+    <div class="container">
+        <div class="snapshot-header">
+            <div class="snapshot-title-group">
+                <span class="snapshot-eyebrow"><i class="fas fa-chart-line"></i> Engineering Snapshot</span>
+                <p class="snapshot-subtitle">Real metrics from my development journey</p>
+            </div>
+            <div class="snapshot-updated">
+                <span class="snapshot-live-dot"></span>
+                <span id="snapshot-last-updated">Last updated: <strong>Jul 2025</strong></span>
+            </div>
+        </div>
+        <div class="snapshot-grid">
+            <div class="snapshot-card" data-target="15" data-suffix="+">
+                <div class="snapshot-icon"><i class="fab fa-github"></i></div>
+                <div class="snapshot-value"><span class="counter">0</span><span class="suffix">+</span></div>
+                <div class="snapshot-label">Public Repositories</div>
+            </div>
+            <div class="snapshot-card" data-target="6" data-suffix="+">
+                <div class="snapshot-icon"><i class="fas fa-robot"></i></div>
+                <div class="snapshot-value"><span class="counter">0</span><span class="suffix">+</span></div>
+                <div class="snapshot-label">AI Projects Built</div>
+            </div>
+            <div class="snapshot-card" data-target="10" data-suffix="+">
+                <div class="snapshot-icon"><i class="fas fa-plug"></i></div>
+                <div class="snapshot-value"><span class="counter">0</span><span class="suffix">+</span></div>
+                <div class="snapshot-label">APIs Integrated</div>
+            </div>
+            <div class="snapshot-card" data-target="15" data-suffix="+">
+                <div class="snapshot-icon"><i class="fas fa-layer-group"></i></div>
+                <div class="snapshot-value"><span class="counter">0</span><span class="suffix">+</span></div>
+                <div class="snapshot-label">Technologies Used</div>
+            </div>
+            <div class="snapshot-card" data-target="3" data-suffix="+">
+                <div class="snapshot-icon"><i class="fas fa-calendar-alt"></i></div>
+                <div class="snapshot-value"><span class="counter">0</span><span class="suffix">+</span></div>
+                <div class="snapshot-label">Years of Coding</div>
+            </div>
+            <div class="snapshot-card" data-target="500" data-suffix="+">
+                <div class="snapshot-icon"><i class="fas fa-code-commit"></i></div>
+                <div class="snapshot-value"><span class="counter">0</span><span class="suffix">+</span></div>
+                <div class="snapshot-label">Total Commits</div>
+            </div>
+        </div>
+
+        <!-- Current Status Card -->
+        <div class="current-status-card">
+            <div class="csc-item">
+                <div class="csc-label"><i class="fas fa-hammer"></i> Currently Building</div>
+                <div class="csc-value">GitScope AI</div>
+            </div>
+            <div class="csc-divider"></div>
+            <div class="csc-item">
+                <div class="csc-label"><i class="fas fa-book-open"></i> Learning</div>
+                <div class="csc-value">Go + System Design</div>
+            </div>
+            <div class="csc-divider"></div>
+            <div class="csc-item">
+                <div class="csc-label"><i class="fas fa-briefcase"></i> Available For</div>
+                <div class="csc-value available">AI Engineer &nbsp;·&nbsp; Backend Engineer</div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ===== END ENGINEERING SNAPSHOT ===== -->
 
 <!-- About Section -->
 <section id="about" class="about">
@@ -265,7 +359,10 @@
                 <div class="contact-details">
                     <div class="contact-item">
                         <i class="fas fa-envelope"></i>
-                        <span>{{ contact.email }}</span>
+                        <span id="contact-email">{{ contact.email }}</span>
+                        <button id="copy-email-btn" class="btn-copy-email" title="Copy Email">
+                            <i class="far fa-copy" id="copy-email-icon"></i>
+                        </button>
                     </div>
                     <div class="contact-item">
                         <i class="fas fa-map-marker-alt"></i>
@@ -339,5 +436,117 @@
 <button type="button" class="back-to-top" id="backToTop" aria-label="Back to top" title="Back to top">
     <i class="fas fa-arrow-up"></i>
 </button>
+
+<!-- ===== RECRUITER MODE TOGGLE ===== -->
+<button id="recruiter-mode-btn" class="recruiter-fab" title="Toggle Recruiter Mode" aria-label="Recruiter Mode">
+    <i class="fas fa-briefcase" id="recruiter-fab-icon"></i>
+    <span class="recruiter-fab-label">Recruiter Mode</span>
+</button>
+
+<!-- Recruiter Mode Overlay Panel -->
+<div id="recruiter-panel" class="recruiter-panel" aria-hidden="true">
+    <div class="recruiter-panel-inner">
+        <!-- Header -->
+        <div class="rp-header">
+            <div class="rp-header-left">
+                <span class="rp-badge"><i class="fas fa-briefcase"></i> Recruiter Mode</span>
+                <h2 class="rp-name">Dhara Ruparel</h2>
+                <p class="rp-role">AI Engineer · Backend Engineer · Generative AI</p>
+                <div class="rp-status">
+                    <span class="rp-status-dot"></span>
+                    <span>Open to Work · Remote &amp; Ahmedabad</span>
+                </div>
+            </div>
+            <button class="rp-close" id="recruiter-panel-close" aria-label="Close Recruiter Mode">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="rp-quick-actions">
+            <a href="{{ url_for('view_resume') }}" target="_blank" rel="noopener noreferrer" class="rp-action-btn primary">
+                <i class="fas fa-file-pdf"></i> Download Resume
+            </a>
+            <a href="https://www.linkedin.com/in/dhara-ruparel/" target="_blank" rel="noopener noreferrer" class="rp-action-btn">
+                <i class="fab fa-linkedin"></i> LinkedIn
+            </a>
+            <a href="https://github.com/dhararuparel" target="_blank" rel="noopener noreferrer" class="rp-action-btn">
+                <i class="fab fa-github"></i> GitHub
+            </a>
+            <a href="mailto:dhararuparel16@gmail.com" class="rp-action-btn">
+                <i class="fas fa-envelope"></i> Email
+            </a>
+        </div>
+
+        <!-- Two-Column Grid -->
+        <div class="rp-grid">
+            <!-- Experience -->
+            <div class="rp-section">
+                <h3 class="rp-section-title"><i class="fas fa-history"></i> Experience</h3>
+                <ul class="rp-list">
+                    <li><span class="rp-tag">3+ yrs</span> Python &amp; AI Development</li>
+                    <li><span class="rp-tag">Intern</span> Python with Django — iTechbrains</li>
+                    <li><span class="rp-tag">Intern</span> Summer — TatvaSoft Pvt. Ltd.</li>
+                </ul>
+            </div>
+
+            <!-- Best Projects -->
+            <div class="rp-section">
+                <h3 class="rp-section-title"><i class="fas fa-star"></i> Best Projects</h3>
+                <ul class="rp-list">
+                    <li><span class="rp-tag">Live</span> Lexara AI — LLM RAG Platform</li>
+                    <li><span class="rp-tag">CV</span> Hand Gesture Recognition System</li>
+                    <li><span class="rp-tag">ML</span> House Price Prediction</li>
+                </ul>
+            </div>
+
+            <!-- Tech Stack -->
+            <div class="rp-section">
+                <h3 class="rp-section-title"><i class="fas fa-layer-group"></i> Core Tech Stack</h3>
+                <div class="rp-chips">
+                    <span class="rp-chip">Python</span>
+                    <span class="rp-chip">Flask</span>
+                    <span class="rp-chip">FastAPI</span>
+                    <span class="rp-chip">LLMs</span>
+                    <span class="rp-chip">RAG</span>
+                    <span class="rp-chip">FAISS</span>
+                    <span class="rp-chip">PostgreSQL</span>
+                    <span class="rp-chip">Supabase</span>
+                    <span class="rp-chip">OpenCV</span>
+                    <span class="rp-chip">Docker</span>
+                    <span class="rp-chip">Scikit-learn</span>
+                    <span class="rp-chip">Git</span>
+                </div>
+            </div>
+
+            <!-- Education + Certs -->
+            <div class="rp-section">
+                <h3 class="rp-section-title"><i class="fas fa-graduation-cap"></i> Education</h3>
+                <ul class="rp-list">
+                    <li><span class="rp-tag">2026</span> B.E. Computer — LDRP-ITR (8.55 CGPA)</li>
+                    <li><span class="rp-tag">NPTEL</span> Python for Data Science</li>
+                    <li><span class="rp-tag">TCS</span> iON Career Edge Program</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 2-Minute Overview -->
+        <div class="rp-overview">
+            <h3 class="rp-section-title"><i class="fas fa-clock"></i> 2-Minute Overview</h3>
+            <p>I'm a recent Computer Engineering graduate (2026) specializing in AI/ML and Backend development. I've built production-ready applications including <strong>Lexara AI</strong> — a full RAG platform with semantic search, Gemini integration, and Supabase auth. My stack is Python-first with expertise in LLMs, computer vision, NLP, and REST APIs. I'm available for full-time AI Engineer or Backend roles, remote or in Ahmedabad.</p>
+        </div>
+
+        <!-- Footer -->
+        <div class="rp-footer">
+            <a href="#projects" class="rp-nav-link" onclick="closeRecruiterMode()">Projects</a>
+            <a href="#skills" class="rp-nav-link" onclick="closeRecruiterMode()">Skills</a>
+            <a href="#internships" class="rp-nav-link" onclick="closeRecruiterMode()">Experience</a>
+            <a href="#certifications" class="rp-nav-link" onclick="closeRecruiterMode()">Certifications</a>
+            <a href="#contact" class="rp-nav-link" onclick="closeRecruiterMode()">Contact</a>
+        </div>
+    </div>
+</div>
+<div id="recruiter-backdrop" class="recruiter-backdrop"></div>
+<!-- ===== END RECRUITER MODE ===== -->
 
 {% endblock %}
