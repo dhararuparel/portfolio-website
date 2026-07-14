@@ -298,6 +298,30 @@ document.addEventListener('DOMContentLoaded', function() {
         }, { passive: true });
     }
 
+    // Click-to-copy email functionality
+    const copyEmailBtn = document.getElementById('copy-email-btn');
+    if (copyEmailBtn) {
+        copyEmailBtn.addEventListener('click', function() {
+            const emailSpan = document.getElementById('contact-email');
+            if (emailSpan) {
+                const emailText = emailSpan.textContent.trim();
+                navigator.clipboard.writeText(emailText).then(() => {
+                    const icon = document.getElementById('copy-email-icon');
+                    if (icon) {
+                        icon.className = 'fas fa-check';
+                        copyEmailBtn.classList.add('copied');
+                        setTimeout(() => {
+                            icon.className = 'far fa-copy';
+                            copyEmailBtn.classList.remove('copied');
+                        }, 2000);
+                    }
+                }).catch(err => {
+                    console.error('Failed to copy text: ', err);
+                });
+            }
+        });
+    }
+
     // Hero title displays immediately - no typing effect needed
 });
 

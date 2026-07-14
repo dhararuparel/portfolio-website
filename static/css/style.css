@@ -1674,3 +1674,28 @@ body.light-mode .btn-secondary:hover {
         bottom: 28px;
     }
 }
+
+/* Click-to-copy email button styling */
+.btn-copy-email {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px 8px;
+    font-size: 14px;
+    transition: color 0.2s ease, transform 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    margin-left: 6px;
+}
+
+.btn-copy-email:hover {
+    color: var(--accent);
+    transform: scale(1.1);
+}
+
+.btn-copy-email.copied {
+    color: #2ecc71;
+}
