@@ -1675,29 +1675,56 @@ body.light-mode .btn-secondary:hover {
     }
 }
 
-/* Click-to-copy email button styling */
-.btn-copy-email {
-    background: transparent;
-    border: none;
-    color: var(--text-muted);
+/* Click-to-copy email — span is the trigger, no button needed */
+.email-copyable {
     cursor: pointer;
-    padding: 4px 8px;
-    font-size: 14px;
-    transition: color 0.2s ease, transform 0.2s ease;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;
-    margin-left: 6px;
+    position: relative;
+    transition: color 0.2s ease;
+    border-bottom: 1px dashed transparent;
 }
 
-.btn-copy-email:hover {
-    color: var(--accent);
-    transform: scale(1.1);
+.email-copyable:hover {
+    color: var(--accent-light);
+    border-bottom-color: var(--accent-light);
 }
 
-.btn-copy-email.copied {
-    color: #2ecc71;
+.email-copied-state {
+    color: #00d97e !important;
+    border-bottom-color: #00d97e !important;
+}
+
+/* Floating "Copied!" tooltip */
+.email-copied-tip {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #00d97e;
+    color: #000;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 4px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    pointer-events: none;
+    animation: tipFadeUp 0.25s ease-out both;
+    z-index: 10;
+}
+
+.email-copied-tip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #00d97e;
+}
+
+@keyframes tipFadeUp {
+    from { opacity: 0; transform: translateX(-50%) translateY(4px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
 /* ═══════════════════════════════════════════════

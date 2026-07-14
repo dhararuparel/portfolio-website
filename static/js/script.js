@@ -298,26 +298,42 @@ document.addEventListener('DOMContentLoaded', function() {
         }, { passive: true });
     }
 
-    // Click-to-copy email functionality
-    const copyEmailBtn = document.getElementById('copy-email-btn');
-    if (copyEmailBtn) {
-        copyEmailBtn.addEventListener('click', function() {
-            const emailSpan = document.getElementById('contact-email');
-            if (emailSpan) {
-                const emailText = emailSpan.textContent.trim();
-                navigator.clipboard.writeText(emailText).then(() => {
-                    const icon = document.getElementById('copy-email-icon');
-                    if (icon) {
-                        icon.className = 'fas fa-check';
-                        copyEmailBtn.classList.add('copied');
-                        setTimeout(() => {
-                            icon.className = 'far fa-copy';
-                            copyEmailBtn.classList.remove('copied');
-                        }, 2000);
-                    }
-                }).catch(err => {
-                    console.error('Failed to copy text: ', err);
+    // Click-to-copy email — click the email text itself
+    const emailSpan = document.getElementById('contact-email');
+    if (emailSpan) {
+        emailSpan.addEventListener('click', function () {
+            const emailText = emailSpan.textContent.trim();
+            const doCopy = () => {
+                // Show inline "Copied!" tooltip
+                const tip = document.createElement('span');
+                tip.textContent = 'Copied!';
+                tip.className = 'email-copied-tip';
+                emailSpan.parentNode.style.position = 'relative';
+                emailSpan.parentNode.appendChild(tip);
+                emailSpan.classList.add('email-copied-state');
+                setTimeout(() => {
+                    tip.remove();
+                    emailSpan.classList.remove('email-copied-state');
+                }, 2000);
+            };
+
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(emailText).then(doCopy).catch(() => {
+                    // fallback
+                    const ta = document.createElement('textarea');
+                    ta.value = emailText;
+                    ta.style.position = 'fixed'; ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select(); document.execCommand('copy');
+                    ta.remove(); doCopy();
                 });
+            } else {
+                const ta = document.createElement('textarea');
+                ta.value = emailText;
+                ta.style.position = 'fixed'; ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select(); document.execCommand('copy');
+                ta.remove(); doCopy();
             }
         });
     }
