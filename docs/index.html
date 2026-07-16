@@ -284,6 +284,13 @@
 
     <!-- Bottom-left text block -->
     <div class="hero-text-block">
+        <!-- Status Badge -->
+        <div class="hero-status-badge">
+            <span class="status-dot"></span>
+            <span class="status-text">Open to Work</span>
+            <span class="status-divider">·</span>
+            <span class="status-role">AI Engineer &amp; Backend Engineer</span>
+        </div>
         <h1 class="hero-name">Dhara<br>Ruparel</h1>
         <p class="hero-role">AI ENGINEER &nbsp;·&nbsp; MACHINE LEARNING &nbsp;·&nbsp; LLM APPLICATIONS</p>
     </div>
@@ -303,7 +310,75 @@
             <i class="fas fa-volume-mute" id="heroMuteIcon"></i>
         </button>
     </div>
+
 </section>
+
+<!-- ===== ENGINEERING SNAPSHOT ===== -->
+<section id="engineering-snapshot" class="eng-snapshot">
+    <div class="container">
+        <div class="snapshot-header">
+            <div class="snapshot-title-group">
+                <span class="snapshot-eyebrow"><i class="fas fa-chart-line"></i> Engineering Snapshot</span>
+                <p class="snapshot-subtitle">Real metrics from my development journey</p>
+            </div>
+            <div class="snapshot-updated">
+                <span class="snapshot-live-dot"></span>
+                <span id="snapshot-last-updated">Last updated: <strong>Jul 2025</strong></span>
+            </div>
+        </div>
+        <div class="snapshot-grid">
+            <div class="snapshot-card" data-target="15" data-suffix="+">
+                <div class="snapshot-icon"><i class="fab fa-github"></i></div>
+                <div class="snapshot-value"><span class="counter">0</span><span class="suffix">+</span></div>
+                <div class="snapshot-label">Public Repositories</div>
+            </div>
+            <div class="snapshot-card" data-target="6" data-suffix="+">
+                <div class="snapshot-icon"><i class="fas fa-robot"></i></div>
+                <div class="snapshot-value"><span class="counter">0</span><span class="suffix">+</span></div>
+                <div class="snapshot-label">AI Projects Built</div>
+            </div>
+            <div class="snapshot-card" data-target="10" data-suffix="+">
+                <div class="snapshot-icon"><i class="fas fa-plug"></i></div>
+                <div class="snapshot-value"><span class="counter">0</span><span class="suffix">+</span></div>
+                <div class="snapshot-label">APIs Integrated</div>
+            </div>
+            <div class="snapshot-card" data-target="15" data-suffix="+">
+                <div class="snapshot-icon"><i class="fas fa-layer-group"></i></div>
+                <div class="snapshot-value"><span class="counter">0</span><span class="suffix">+</span></div>
+                <div class="snapshot-label">Technologies Used</div>
+            </div>
+            <div class="snapshot-card" data-target="3" data-suffix="+">
+                <div class="snapshot-icon"><i class="fas fa-calendar-alt"></i></div>
+                <div class="snapshot-value"><span class="counter">0</span><span class="suffix">+</span></div>
+                <div class="snapshot-label">Years of Coding</div>
+            </div>
+            <div class="snapshot-card" data-target="500" data-suffix="+">
+                <div class="snapshot-icon"><i class="fas fa-code-commit"></i></div>
+                <div class="snapshot-value"><span class="counter">0</span><span class="suffix">+</span></div>
+                <div class="snapshot-label">Total Commits</div>
+            </div>
+        </div>
+
+        <!-- Current Status Card -->
+        <div class="current-status-card">
+            <div class="csc-item">
+                <div class="csc-label"><i class="fas fa-hammer"></i> Currently Building</div>
+                <div class="csc-value">GitScope AI</div>
+            </div>
+            <div class="csc-divider"></div>
+            <div class="csc-item">
+                <div class="csc-label"><i class="fas fa-book-open"></i> Learning</div>
+                <div class="csc-value">Go + System Design</div>
+            </div>
+            <div class="csc-divider"></div>
+            <div class="csc-item">
+                <div class="csc-label"><i class="fas fa-briefcase"></i> Available For</div>
+                <div class="csc-value available">AI Engineer &nbsp;·&nbsp; Backend Engineer</div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ===== END ENGINEERING SNAPSHOT ===== -->
 
 <!-- About Section -->
 <section id="about" class="about">
@@ -324,219 +399,588 @@
 <section id="projects" class="projects">
     <div class="container">
         <p class="section-eyebrow">Portfolio</p>
-        <h2 class="section-title">Work Experience & Projects</h2>
+        <h2 class="section-title">Work Experience &amp; Projects</h2>
+
+        
+        
+
         <div class="projects-grid">
             
-            <div class="project-card">
+            
+            
+            <div class="project-card cs-card">
                 <div class="card-accent"></div>
-                <div class="project-header">
-                    <h3>LEXARA AI - LLM-POWERED RAG PLATFORM</h3>
+
+                
+                <div class="cs-header">
+                    <h3 class="cs-title">LEXARA AI - LLM-POWERED RAG PLATFORM</h3>
+                    <div class="cs-links">
+                        
+                        <a href="https://lexara-ai.onrender.com/" target="_blank" rel="noopener noreferrer" class="cs-link-btn live" title="Live Demo">
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                        
+                        
+                    </div>
                 </div>
-                <div class="project-content">
-                    <p class="project-description">Developed an advanced RAG platform enabling conversational knowledge retrieval from documents and web sources using hybrid semantic search, AI-powered responses, multi-format content ingestion, team collaboration features, and analytics.</p>
-                    <div class="project-tech">
-                        <h4>Technologies Used:</h4>
-                        <div class="tech-tags">
+
+                
+                
+                <div class="cs-row">
+                    <span class="cs-label">Problem</span>
+                    <span class="cs-text">Finding information across large document collections is slow and keyword-dependent.</span>
+                </div>
+                
+
+                
+                <div class="cs-row">
+                    <span class="cs-label">Built</span>
+                    <span class="cs-text">Developed an advanced RAG platform enabling conversational knowledge retrieval from documents and web sources using hybrid semantic search, AI-powered responses, multi-format content ingestion, team collaboration features, and analytics.</span>
+                </div>
+
+                
+                <div class="cs-row cs-row-stack">
+                    <span class="cs-label">Stack</span>
+                    <div class="tech-tags cs-tags">
+                        
+                        <span class="tech-tag">Python</span>
+                        
+                        <span class="tech-tag">Flask</span>
+                        
+                        <span class="tech-tag">FAISS</span>
+                        
+                        <span class="tech-tag">Gemini 2.5 Flash</span>
+                        
+                        <span class="tech-tag">Supabase</span>
+                        
+                        <span class="tech-tag">Render</span>
+                        
+                    </div>
+                </div>
+
+                
+                
+                <div class="cs-metric">
+                    <i class="fas fa-bolt"></i>
+                    <span>Full RAG pipeline serving PDF, DOCX, and web sources with team collaboration</span>
+                </div>
+                
+
+                
+                
+                <button class="cs-expand-btn" onclick="toggleArch('proj-1')" id="btn-proj-1" aria-expanded="false">
+                    <i class="fas fa-chevron-down cs-chevron" id="chev-proj-1"></i>
+                    Architecture Deep-Dive
+                </button>
+                <div class="cs-arch-panel" id="proj-1" aria-hidden="true">
+                    <div class="cs-arch-inner">
+                        <p class="cs-arch-label">Flow</p>
+                        <div class="cs-arch-flow">
                             
-                            <span class="tech-tag">Python</span>
+                            <span class="arch-step">PDF/DOCX/Web</span>
+                            <span class="arch-arrow">→</span>
                             
-                            <span class="tech-tag">Flask</span>
+                            <span class="arch-step">Chunking</span>
+                            <span class="arch-arrow">→</span>
                             
-                            <span class="tech-tag">FAISS</span>
+                            <span class="arch-step">Embeddings</span>
+                            <span class="arch-arrow">→</span>
                             
-                            <span class="tech-tag">Gemini 2.5 Flash</span>
+                            <span class="arch-step">FAISS Index</span>
+                            <span class="arch-arrow">→</span>
                             
-                            <span class="tech-tag">Supabase</span>
+                            <span class="arch-step">Hybrid Search</span>
+                            <span class="arch-arrow">→</span>
                             
-                            <span class="tech-tag">Render</span>
+                            <span class="arch-step">Gemini 2.5 Flash</span>
+                            <span class="arch-arrow">→</span>
+                            
+                            <span class="arch-step">Streamed Response</span>
+                            
                             
                         </div>
                     </div>
-                    
-                    <div class="project-link">
-                        <a href="https://lexara-ai.onrender.com/" target="_blank" rel="noopener noreferrer"
-                            class="btn-project-link">
-                            <i class="fas fa-external-link-alt"></i>
-                            Live Demo
-                        </a>
-                    </div>
-                    
                 </div>
+                
             </div>
             
-            <div class="project-card">
+            
+            
+            <div class="project-card cs-card">
                 <div class="card-accent"></div>
-                <div class="project-header">
-                    <h3>CAMERA MOTION SENSING SYSTEM</h3>
+
+                
+                <div class="cs-header">
+                    <h3 class="cs-title">CAMERA MOTION SENSING SYSTEM</h3>
+                    <div class="cs-links">
+                        
+                        <a href="https://github.com/dhararuparel/Camera-Motion-Sensing-Project.git" target="_blank" rel="noopener noreferrer" class="cs-link-btn live" title="Live Demo">
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                        
+                        
+                        <a href="https://github.com/dhararuparel/Camera-Motion-Sensing-Project.git" target="_blank" rel="noopener noreferrer" class="cs-link-btn gh" title="GitHub">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        
+                    </div>
                 </div>
-                <div class="project-content">
-                    <p class="project-description">A smart surveillance system that detects and responds to motion using real-time camera sensing and Python-based automation.</p>
-                    <div class="project-tech">
-                        <h4>Technologies Used:</h4>
-                        <div class="tech-tags">
+
+                
+                
+                <div class="cs-row">
+                    <span class="cs-label">Problem</span>
+                    <span class="cs-text">Need for affordable real-time surveillance without expensive hardware.</span>
+                </div>
+                
+
+                
+                <div class="cs-row">
+                    <span class="cs-label">Built</span>
+                    <span class="cs-text">A smart surveillance system that detects and responds to motion using real-time camera sensing and Python-based automation.</span>
+                </div>
+
+                
+                <div class="cs-row cs-row-stack">
+                    <span class="cs-label">Stack</span>
+                    <div class="tech-tags cs-tags">
+                        
+                        <span class="tech-tag">HTML</span>
+                        
+                        <span class="tech-tag">CSS</span>
+                        
+                        <span class="tech-tag">Flask</span>
+                        
+                        <span class="tech-tag">Python</span>
+                        
+                        <span class="tech-tag">PostgreSQL</span>
+                        
+                    </div>
+                </div>
+
+                
+                
+                <div class="cs-metric">
+                    <i class="fas fa-bolt"></i>
+                    <span>Real-time motion detection with instant automated alert notifications</span>
+                </div>
+                
+
+                
+                
+                <button class="cs-expand-btn" onclick="toggleArch('proj-2')" id="btn-proj-2" aria-expanded="false">
+                    <i class="fas fa-chevron-down cs-chevron" id="chev-proj-2"></i>
+                    Architecture Deep-Dive
+                </button>
+                <div class="cs-arch-panel" id="proj-2" aria-hidden="true">
+                    <div class="cs-arch-inner">
+                        <p class="cs-arch-label">Flow</p>
+                        <div class="cs-arch-flow">
                             
-                            <span class="tech-tag">HTML</span>
+                            <span class="arch-step">Camera Feed</span>
+                            <span class="arch-arrow">→</span>
                             
-                            <span class="tech-tag">CSS</span>
+                            <span class="arch-step">OpenCV Frame Diff</span>
+                            <span class="arch-arrow">→</span>
                             
-                            <span class="tech-tag">Flask</span>
+                            <span class="arch-step">Motion Threshold</span>
+                            <span class="arch-arrow">→</span>
                             
-                            <span class="tech-tag">Python</span>
+                            <span class="arch-step">Alert Trigger</span>
+                            <span class="arch-arrow">→</span>
                             
-                            <span class="tech-tag">PostgreSQL</span>
+                            <span class="arch-step">PostgreSQL Log</span>
+                            <span class="arch-arrow">→</span>
+                            
+                            <span class="arch-step">Flask Dashboard</span>
+                            
                             
                         </div>
                     </div>
-                    
-                    <div class="project-link">
-                        <a href="https://github.com/dhararuparel/Camera-Motion-Sensing-Project.git" target="_blank" rel="noopener noreferrer"
-                            class="btn-project-link">
-                            <i class="fas fa-external-link-alt"></i>
-                            View On Github
-                        </a>
-                    </div>
-                    
                 </div>
+                
             </div>
             
-            <div class="project-card">
+            
+            
+            <div class="project-card cs-card">
                 <div class="card-accent"></div>
-                <div class="project-header">
-                    <h3>EMOTION DETECTION FROM TEXT</h3>
+
+                
+                <div class="cs-header">
+                    <h3 class="cs-title">EMOTION DETECTION FROM TEXT</h3>
+                    <div class="cs-links">
+                        
+                        <a href="https://github.com/dhararuparel/emo_sense" target="_blank" rel="noopener noreferrer" class="cs-link-btn live" title="Live Demo">
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                        
+                        
+                        <a href="https://github.com/dhararuparel/emo_sense" target="_blank" rel="noopener noreferrer" class="cs-link-btn gh" title="GitHub">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        
+                    </div>
                 </div>
-                <div class="project-content">
-                    <p class="project-description">A sentiment analysis project that classifies user emotions from textual input using a machine learning model trained on the Twitter Emotion Dataset, deployed through an interactive web interface.</p>
-                    <div class="project-tech">
-                        <h4>Technologies Used:</h4>
-                        <div class="tech-tags">
+
+                
+                
+                <div class="cs-row">
+                    <span class="cs-label">Problem</span>
+                    <span class="cs-text">Manually analysing user sentiment at scale is time-consuming and inconsistent.</span>
+                </div>
+                
+
+                
+                <div class="cs-row">
+                    <span class="cs-label">Built</span>
+                    <span class="cs-text">A sentiment analysis project that classifies user emotions from textual input using a machine learning model trained on the Twitter Emotion Dataset, deployed through an interactive web interface.</span>
+                </div>
+
+                
+                <div class="cs-row cs-row-stack">
+                    <span class="cs-label">Stack</span>
+                    <div class="tech-tags cs-tags">
+                        
+                        <span class="tech-tag">Python</span>
+                        
+                        <span class="tech-tag">Scikit-learn</span>
+                        
+                        <span class="tech-tag">Pandas</span>
+                        
+                        <span class="tech-tag">NLTK</span>
+                        
+                        <span class="tech-tag">Streamlit</span>
+                        
+                    </div>
+                </div>
+
+                
+                
+                <div class="cs-metric">
+                    <i class="fas fa-bolt"></i>
+                    <span>6-class emotion classifier trained on Twitter dataset, deployed as interactive web app</span>
+                </div>
+                
+
+                
+                
+                <button class="cs-expand-btn" onclick="toggleArch('proj-3')" id="btn-proj-3" aria-expanded="false">
+                    <i class="fas fa-chevron-down cs-chevron" id="chev-proj-3"></i>
+                    Architecture Deep-Dive
+                </button>
+                <div class="cs-arch-panel" id="proj-3" aria-hidden="true">
+                    <div class="cs-arch-inner">
+                        <p class="cs-arch-label">Flow</p>
+                        <div class="cs-arch-flow">
                             
-                            <span class="tech-tag">Python</span>
+                            <span class="arch-step">Raw Text</span>
+                            <span class="arch-arrow">→</span>
                             
-                            <span class="tech-tag">Scikit-learn</span>
+                            <span class="arch-step">NLTK Preprocessing</span>
+                            <span class="arch-arrow">→</span>
                             
-                            <span class="tech-tag">Pandas</span>
+                            <span class="arch-step">TF-IDF Vectoriser</span>
+                            <span class="arch-arrow">→</span>
                             
-                            <span class="tech-tag">NLTK</span>
+                            <span class="arch-step">Scikit-learn Classifier</span>
+                            <span class="arch-arrow">→</span>
                             
-                            <span class="tech-tag">Streamlit</span>
+                            <span class="arch-step">Streamlit UI</span>
+                            
                             
                         </div>
                     </div>
-                    
-                    <div class="project-link">
-                        <a href="https://github.com/dhararuparel/emo_sense" target="_blank" rel="noopener noreferrer"
-                            class="btn-project-link">
-                            <i class="fas fa-external-link-alt"></i>
-                            View on Github
-                        </a>
-                    </div>
-                    
                 </div>
+                
             </div>
             
-            <div class="project-card">
+            
+            
+            <div class="project-card cs-card">
                 <div class="card-accent"></div>
-                <div class="project-header">
-                    <h3>AI CONTENT FACTORY</h3>
+
+                
+                <div class="cs-header">
+                    <h3 class="cs-title">AI CONTENT FACTORY</h3>
+                    <div class="cs-links">
+                        
+                        
+                    </div>
                 </div>
-                <div class="project-content">
-                    <p class="project-description">Developed an AI-powered workflow to generate content ideas and automate storage and notifications.</p>
-                    <div class="project-tech">
-                        <h4>Technologies Used:</h4>
-                        <div class="tech-tags">
+
+                
+                
+                <div class="cs-row">
+                    <span class="cs-label">Problem</span>
+                    <span class="cs-text">Content ideation and delivery is manual, repetitive, and error-prone.</span>
+                </div>
+                
+
+                
+                <div class="cs-row">
+                    <span class="cs-label">Built</span>
+                    <span class="cs-text">Developed an AI-powered workflow to generate content ideas and automate storage and notifications.</span>
+                </div>
+
+                
+                <div class="cs-row cs-row-stack">
+                    <span class="cs-label">Stack</span>
+                    <div class="tech-tags cs-tags">
+                        
+                        <span class="tech-tag">n8n</span>
+                        
+                        <span class="tech-tag">Google Gemini</span>
+                        
+                        <span class="tech-tag">Google Sheets API</span>
+                        
+                        <span class="tech-tag">Gmail API</span>
+                        
+                        <span class="tech-tag">Automation</span>
+                        
+                        <span class="tech-tag">Low-Code</span>
+                        
+                    </div>
+                </div>
+
+                
+                
+                <div class="cs-metric">
+                    <i class="fas fa-bolt"></i>
+                    <span>Zero-touch pipeline: idea → structured content → Sheets → Gmail, fully automated</span>
+                </div>
+                
+
+                
+                
+                <button class="cs-expand-btn" onclick="toggleArch('proj-4')" id="btn-proj-4" aria-expanded="false">
+                    <i class="fas fa-chevron-down cs-chevron" id="chev-proj-4"></i>
+                    Architecture Deep-Dive
+                </button>
+                <div class="cs-arch-panel" id="proj-4" aria-hidden="true">
+                    <div class="cs-arch-inner">
+                        <p class="cs-arch-label">Flow</p>
+                        <div class="cs-arch-flow">
                             
-                            <span class="tech-tag">n8n</span>
+                            <span class="arch-step">Trigger</span>
+                            <span class="arch-arrow">→</span>
                             
-                            <span class="tech-tag">Google Gemini</span>
+                            <span class="arch-step">n8n Workflow</span>
+                            <span class="arch-arrow">→</span>
                             
-                            <span class="tech-tag">Google Sheets API</span>
+                            <span class="arch-step">Gemini AI Prompt</span>
+                            <span class="arch-arrow">→</span>
                             
-                            <span class="tech-tag">Gmail API</span>
+                            <span class="arch-step">Structured Output</span>
+                            <span class="arch-arrow">→</span>
                             
-                            <span class="tech-tag">Automation</span>
+                            <span class="arch-step">Google Sheets API</span>
+                            <span class="arch-arrow">→</span>
                             
-                            <span class="tech-tag">Low-Code</span>
+                            <span class="arch-step">Gmail API</span>
+                            
                             
                         </div>
                     </div>
-                    
                 </div>
+                
             </div>
             
-            <div class="project-card">
+            
+            
+            <div class="project-card cs-card">
                 <div class="card-accent"></div>
-                <div class="project-header">
-                    <h3>HAND GESTURE RECOGNITION SYSTEM</h3>
+
+                
+                <div class="cs-header">
+                    <h3 class="cs-title">HAND GESTURE RECOGNITION SYSTEM</h3>
+                    <div class="cs-links">
+                        
+                        <a href="https://github.com/dhararuparel/Hand-Gesture-Project.git" target="_blank" rel="noopener noreferrer" class="cs-link-btn live" title="Live Demo">
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                        
+                        
+                        <a href="https://github.com/dhararuparel/Hand-Gesture-Project.git" target="_blank" rel="noopener noreferrer" class="cs-link-btn gh" title="GitHub">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        
+                    </div>
                 </div>
-                <div class="project-content">
-                    <p class="project-description">A real-time hand gesture recognition system that detects and classifies 5 distinct hand gestures using computer vision and Media pipe.</p>
-                    <div class="project-tech">
-                        <h4>Technologies Used:</h4>
-                        <div class="tech-tags">
+
+                
+                
+                <div class="cs-row">
+                    <span class="cs-label">Problem</span>
+                    <span class="cs-text">Traditional input devices limit accessibility and natural human-computer interaction.</span>
+                </div>
+                
+
+                
+                <div class="cs-row">
+                    <span class="cs-label">Built</span>
+                    <span class="cs-text">A real-time hand gesture recognition system that detects and classifies 5 distinct hand gestures using computer vision and Media pipe.</span>
+                </div>
+
+                
+                <div class="cs-row cs-row-stack">
+                    <span class="cs-label">Stack</span>
+                    <div class="tech-tags cs-tags">
+                        
+                        <span class="tech-tag">Python</span>
+                        
+                        <span class="tech-tag">OpenCV</span>
+                        
+                        <span class="tech-tag">Media Pipe</span>
+                        
+                    </div>
+                </div>
+
+                
+                
+                <div class="cs-metric">
+                    <i class="fas fa-bolt"></i>
+                    <span>5 distinct gestures classified in real-time via webcam using MediaPipe landmark detection</span>
+                </div>
+                
+
+                
+                
+                <button class="cs-expand-btn" onclick="toggleArch('proj-5')" id="btn-proj-5" aria-expanded="false">
+                    <i class="fas fa-chevron-down cs-chevron" id="chev-proj-5"></i>
+                    Architecture Deep-Dive
+                </button>
+                <div class="cs-arch-panel" id="proj-5" aria-hidden="true">
+                    <div class="cs-arch-inner">
+                        <p class="cs-arch-label">Flow</p>
+                        <div class="cs-arch-flow">
                             
-                            <span class="tech-tag">Python</span>
+                            <span class="arch-step">Webcam Feed</span>
+                            <span class="arch-arrow">→</span>
                             
-                            <span class="tech-tag">OpenCV</span>
+                            <span class="arch-step">MediaPipe Hand Landmarks</span>
+                            <span class="arch-arrow">→</span>
                             
-                            <span class="tech-tag">Media Pipe</span>
+                            <span class="arch-step">Feature Extraction</span>
+                            <span class="arch-arrow">→</span>
+                            
+                            <span class="arch-step">Rule-Based Classifier</span>
+                            <span class="arch-arrow">→</span>
+                            
+                            <span class="arch-step">Gesture Label</span>
+                            
                             
                         </div>
                     </div>
-                    
-                    <div class="project-link">
-                        <a href="https://github.com/dhararuparel/Hand-Gesture-Project.git" target="_blank" rel="noopener noreferrer"
-                            class="btn-project-link">
-                            <i class="fas fa-external-link-alt"></i>
-                            View on Github
-                        </a>
-                    </div>
-                    
                 </div>
+                
             </div>
             
-            <div class="project-card">
+            
+            
+            <div class="project-card cs-card">
                 <div class="card-accent"></div>
-                <div class="project-header">
-                    <h3>HOUSE PRICE PREDICTION SYSTEM</h3>
+
+                
+                <div class="cs-header">
+                    <h3 class="cs-title">HOUSE PRICE PREDICTION SYSTEM</h3>
+                    <div class="cs-links">
+                        
+                        <a href="https://github.com/dhararuparel/house-price-prediction.git" target="_blank" rel="noopener noreferrer" class="cs-link-btn live" title="Live Demo">
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                        
+                        
+                        <a href="https://github.com/dhararuparel/house-price-prediction.git" target="_blank" rel="noopener noreferrer" class="cs-link-btn gh" title="GitHub">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        
+                    </div>
                 </div>
-                <div class="project-content">
-                    <p class="project-description">ML-powered real estate platform for predicting property prices across major Indian cities( Mumbai, Delhi, Bangalore, Chennai, Hyderabad, Kolkata) with interactive web interface.</p>
-                    <div class="project-tech">
-                        <h4>Technologies Used:</h4>
-                        <div class="tech-tags">
+
+                
+                
+                <div class="cs-row">
+                    <span class="cs-label">Problem</span>
+                    <span class="cs-text">Property buyers lack data-driven tools to estimate fair prices across Indian cities.</span>
+                </div>
+                
+
+                
+                <div class="cs-row">
+                    <span class="cs-label">Built</span>
+                    <span class="cs-text">ML-powered real estate platform for predicting property prices across major Indian cities( Mumbai, Delhi, Bangalore, Chennai, Hyderabad, Kolkata) with interactive web interface.</span>
+                </div>
+
+                
+                <div class="cs-row cs-row-stack">
+                    <span class="cs-label">Stack</span>
+                    <div class="tech-tags cs-tags">
+                        
+                        <span class="tech-tag">Python</span>
+                        
+                        <span class="tech-tag">Machine Learning</span>
+                        
+                        <span class="tech-tag">Scikit-learn</span>
+                        
+                        <span class="tech-tag">Flask</span>
+                        
+                        <span class="tech-tag">HTML</span>
+                        
+                        <span class="tech-tag">CSS</span>
+                        
+                        <span class="tech-tag">JavaScript</span>
+                        
+                        <span class="tech-tag">PostgreSQL</span>
+                        
+                        <span class="tech-tag">REST APIs</span>
+                        
+                        <span class="tech-tag">Pickle</span>
+                        
+                    </div>
+                </div>
+
+                
+                
+                <div class="cs-metric">
+                    <i class="fas fa-bolt"></i>
+                    <span>City-wise ML predictions across Mumbai, Delhi, Bangalore, Chennai, Hyderabad &amp; Kolkata</span>
+                </div>
+                
+
+                
+                
+                <button class="cs-expand-btn" onclick="toggleArch('proj-6')" id="btn-proj-6" aria-expanded="false">
+                    <i class="fas fa-chevron-down cs-chevron" id="chev-proj-6"></i>
+                    Architecture Deep-Dive
+                </button>
+                <div class="cs-arch-panel" id="proj-6" aria-hidden="true">
+                    <div class="cs-arch-inner">
+                        <p class="cs-arch-label">Flow</p>
+                        <div class="cs-arch-flow">
                             
-                            <span class="tech-tag">Python</span>
+                            <span class="arch-step">User Input</span>
+                            <span class="arch-arrow">→</span>
                             
-                            <span class="tech-tag">Machine Learning</span>
+                            <span class="arch-step">REST API</span>
+                            <span class="arch-arrow">→</span>
                             
-                            <span class="tech-tag">Scikit-learn</span>
+                            <span class="arch-step">Scikit-learn Model (Pickle)</span>
+                            <span class="arch-arrow">→</span>
                             
-                            <span class="tech-tag">Flask</span>
+                            <span class="arch-step">Price Prediction</span>
+                            <span class="arch-arrow">→</span>
                             
-                            <span class="tech-tag">HTML</span>
+                            <span class="arch-step">Flask Response</span>
+                            <span class="arch-arrow">→</span>
                             
-                            <span class="tech-tag">CSS</span>
+                            <span class="arch-step">PostgreSQL History</span>
                             
-                            <span class="tech-tag">JavaScript</span>
-                            
-                            <span class="tech-tag">PostgreSQL</span>
-                            
-                            <span class="tech-tag">REST APIs</span>
-                            
-                            <span class="tech-tag">Pickle</span>
                             
                         </div>
                     </div>
-                    
-                    <div class="project-link">
-                        <a href="https://github.com/dhararuparel/house-price-prediction.git" target="_blank" rel="noopener noreferrer"
-                            class="btn-project-link">
-                            <i class="fas fa-external-link-alt"></i>
-                            View On Github
-                        </a>
-                    </div>
-                    
                 </div>
+                
             </div>
             
         </div>
@@ -847,51 +1291,75 @@
     </div>
 </section>
 
-<!-- Education Section -->
-<section id="education" class="education">
+<!-- Journey Section -->
+<section id="journey" class="journey">
     <div class="container">
-        <p class="section-eyebrow">Background</p>
-        <h2 class="section-title">Education</h2>
-        <div class="education-timeline">
+        <p class="section-eyebrow">Milestones</p>
+        <h2 class="section-title">Engineering Journey</h2>
+        <div class="journey-timeline">
             
-            <div class="education-item">
-                <div class="education-year">2022-2026</div>
-                <div class="education-content">
-                    <h3>B.E.(COMPUTER) - KSV</h3>
-                    <p class="institution">LDRP-ITR, Gandhinagar</p>
-                    
-                    <div class="percentage">8.55</div>
-                    
+            <div class="journey-item reveal-on-scroll">
+                <div class="journey-badge">2023 Q1</div>
+                <div class="journey-content">
+                    <h3>First Steps into Python &amp; ML</h3>
+                    <p>Wrote first Python automation scripts, scrapers, and explored foundational Machine Learning concepts (Regression/Classification).</p>
                 </div>
             </div>
-            
-            <div class="education-item">
-                <div class="education-year">2020-2022</div>
-                <div class="education-content">
-                    <h3>H.S.C - C.B.S.E</h3>
-                    <p class="institution">CBSE Board</p>
-                    
-                    <div class="percentage">87%</div>
-                    
+
+            <div class="journey-item reveal-on-scroll">
+                <div class="journey-badge">2023 Q3</div>
+                <div class="journey-content">
+                    <h3>Computer Vision Breakthrough</h3>
+                    <p>Developed the <strong>Hand Gesture Recognition System</strong> using OpenCV and MediaPipe. Learned real-time video frame manipulation and spatial coordinates tracking.</p>
                 </div>
             </div>
-            
-            <div class="education-item">
-                <div class="education-year">2020</div>
-                <div class="education-content">
-                    <h3>S.S.C - C.B.S.E</h3>
-                    <p class="institution">CBSE Board</p>
-                    
-                    <div class="percentage">94.2%</div>
-                    
+
+            <div class="journey-item reveal-on-scroll">
+                <div class="journey-badge">2024 Q1</div>
+                <div class="journey-content">
+                    <h3>Web Integration &amp; Deployment</h3>
+                    <p>Built and deployed the <strong>House Price Prediction System</strong>. Set up REST APIs using Flask, integrated PostgreSQL for search logs, and pickled models for production inference.</p>
                 </div>
             </div>
-            
+
+            <div class="journey-item reveal-on-scroll">
+                <div class="journey-badge">2024 Q2</div>
+                <div class="journey-content">
+                    <h3>TatvaSoft Pvt. Ltd. (Intern)</h3>
+                    <p>Immersed in Java Enterprise ecosystems. Worked with Spring Boot MVC and Hibernate, focusing on scalable APIs and relational database query optimization.</p>
+                </div>
+            </div>
+
+            <div class="journey-item reveal-on-scroll">
+                <div class="journey-badge">2024 Q4</div>
+                <div class="journey-content">
+                    <h3>iTechbrains (Intern)</h3>
+                    <p>Contributed to fullstack Python web platforms. Built and optimized applications using Django, enhancing database query performance and developing robust admin management systems.</p>
+                </div>
+            </div>
+
+            <div class="journey-item reveal-on-scroll">
+                <div class="journey-badge">2025 Q1</div>
+                <div class="journey-content">
+                    <h3>Lexara AI (Launch)</h3>
+                    <p>Architected and launched a full RAG platform. Integrated Gemini 2.5 Flash, chunked large document collections into vector spaces, and constructed semantic search pipelines using FAISS.</p>
+                </div>
+            </div>
+
+            <div class="journey-item reveal-on-scroll">
+                <div class="journey-badge">2025 Q2</div>
+                <div class="journey-content">
+                    <h3>Active Build: GitScope AI</h3>
+                    <p>Currently engineering an agentic analytical tool providing real-time insights from GitHub repositories. Deep diving into Go and high-performance system design.</p>
+                </div>
+            </div>
+
         </div>
     </div>
 </section>
 
 <!-- Certifications Section -->
+
 <section id="certifications" class="certifications">
     <div class="container">
         <p class="section-eyebrow">Achievements</p>
@@ -983,10 +1451,7 @@
                 <div class="contact-details">
                     <div class="contact-item">
                         <i class="fas fa-envelope"></i>
-                        <span id="contact-email">dhararuparel16@gmail.com</span>
-                        <button id="copy-email-btn" class="btn-copy-email" title="Copy Email">
-                            <i class="far fa-copy" id="copy-email-icon"></i>
-                        </button>
+                        <span id="contact-email" class="email-copyable" title="Click to copy">dhararuparel16@gmail.com</span>
                     </div>
                     <div class="contact-item">
                         <i class="fas fa-map-marker-alt"></i>
@@ -1057,9 +1522,149 @@
     </div>
 </footer>
 
+
 <button type="button" class="back-to-top" id="backToTop" aria-label="Back to top" title="Back to top">
     <i class="fas fa-arrow-up"></i>
 </button>
+
+<!-- ===== INTERACTIVE TERMINAL WIDGET ===== -->
+<button id="terminal-launcher" class="terminal-fab" title="Open Interactive Terminal" aria-label="Terminal CLI">
+    <i class="fas fa-terminal"></i>
+    <span class="terminal-fab-label">CLI Terminal</span>
+</button>
+
+<div id="terminal-modal" class="terminal-modal" aria-hidden="true">
+    <div class="terminal-header">
+        <div class="terminal-controls">
+            <span class="t-dot close" id="terminal-close"></span>
+            <span class="t-dot minimize"></span>
+            <span class="t-dot maximize"></span>
+        </div>
+        <div class="terminal-title">dhara-ruparel-cli v1.0.0</div>
+    </div>
+    <div class="terminal-body" id="terminal-output-container">
+        <div class="terminal-line welcome">Welcome to Dhara's Interactive CLI. Type <span class="highlight">help</span> for a list of available commands.</div>
+        <div class="terminal-output" id="terminal-output"></div>
+        <div class="terminal-input-line">
+            <span class="terminal-prompt">guest@dhara:~$</span>
+            <input type="text" id="terminal-input" autofocus autocomplete="off" spellcheck="false" aria-label="Terminal Command Input">
+        </div>
+    </div>
+</div>
+<div id="terminal-backdrop" class="terminal-backdrop"></div>
+<!-- ===== END INTERACTIVE TERMINAL ===== -->
+
+<!-- ===== RECRUITER MODE TOGGLE ===== -->
+<button id="recruiter-mode-btn" class="recruiter-fab" title="Toggle Recruiter Mode" aria-label="Recruiter Mode">
+    <i class="fas fa-briefcase" id="recruiter-fab-icon"></i>
+    <span class="recruiter-fab-label">Recruiter Mode</span>
+</button>
+
+<!-- Recruiter Mode Overlay Panel -->
+<div id="recruiter-panel" class="recruiter-panel" aria-hidden="true">
+    <div class="recruiter-panel-inner">
+        <!-- Header -->
+        <div class="rp-header">
+            <div class="rp-header-left">
+                <span class="rp-badge"><i class="fas fa-briefcase"></i> Recruiter Mode</span>
+                <h2 class="rp-name">Dhara Ruparel</h2>
+                <p class="rp-role">AI Engineer · Backend Engineer · Generative AI</p>
+                <div class="rp-status">
+                    <span class="rp-status-dot"></span>
+                    <span>Open to Work · Remote &amp; Ahmedabad</span>
+                </div>
+            </div>
+            <button class="rp-close" id="recruiter-panel-close" aria-label="Close Recruiter Mode">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="rp-quick-actions">
+            <a href="static/Dhara_Ruparel_Resume.pdf" target="_blank" rel="noopener noreferrer" class="rp-action-btn primary">
+                <i class="fas fa-file-pdf"></i> Download Resume
+            </a>
+            <a href="https://www.linkedin.com/in/dhara-ruparel/" target="_blank" rel="noopener noreferrer" class="rp-action-btn">
+                <i class="fab fa-linkedin"></i> LinkedIn
+            </a>
+            <a href="https://github.com/dhararuparel" target="_blank" rel="noopener noreferrer" class="rp-action-btn">
+                <i class="fab fa-github"></i> GitHub
+            </a>
+            <a href="mailto:dhararuparel16@gmail.com" class="rp-action-btn">
+                <i class="fas fa-envelope"></i> Email
+            </a>
+        </div>
+
+        <!-- Two-Column Grid -->
+        <div class="rp-grid">
+            <!-- Experience -->
+            <div class="rp-section">
+                <h3 class="rp-section-title"><i class="fas fa-history"></i> Experience</h3>
+                <ul class="rp-list">
+                    <li><span class="rp-tag">3+ yrs</span> Python &amp; AI Development</li>
+                    <li><span class="rp-tag">Intern</span> Python with Django — iTechbrains</li>
+                    <li><span class="rp-tag">Intern</span> Summer — TatvaSoft Pvt. Ltd.</li>
+                </ul>
+            </div>
+
+            <!-- Best Projects -->
+            <div class="rp-section">
+                <h3 class="rp-section-title"><i class="fas fa-star"></i> Best Projects</h3>
+                <ul class="rp-list">
+                    <li><span class="rp-tag">Live</span> Lexara AI — LLM RAG Platform</li>
+                    <li><span class="rp-tag">CV</span> Hand Gesture Recognition System</li>
+                    <li><span class="rp-tag">ML</span> House Price Prediction</li>
+                </ul>
+            </div>
+
+            <!-- Tech Stack -->
+            <div class="rp-section">
+                <h3 class="rp-section-title"><i class="fas fa-layer-group"></i> Core Tech Stack</h3>
+                <div class="rp-chips">
+                    <span class="rp-chip">Python</span>
+                    <span class="rp-chip">Flask</span>
+                    <span class="rp-chip">FastAPI</span>
+                    <span class="rp-chip">LLMs</span>
+                    <span class="rp-chip">RAG</span>
+                    <span class="rp-chip">FAISS</span>
+                    <span class="rp-chip">PostgreSQL</span>
+                    <span class="rp-chip">Supabase</span>
+                    <span class="rp-chip">OpenCV</span>
+                    <span class="rp-chip">Docker</span>
+                    <span class="rp-chip">Scikit-learn</span>
+                    <span class="rp-chip">Git</span>
+                </div>
+            </div>
+
+            <!-- Education + Certs -->
+            <div class="rp-section">
+                <h3 class="rp-section-title"><i class="fas fa-graduation-cap"></i> Education</h3>
+                <ul class="rp-list">
+                    <li><span class="rp-tag">2026</span> B.E. Computer — LDRP-ITR (8.55 CGPA)</li>
+                    <li><span class="rp-tag">NPTEL</span> Python for Data Science</li>
+                    <li><span class="rp-tag">TCS</span> iON Career Edge Program</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 2-Minute Overview -->
+        <div class="rp-overview">
+            <h3 class="rp-section-title"><i class="fas fa-clock"></i> 2-Minute Overview</h3>
+            <p>I'm a recent Computer Engineering graduate (2026) specializing in AI/ML and Backend development. I've built production-ready applications including <strong>Lexara AI</strong> — a full RAG platform with semantic search, Gemini integration, and Supabase auth. My stack is Python-first with expertise in LLMs, computer vision, NLP, and REST APIs. I'm available for full-time AI Engineer or Backend roles, remote or in Ahmedabad.</p>
+        </div>
+
+        <!-- Footer -->
+        <div class="rp-footer">
+            <a href="#projects" class="rp-nav-link" onclick="closeRecruiterMode()">Projects</a>
+            <a href="#skills" class="rp-nav-link" onclick="closeRecruiterMode()">Skills</a>
+            <a href="#internships" class="rp-nav-link" onclick="closeRecruiterMode()">Experience</a>
+            <a href="#certifications" class="rp-nav-link" onclick="closeRecruiterMode()">Certifications</a>
+            <a href="#contact" class="rp-nav-link" onclick="closeRecruiterMode()">Contact</a>
+        </div>
+    </div>
+</div>
+<div id="recruiter-backdrop" class="recruiter-backdrop"></div>
+<!-- ===== END RECRUITER MODE ===== -->
 
 
     

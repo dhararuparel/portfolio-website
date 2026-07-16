@@ -298,26 +298,42 @@ document.addEventListener('DOMContentLoaded', function() {
         }, { passive: true });
     }
 
-    // Click-to-copy email functionality
-    const copyEmailBtn = document.getElementById('copy-email-btn');
-    if (copyEmailBtn) {
-        copyEmailBtn.addEventListener('click', function() {
-            const emailSpan = document.getElementById('contact-email');
-            if (emailSpan) {
-                const emailText = emailSpan.textContent.trim();
-                navigator.clipboard.writeText(emailText).then(() => {
-                    const icon = document.getElementById('copy-email-icon');
-                    if (icon) {
-                        icon.className = 'fas fa-check';
-                        copyEmailBtn.classList.add('copied');
-                        setTimeout(() => {
-                            icon.className = 'far fa-copy';
-                            copyEmailBtn.classList.remove('copied');
-                        }, 2000);
-                    }
-                }).catch(err => {
-                    console.error('Failed to copy text: ', err);
+    // Click-to-copy email — click the email text itself
+    const emailSpan = document.getElementById('contact-email');
+    if (emailSpan) {
+        emailSpan.addEventListener('click', function () {
+            const emailText = emailSpan.textContent.trim();
+            const doCopy = () => {
+                // Show inline "Copied!" tooltip
+                const tip = document.createElement('span');
+                tip.textContent = 'Copied!';
+                tip.className = 'email-copied-tip';
+                emailSpan.parentNode.style.position = 'relative';
+                emailSpan.parentNode.appendChild(tip);
+                emailSpan.classList.add('email-copied-state');
+                setTimeout(() => {
+                    tip.remove();
+                    emailSpan.classList.remove('email-copied-state');
+                }, 2000);
+            };
+
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(emailText).then(doCopy).catch(() => {
+                    // fallback
+                    const ta = document.createElement('textarea');
+                    ta.value = emailText;
+                    ta.style.position = 'fixed'; ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select(); document.execCommand('copy');
+                    ta.remove(); doCopy();
                 });
+            } else {
+                const ta = document.createElement('textarea');
+                ta.value = emailText;
+                ta.style.position = 'fixed'; ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select(); document.execCommand('copy');
+                ta.remove(); doCopy();
             }
         });
     }
@@ -404,3 +420,263 @@ if (!document.getElementById('mobile-nav-styles')) {
         }
     });
 })();
+
+/* ══════════════════════════════════════════════
+   ANIMATED COUNTERS — Engineering Snapshot
+   Fires once when section scrolls into view
+   ══════════════════════════════════════════════ */
+(function () {
+    function easeOutQuart(t) {
+        return 1 - Math.pow(1 - t, 4);
+    }
+
+    function animateCounter(el, target, duration) {
+        const start = performance.now();
+        function step(now) {
+            const elapsed = now - start;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = easeOutQuart(progress);
+            el.textContent = Math.round(eased * target);
+            if (progress < 1) requestAnimationFrame(step);
+            else el.textContent = target;
+        }
+        requestAnimationFrame(step);
+    }
+
+    const cards = document.querySelectorAll('.snapshot-card');
+    if (!cards.length) return;
+
+    let fired = false;
+    const observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+            if (entry.isIntersecting && !fired) {
+                fired = true;
+                cards.forEach(function (card) {
+                    const target = parseInt(card.dataset.target, 10);
+                    const counterEl = card.querySelector('.counter');
+                    if (counterEl && !isNaN(target)) {
+                        animateCounter(counterEl, target, 1400);
+                    }
+                });
+                observer.disconnect();
+            }
+        });
+    }, { threshold: 0.25 });
+
+    const section = document.getElementById('engineering-snapshot');
+    if (section) observer.observe(section);
+})();
+
+/* ══════════════════════════════════════════════
+   RECRUITER MODE TOGGLE
+   ══════════════════════════════════════════════ */
+function closeRecruiterMode() {
+    const panel    = document.getElementById('recruiter-panel');
+    const backdrop = document.getElementById('recruiter-backdrop');
+    if (!panel) return;
+    panel.classList.remove('open');
+    panel.setAttribute('aria-hidden', 'true');
+    backdrop.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+(function () {
+    const fabBtn   = document.getElementById('recruiter-mode-btn');
+    const panel    = document.getElementById('recruiter-panel');
+    const backdrop = document.getElementById('recruiter-backdrop');
+    const closeBtn = document.getElementById('recruiter-panel-close');
+
+    if (!fabBtn || !panel || !backdrop) return;
+
+    function openPanel() {
+        panel.classList.add('open');
+        panel.setAttribute('aria-hidden', 'false');
+        backdrop.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        // Focus the close button for accessibility
+        setTimeout(function () { if (closeBtn) closeBtn.focus(); }, 420);
+    }
+
+    fabBtn.addEventListener('click', function () {
+        const isOpen = panel.classList.contains('open');
+        if (isOpen) closeRecruiterMode();
+        else openPanel();
+    });
+
+    if (closeBtn) closeBtn.addEventListener('click', closeRecruiterMode);
+
+    backdrop.addEventListener('click', closeRecruiterMode);
+
+    // Keyboard: Escape key closes panel
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && panel.classList.contains('open')) {
+            closeRecruiterMode();
+            fabBtn.focus();
+        }
+    });
+})();
+
+/* ══════════════════════════════════════════════
+   ARCHITECTURE PANEL TOGGLE (Case Studies)
+   ══════════════════════════════════════════════ */
+function toggleArch(panelId) {
+    const panel = document.getElementById(panelId);
+    const btn = document.getElementById('btn-' + panelId);
+    const chev = document.getElementById('chev-' + panelId);
+    
+    if (!panel || !btn) return;
+    
+    const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+    
+    if (isExpanded) {
+        panel.style.maxHeight = null;
+        panel.classList.remove('open');
+        panel.setAttribute('aria-hidden', 'true');
+        btn.setAttribute('aria-expanded', 'false');
+        if (chev) chev.classList.remove('rotated');
+    } else {
+        panel.classList.add('open');
+        panel.style.maxHeight = panel.scrollHeight + 'px';
+        panel.setAttribute('aria-hidden', 'false');
+        btn.setAttribute('aria-expanded', 'true');
+        if (chev) chev.classList.add('rotated');
+    }
+}
+
+/* ══════════════════════════════════════════════
+   INTERACTIVE TERMINAL CLI LOGIC
+   ══════════════════════════════════════════════ */
+(function () {
+    const launcher = document.getElementById('terminal-launcher');
+    const modal = document.getElementById('terminal-modal');
+    const backdrop = document.getElementById('terminal-backdrop');
+    const closeBtn = document.getElementById('terminal-close');
+    const input = document.getElementById('terminal-input');
+    const output = document.getElementById('terminal-output');
+    const container = document.getElementById('terminal-output-container');
+
+    if (!launcher || !modal || !backdrop || !input || !output) return;
+
+    // Toggle Modal
+    function openTerminal() {
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden', 'false');
+        backdrop.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => input.focus(), 150);
+    }
+
+    function closeTerminal() {
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+        backdrop.classList.remove('active');
+        document.body.style.overflow = '';
+        launcher.focus();
+    }
+
+    launcher.addEventListener('click', openTerminal);
+    closeBtn.addEventListener('click', closeTerminal);
+    backdrop.addEventListener('click', closeTerminal);
+
+    // Close on ESC
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && modal.classList.contains('open')) {
+            closeTerminal();
+        }
+    });
+
+    // Refocus input if user clicks inside terminal
+    modal.addEventListener('click', function (e) {
+        if (e.target !== closeBtn && !closeBtn.contains(e.target)) {
+            input.focus();
+        }
+    });
+
+    // Command registry
+    const commands = {
+        help: function () {
+            return `Available commands:
+  <span class="highlight">whoami</span>   - Brief bio overview
+  <span class="highlight">skills</span>   - Primary technologies & expertise
+  <span class="highlight">projects</span> - Showcase of featured case studies
+  <span class="highlight">resume</span>   - Direct link to resume PDF
+  <span class="highlight">contact</span>  - Contact info (Email, LinkedIn, GitHub)
+  <span class="highlight">clear</span>    - Clear terminal screen
+  <span class="highlight">help</span>     - Show this help menu`;
+        },
+        whoami: function () {
+            return `Profile: Dhara Ruparel
+Role: AI Engineer / Backend Engineer / Generative AI
+Location: Ahmedabad, India (Open to Remote)
+Bio: Recent Computer Engineering graduate specializing in LLMs, RAG platforms, computer vision, NLP, and REST APIs. Production-focused developer.`;
+        },
+        skills: function () {
+            return `Core Skillset & Stack:
+  - Languages: Python, C++, Java, JavaScript, HTML/CSS, SQL
+  - AI & ML: LLMs, RAG, NLP, Computer Vision, MediaPipe, FAISS, Scikit-learn
+  - Frameworks: Flask, FastAPI, Django, Streamlit
+  - Database & Cloud: PostgreSQL, Supabase, SQLite, Render, Git, Docker`;
+        },
+        projects: function () {
+            return `Featured Case Studies:
+  1. <span class="highlight">Lexara AI</span> - Full LLM RAG knowledge base. (FAISS / Gemini / Flask)
+  2. <span class="highlight">Camera Motion Sensing</span> - Surveillance alerts. (OpenCV / PostgreSQL)
+  3. <span class="highlight">Emotion Detection</span> - Sentiment ML. (Scikit-learn / Streamlit)
+  4. <span class="highlight">AI Content Factory</span> - Automated content. (n8n / Gemini)
+  5. <span class="highlight">Hand Gesture Recognition</span> - webcam CV. (MediaPipe / OpenCV)`;
+        },
+        resume: function () {
+            // Trigger download/view in new window
+            setTimeout(() => {
+                window.open('static/Dhara_Ruparel_Resume.pdf', '_blank');
+            }, 500);
+            return `Opening resume PDF in a new tab...`;
+        },
+        contact: function () {
+            return `Connect channels:
+  - Email:    dhararuparel16@gmail.com
+  - LinkedIn: linkedin.com/in/dhara-ruparel/
+  - GitHub:   github.com/dhararuparel`;
+        },
+        clear: function () {
+            output.innerHTML = '';
+            return '';
+        }
+    };
+
+    // Command listener
+    input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+            const rawVal = input.value;
+            const cmd = rawVal.trim().toLowerCase();
+            input.value = '';
+
+            if (cmd === '') return;
+
+            // Output command echo
+            const echoLine = document.createElement('div');
+            echoLine.className = 'terminal-line';
+            echoLine.innerHTML = `<span class="terminal-prompt">guest@dhara:~$</span> <span class="command-echo">${rawVal}</span>`;
+            output.appendChild(echoLine);
+
+            // Execute command
+            let responseHtml = '';
+            if (commands[cmd]) {
+                responseHtml = commands[cmd]();
+            } else {
+                responseHtml = `<span class="error">Command not found: "${rawVal}". Type 'help' for instructions.</span>`;
+            }
+
+            if (responseHtml !== '') {
+                const responseLine = document.createElement('div');
+                responseLine.className = 'terminal-line';
+                responseLine.innerHTML = responseHtml;
+                output.appendChild(responseLine);
+            }
+
+            // Scroll to bottom
+            container.scrollTop = container.scrollHeight;
+        }
+    });
+})();
+
