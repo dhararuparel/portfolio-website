@@ -546,6 +546,41 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Snapshot form
+    const snapshotForm = document.getElementById('snapshotForm');
+    if (snapshotForm) {
+        snapshotForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            
+            const numFields = ['public_repos', 'ai_projects', 'apis_integrated', 'technologies_used', 'years_of_coding', 'total_commits'];
+            numFields.forEach(f => {
+                if (data[f]) {
+                    data[f] = parseInt(data[f], 10);
+                }
+            });
+            
+            try {
+                const res = await fetch('/api/snapshot', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const resData = await res.json();
+                if (res.ok) {
+                    showNotification('Snapshot & Status updated successfully');
+                    location.reload();
+                } else {
+                    showNotification('Error saving snapshot: ' + (resData.error || 'Unknown'), 'error');
+                }
+            } catch (error) {
+                showNotification('Error saving snapshot: ' + error.message, 'error');
+            }
+        });
+    }
+
     // Menu navigation
     const menuItems = document.querySelectorAll('.menu-item');
     const sections = document.querySelectorAll('.admin-section');

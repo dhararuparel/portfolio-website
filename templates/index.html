@@ -81,36 +81,36 @@
             </div>
             <div class="snapshot-updated">
                 <span class="snapshot-live-dot"></span>
-                <span id="snapshot-last-updated">Last updated: <strong>Jul 2025</strong></span>
+                <span id="snapshot-last-updated">Last updated: <strong>{{ snapshot.last_updated }}</strong></span>
             </div>
         </div>
         <div class="snapshot-grid">
-            <div class="snapshot-card" data-target="15" data-suffix="+">
+            <div class="snapshot-card" data-target="{{ snapshot.public_repos }}" data-suffix="+">
                 <div class="snapshot-icon"><i class="fab fa-github"></i></div>
                 <div class="snapshot-value"><span class="counter">0</span><span class="suffix">+</span></div>
                 <div class="snapshot-label">Public Repositories</div>
             </div>
-            <div class="snapshot-card" data-target="6" data-suffix="+">
+            <div class="snapshot-card" data-target="{{ snapshot.ai_projects }}" data-suffix="+">
                 <div class="snapshot-icon"><i class="fas fa-robot"></i></div>
                 <div class="snapshot-value"><span class="counter">0</span><span class="suffix">+</span></div>
                 <div class="snapshot-label">AI Projects Built</div>
             </div>
-            <div class="snapshot-card" data-target="10" data-suffix="+">
+            <div class="snapshot-card" data-target="{{ snapshot.apis_integrated }}" data-suffix="+">
                 <div class="snapshot-icon"><i class="fas fa-plug"></i></div>
                 <div class="snapshot-value"><span class="counter">0</span><span class="suffix">+</span></div>
                 <div class="snapshot-label">APIs Integrated</div>
             </div>
-            <div class="snapshot-card" data-target="15" data-suffix="+">
+            <div class="snapshot-card" data-target="{{ snapshot.technologies_used }}" data-suffix="+">
                 <div class="snapshot-icon"><i class="fas fa-layer-group"></i></div>
                 <div class="snapshot-value"><span class="counter">0</span><span class="suffix">+</span></div>
                 <div class="snapshot-label">Technologies Used</div>
             </div>
-            <div class="snapshot-card" data-target="3" data-suffix="+">
+            <div class="snapshot-card" data-target="{{ snapshot.years_of_coding }}" data-suffix="+">
                 <div class="snapshot-icon"><i class="fas fa-calendar-alt"></i></div>
                 <div class="snapshot-value"><span class="counter">0</span><span class="suffix">+</span></div>
                 <div class="snapshot-label">Years of Coding</div>
             </div>
-            <div class="snapshot-card" data-target="500" data-suffix="+">
+            <div class="snapshot-card" data-target="{{ snapshot.total_commits }}" data-suffix="+">
                 <div class="snapshot-icon"><i class="fas fa-code-commit"></i></div>
                 <div class="snapshot-value"><span class="counter">0</span><span class="suffix">+</span></div>
                 <div class="snapshot-label">Total Commits</div>
@@ -121,17 +121,17 @@
         <div class="current-status-card">
             <div class="csc-item">
                 <div class="csc-label"><i class="fas fa-hammer"></i> Currently Building</div>
-                <div class="csc-value">GitScope AI</div>
+                <div class="csc-value">{{ snapshot.currently_building }}</div>
             </div>
             <div class="csc-divider"></div>
             <div class="csc-item">
                 <div class="csc-label"><i class="fas fa-book-open"></i> Learning</div>
-                <div class="csc-value">Go + System Design</div>
+                <div class="csc-value">{{ snapshot.learning }}</div>
             </div>
             <div class="csc-divider"></div>
             <div class="csc-item">
                 <div class="csc-label"><i class="fas fa-briefcase"></i> Available For</div>
-                <div class="csc-value available">AI Engineer &nbsp;·&nbsp; Backend Engineer</div>
+                <div class="csc-value available">{{ snapshot.available_for|safe }}</div>
             </div>
         </div>
     </div>

@@ -1,4 +1,4 @@
-from app import app, db, Project, Skill, Education, Certification, Contact, Admin
+from app import app, db, Project, Skill, Education, Certification, Contact, Admin, EngineeringSnapshot
 from werkzeug.security import generate_password_hash
 
 def populate_database():
@@ -192,6 +192,26 @@ def populate_database():
             print("Added contact information")
         else:
             print("Contact information already exists")
+        
+        # Add Engineering Snapshot (only if it doesn't exist)
+        existing_snapshot = EngineeringSnapshot.query.first()
+        if not existing_snapshot:
+            snapshot = EngineeringSnapshot(
+                public_repos=15,
+                ai_projects=6,
+                apis_integrated=10,
+                technologies_used=15,
+                years_of_coding=3,
+                total_commits=500,
+                currently_building='GitScope AI',
+                learning='Go + System Design',
+                available_for='AI Engineer &nbsp;·&nbsp; Backend Engineer',
+                last_updated='Jul 2025'
+            )
+            db.session.add(snapshot)
+            print("Added engineering snapshot")
+        else:
+            print("Engineering snapshot already exists")
         
         # Commit all changes
         db.session.commit()

@@ -107,6 +107,19 @@ class IntroVideo(db.Model):
     data = db.Column(db.LargeBinary, nullable=False)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
+class EngineeringSnapshot(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    public_repos = db.Column(db.Integer, default=15)
+    ai_projects = db.Column(db.Integer, default=6)
+    apis_integrated = db.Column(db.Integer, default=10)
+    technologies_used = db.Column(db.Integer, default=15)
+    years_of_coding = db.Column(db.Integer, default=3)
+    total_commits = db.Column(db.Integer, default=500)
+    currently_building = db.Column(db.String(200), default="GitScope AI")
+    learning = db.Column(db.String(200), default="Go + System Design")
+    available_for = db.Column(db.String(200), default="AI Engineer &nbsp;·&nbsp; Backend Engineer")
+    last_updated = db.Column(db.String(50), default="Jul 2025")
+
 # Routes
 @app.route('/')
 def index():
@@ -116,13 +129,21 @@ def index():
     certifications = Certification.query.order_by(Certification.display_order, Certification.id).all()
     internships = Internship.query.order_by(Internship.display_order, Internship.id).all()
     contact = Contact.query.first()
+    
+    snapshot = EngineeringSnapshot.query.first()
+    if not snapshot:
+        snapshot = EngineeringSnapshot()
+        db.session.add(snapshot)
+        db.session.commit()
+        
     return render_template('index.html', 
-                         projects=projects, 
-                         skills=skills, 
-                         education=education, 
-                         certifications=certifications,
-                         internships=internships,
-                         contact=contact)
+                          projects=projects, 
+                          skills=skills, 
+                          education=education, 
+                          certifications=certifications,
+                          internships=internships,
+                          contact=contact,
+                          snapshot=snapshot)
 
 @app.route('/admin')
 def admin_login():
@@ -160,13 +181,59 @@ def admin_dashboard():
     internships = Internship.query.order_by(Internship.display_order, Internship.id).all()
     contact = Contact.query.first()
     
+    snapshot = EngineeringSnapshot.query.first()
+    if not snapshot:
+        snapshot = EngineeringSnapshot()
+        db.session.add(snapshot)
+        db.session.commit()
+    
     return render_template('admin_dashboard.html',
                          projects=projects,
                          skills=skills,
                          education=education,
                          certifications=certifications,
                          internships=internships,
-                         contact=contact)
+                         contact=contact,
+                         snapshot=snapshot)
+
+@app.route('/api/snapshot', methods=['GET', 'POST'])
+def api_snapshot():
+    if 'admin_logged_in' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+        
+    snapshot = EngineeringSnapshot.query.first()
+    if not snapshot:
+        snapshot = EngineeringSnapshot()
+        db.session.add(snapshot)
+        db.session.commit()
+        
+    if request.method == 'POST':
+        data = request.json
+        snapshot.public_repos = int(data['public_repos'])
+        snapshot.ai_projects = int(data['ai_projects'])
+        snapshot.apis_integrated = int(data['apis_integrated'])
+        snapshot.technologies_used = int(data['technologies_used'])
+        snapshot.years_of_coding = int(data['years_of_coding'])
+        snapshot.total_commits = int(data['total_commits'])
+        snapshot.currently_building = data['currently_building']
+        snapshot.learning = data['learning']
+        snapshot.available_for = data['available_for']
+        snapshot.last_updated = data['last_updated']
+        db.session.commit()
+        return jsonify({'message': 'Snapshot updated successfully'})
+        
+    return jsonify({
+        'public_repos': snapshot.public_repos,
+        'ai_projects': snapshot.ai_projects,
+        'apis_integrated': snapshot.apis_integrated,
+        'technologies_used': snapshot.technologies_used,
+        'years_of_coding': snapshot.years_of_coding,
+        'total_commits': snapshot.total_commits,
+        'currently_building': snapshot.currently_building,
+        'learning': snapshot.learning,
+        'available_for': snapshot.available_for,
+        'last_updated': snapshot.last_updated
+    })
 
 # API Routes for CRUD operations
 @app.route('/api/projects', methods=['GET', 'POST'])
