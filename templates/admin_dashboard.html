@@ -5,7 +5,15 @@
 {% block extra_head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&display=swap" rel="stylesheet">
-<style>#loader-overlay { display: none !important; }</style>
+<style>
+    #loader-overlay { display: none !important; }
+    .metrics-col .form-group label {
+        min-height: 32px;
+        display: flex;
+        align-items: flex-end;
+        margin-bottom: 8px;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -461,7 +469,7 @@
                     <form id="snapshotForm">
                         <div class="form-row" style="gap: 30px;">
                             <!-- Metrics Column -->
-                            <div>
+                            <div class="metrics-col">
                                 <h3 style="margin-bottom: 20px; font-family: 'Syne', sans-serif;">Metrics</h3>
                                 <div class="form-row">
                                     <div class="form-group">
