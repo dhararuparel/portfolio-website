@@ -425,6 +425,28 @@
     </div>
 </section>
 
+<!-- Education Section -->
+<section id="education" class="education">
+    <div class="container">
+        <p class="section-eyebrow">Background</p>
+        <h2 class="section-title">Education</h2>
+        <div class="education-timeline">
+            {% for edu in education %}
+            <div class="education-item">
+                <div class="education-year">{{ edu.year }}</div>
+                <div class="education-content">
+                    <h3>{{ edu.degree }}</h3>
+                    <p class="institution">{{ edu.institution }}</p>
+                    {% if edu.percentage %}
+                    <div class="percentage">{{ edu.percentage }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
 <!-- Certifications Section -->
 
 <section id="certifications" class="certifications">
