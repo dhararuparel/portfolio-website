@@ -928,7 +928,7 @@ section {
     flex-wrap: wrap;
     align-items: center;
     gap: 8px;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: 'JetBrains Mono', Fira Code, SFMono-Regular, Consolas, monospace;
     font-size: 11px;
     color: var(--text-secondary);
     line-height: 1.6;
@@ -2784,7 +2784,7 @@ body.light-mode .btn-secondary:hover {
     color: #00d97e;
     border: 1px solid rgba(0, 217, 126, 0.3);
     border-radius: 100px;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: 'JetBrains Mono', Fira Code, SFMono-Regular, Consolas, monospace;
     font-size: 13px;
     font-weight: 700;
     cursor: pointer;
@@ -2875,7 +2875,7 @@ body.light-mode .btn-secondary:hover {
 .t-dot.maximize { background: #27c93f; }
 
 .terminal-title {
-    font-family: 'Courier New', Courier, monospace;
+    font-family: 'JetBrains Mono', Fira Code, SFMono-Regular, Consolas, monospace;
     font-size: 11px;
     color: var(--text-muted);
 }
@@ -2885,7 +2885,7 @@ body.light-mode .btn-secondary:hover {
     flex: 1;
     padding: 18px;
     overflow-y: auto;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: 'JetBrains Mono', Fira Code, SFMono-Regular, Consolas, monospace;
     font-size: 13px;
     color: #e0e0e0;
     display: flex;
@@ -2941,7 +2941,7 @@ body.light-mode .btn-secondary:hover {
     border: none;
     outline: none;
     color: #fff;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: 'JetBrains Mono', Fira Code, SFMono-Regular, Consolas, monospace;
     font-size: 13px;
     padding: 0;
     caret-color: #00d97e;
