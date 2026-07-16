@@ -570,13 +570,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 const resData = await res.json();
                 if (res.ok) {
-                    showNotification('Snapshot & Status updated successfully');
+                    showNotification('Engineering Dashboard updated successfully');
                     location.reload();
                 } else {
-                    showNotification('Error saving snapshot: ' + (resData.error || 'Unknown'), 'error');
+                    showNotification('Error saving dashboard: ' + (resData.error || 'Unknown'), 'error');
                 }
             } catch (error) {
-                showNotification('Error saving snapshot: ' + error.message, 'error');
+                showNotification('Error saving dashboard: ' + error.message, 'error');
             }
         });
     }

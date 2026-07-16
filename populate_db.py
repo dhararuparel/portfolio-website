@@ -205,7 +205,7 @@ def populate_database():
                 total_commits=500,
                 currently_building='GitScope AI',
                 learning='Go + System Design',
-                available_for='AI Engineer &nbsp;·&nbsp; Backend Engineer',
+                available_for='AI Engineer &amp; Backend Engineer',
                 last_updated='Jul 2025'
             )
             db.session.add(snapshot)
