@@ -2898,6 +2898,7 @@ body.light-mode .btn-secondary:hover {
 .terminal-line {
     line-height: 1.5;
     word-break: break-all;
+    white-space: pre-wrap;
 }
 
 .terminal-line.welcome {
