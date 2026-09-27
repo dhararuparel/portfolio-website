@@ -15,10 +15,43 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-secret-key-here')
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100 MB (allows video uploads)
 
 # Render uses 'postgres://' but SQLAlchemy requires 'postgresql://'
-db_url = os.getenv('DATABASE_URL', 'postgresql://postgres:dhara16@localhost/portfolio_db')
+db_url = os.getenv('DATABASE_URL', 'postgresql://postgres:dhara16@localhost:5432/portfolio_db')
 if db_url.startswith('postgres://'):
     db_url = db_url.replace('postgres://', 'postgresql://', 1)
 
+def resolve_database_uri(primary_url):
+    """
+    Validates the database connection.
+    If the primary database (e.g. Supabase or remote server) is unreachable,
+    gracefully falls back to local PostgreSQL or SQLite so the application never crashes on startup.
+    """
+    if primary_url.startswith('postgresql://'):
+        from sqlalchemy import create_engine
+        try:
+            test_engine = create_engine(primary_url, connect_args={"connect_timeout": 3})
+            with test_engine.connect():
+                return primary_url
+        except Exception as e:
+            print(f"[WARNING] Could not connect to primary database: {e}")
+            local_pg = 'postgresql://postgres:dhara16@localhost:5432/portfolio_db'
+            if primary_url != local_pg:
+                try:
+                    test_engine = create_engine(local_pg, connect_args={"connect_timeout": 2})
+                    with test_engine.connect():
+                        print("[INFO] Fallback: Connected to local PostgreSQL (portfolio_db)")
+                        return local_pg
+                except Exception:
+                    pass
+            # Fall back to SQLite
+            instance_dir = os.path.join(app.root_path, 'instance')
+            os.makedirs(instance_dir, exist_ok=True)
+            sqlite_path = os.path.join(instance_dir, 'portfolio.db').replace('\\', '/')
+            sqlite_url = f"sqlite:///{sqlite_path}"
+            print(f"[INFO] Fallback: Using SQLite database ({sqlite_url})")
+            return sqlite_url
+    return primary_url
+
+db_url = resolve_database_uri(db_url)
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -839,53 +872,51 @@ def send_contact_email():
         return jsonify({'error': str(e)}), 500
 
 
-if __name__ == '__main__':
+# Database initialization and migrations (Render / direct run)
+def init_db():
     with app.app_context():
-        db.create_all()
-        if not Admin.query.filter_by(username='admin').first():
-            admin = Admin(username='admin', password_hash=generate_password_hash('Dhara1625'))
-            db.session.add(admin)
-            db.session.commit()
-    app.run(debug=True)
-
-
-# Auto-run on gunicorn startup (Render) - just create tables and admin
-with app.app_context():
-    try:
-        db.create_all()
-        if not Admin.query.filter_by(username='admin').first():
-            db.session.add(Admin(username='admin', password_hash=generate_password_hash('Dhara1625')))
-            db.session.commit()
-
-        # Migrate: add display_order column if missing (SQLite / Postgres safe)
-        from sqlalchemy import text, inspect as sa_inspect
-        inspector = sa_inspect(db.engine)
-
-        # Add link_url / link_label to project FIRST (before any model queries)
-        proj_cols = [c['name'] for c in inspector.get_columns('project')]
-        if 'link_url' not in proj_cols:
-            db.session.execute(text("ALTER TABLE project ADD COLUMN link_url VARCHAR(500)"))
-            db.session.commit()
-        if 'link_label' not in proj_cols:
-            db.session.execute(text("ALTER TABLE project ADD COLUMN link_label VARCHAR(100)"))
-            db.session.commit()
-
-        # Ensure IntroVideo table exists
-        db.create_all()
-
-        for model, table in [
-            (Project, 'project'), (Skill, 'skill'),
-            (Education, 'education'), (Certification, 'certification'),
-            (Internship, 'internship'),
-        ]:
-            cols = [c['name'] for c in inspector.get_columns(table)]
-            if 'display_order' not in cols:
-                db.session.execute(text(f'ALTER TABLE "{table}" ADD COLUMN display_order INTEGER DEFAULT 0'))
+        try:
+            db.create_all()
+            if not Admin.query.filter_by(username='admin').first():
+                db.session.add(Admin(username='admin', password_hash=generate_password_hash('Dhara1625')))
                 db.session.commit()
-            # Back-fill zeros with sequential values so existing rows have a stable order
-            rows = model.query.filter(model.display_order == 0).order_by(model.id).all()
-            for i, row in enumerate(rows, start=1):
-                row.display_order = i
-        db.session.commit()
-    except Exception as e:
-        print(f"Startup DB init error: {e}")
+
+            # Migrate: add display_order column if missing (SQLite / Postgres safe)
+            from sqlalchemy import text, inspect as sa_inspect
+            inspector = sa_inspect(db.engine)
+
+            # Add link_url / link_label to project FIRST (before any model queries)
+            proj_cols = [c['name'] for c in inspector.get_columns('project')]
+            if 'link_url' not in proj_cols:
+                db.session.execute(text("ALTER TABLE project ADD COLUMN link_url VARCHAR(500)"))
+                db.session.commit()
+            if 'link_label' not in proj_cols:
+                db.session.execute(text("ALTER TABLE project ADD COLUMN link_label VARCHAR(100)"))
+                db.session.commit()
+
+            # Ensure IntroVideo table exists
+            db.create_all()
+
+            for model, table in [
+                (Project, 'project'), (Skill, 'skill'),
+                (Education, 'education'), (Certification, 'certification'),
+                (Internship, 'internship'),
+            ]:
+                cols = [c['name'] for c in inspector.get_columns(table)]
+                if 'display_order' not in cols:
+                    db.session.execute(text(f'ALTER TABLE "{table}" ADD COLUMN display_order INTEGER DEFAULT 0'))
+                    db.session.commit()
+                # Back-fill zeros with sequential values so existing rows have a stable order
+                rows = model.query.filter(model.display_order == 0).order_by(model.id).all()
+                for i, row in enumerate(rows, start=1):
+                    row.display_order = i
+            db.session.commit()
+        except Exception as e:
+            print(f"Startup DB init error: {e}")
+
+
+# Run DB initialization on startup (Render / direct run)
+init_db()
+
+if __name__ == '__main__':
+    app.run(debug=True)
