@@ -33,18 +33,25 @@ def resolve_database_uri(primary_url):
                 return primary_url
         except Exception as e:
             print(f"[WARNING] Could not connect to primary database: {e}")
-            local_pg = 'postgresql://postgres:dhara16@localhost:5432/portfolio_db'
-            if primary_url != local_pg:
-                try:
-                    test_engine = create_engine(local_pg, connect_args={"connect_timeout": 2})
-                    with test_engine.connect():
-                        print("[INFO] Fallback: Connected to local PostgreSQL (portfolio_db)")
-                        return local_pg
-                except Exception:
-                    pass
+            is_serverless = os.environ.get('VERCEL') or os.environ.get('AWS_LAMBDA_FUNCTION_NAME')
+            if not is_serverless:
+                local_pg = 'postgresql://postgres:dhara16@localhost:5432/portfolio_db'
+                if primary_url != local_pg:
+                    try:
+                        test_engine = create_engine(local_pg, connect_args={"connect_timeout": 2})
+                        with test_engine.connect():
+                            print("[INFO] Fallback: Connected to local PostgreSQL (portfolio_db)")
+                            return local_pg
+                    except Exception:
+                        pass
             # Fall back to SQLite
-            instance_dir = os.path.join(app.root_path, 'instance')
-            os.makedirs(instance_dir, exist_ok=True)
+            # On Vercel / serverless platforms, app.root_path is read-only (/var/task). Use temp directory.
+            import tempfile
+            if is_serverless or not os.access(app.root_path, os.W_OK):
+                instance_dir = tempfile.gettempdir()
+            else:
+                instance_dir = os.path.join(app.root_path, 'instance')
+                os.makedirs(instance_dir, exist_ok=True)
             sqlite_path = os.path.join(instance_dir, 'portfolio.db').replace('\\', '/')
             sqlite_url = f"sqlite:///{sqlite_path}"
             print(f"[INFO] Fallback: Using SQLite database ({sqlite_url})")
@@ -911,12 +918,23 @@ def init_db():
                 for i, row in enumerate(rows, start=1):
                     row.display_order = i
             db.session.commit()
+
+            # Auto-seed if database has no projects yet (e.g. fresh SQLite fallback on Vercel)
+            if Project.query.count() == 0:
+                try:
+                    from populate_db import populate_database
+                    populate_database()
+                except Exception as seed_err:
+                    print(f"[WARNING] Auto-seeding skipped: {seed_err}")
         except Exception as e:
             print(f"Startup DB init error: {e}")
 
 
-# Run DB initialization on startup (Render / direct run)
-init_db()
+# Run DB initialization on startup (Render / direct run / Vercel)
+try:
+    init_db()
+except Exception as e:
+    print(f"[WARNING] Top-level init_db failed: {e}")
 
 if __name__ == '__main__':
     app.run(debug=True)
