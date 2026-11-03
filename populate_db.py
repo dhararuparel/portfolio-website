@@ -1,4 +1,4 @@
-from app import app, db, Project, Skill, Education, Certification, Contact, Admin, EngineeringSnapshot
+from app import app, db, Project, Skill, Education, Certification, Contact, Admin, EngineeringSnapshot, ResumeFile
 from werkzeug.security import generate_password_hash
 
 def populate_database():
@@ -213,6 +213,22 @@ def populate_database():
         else:
             print("Engineering snapshot already exists")
         
+        # Add ResumeFile if empty
+        existing_resume = ResumeFile.query.first()
+        if not existing_resume:
+            import os
+            resume_path = os.path.join(app.root_path, 'static', 'Dhara_Ruparel_Resume.pdf')
+            if os.path.isfile(resume_path):
+                with open(resume_path, 'rb') as f:
+                    resume_data = f.read()
+                if resume_data:
+                    db.session.add(ResumeFile(
+                        filename='Dhara_Ruparel_Resume.pdf',
+                        content_type='application/pdf',
+                        data=resume_data
+                    ))
+                    print("Added resume from static file")
+
         # Commit all changes
         db.session.commit()
         print("Database populated successfully!")

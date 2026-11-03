@@ -953,6 +953,23 @@ def init_db():
                     populate_database()
                 except Exception as seed_err:
                     print(f"[WARNING] Auto-seeding skipped: {seed_err}")
+
+            # Ensure ResumeFile is populated from static PDF if empty
+            if ResumeFile.query.count() == 0:
+                try:
+                    resume_path = os.path.join(app.root_path, 'static', 'Dhara_Ruparel_Resume.pdf')
+                    if os.path.isfile(resume_path):
+                        with open(resume_path, 'rb') as f:
+                            pdf_data = f.read()
+                        if pdf_data:
+                            db.session.add(ResumeFile(
+                                filename='Dhara_Ruparel_Resume.pdf',
+                                content_type='application/pdf',
+                                data=pdf_data
+                            ))
+                            db.session.commit()
+                except Exception as resume_seed_err:
+                    print(f"[WARNING] ResumeFile seeding skipped: {resume_seed_err}")
         except Exception as e:
             print(f"Startup DB init error: {e}")
 

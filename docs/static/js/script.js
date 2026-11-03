@@ -628,7 +628,10 @@ Bio: Recent Computer Engineering graduate specializing in LLMs, RAG platforms, c
         resume: function () {
             // Trigger download/view in new window
             setTimeout(() => {
-                window.open('static/Dhara_Ruparel_Resume.pdf', '_blank');
+                const url = (window.location.protocol === 'file:' || window.location.hostname.includes('github.io'))
+                    ? 'static/Dhara_Ruparel_Resume.pdf'
+                    : '/resume/view';
+                window.open(url, '_blank');
             }, 500);
             return `Opening resume PDF in a new tab...`;
         },
