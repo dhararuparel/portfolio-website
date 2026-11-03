@@ -657,23 +657,31 @@ def download_resume():
     """Serve the resume PDF with forced download headers."""
     resume_blob = ResumeFile.query.order_by(ResumeFile.updated_at.desc(), ResumeFile.id.desc()).first()
     if resume_blob and resume_blob.data:
-        return send_file(
+        resp = send_file(
             io.BytesIO(resume_blob.data),
             mimetype=resume_blob.content_type or 'application/pdf',
             as_attachment=True,
             download_name='Dhara_Ruparel_Resume.pdf'
         )
+        resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        resp.headers['Pragma'] = 'no-cache'
+        resp.headers['Expires'] = '0'
+        return resp
 
     # Backward compatibility for previously disk-based deployments.
     resume_path = os.path.join(app.root_path, 'static', 'Dhara_Ruparel_Resume.pdf')
     if not os.path.isfile(resume_path):
         return "Resume not found. Please upload it via the admin panel.", 404
-    return send_file(
+    resp = send_file(
         resume_path,
         mimetype='application/pdf',
         as_attachment=True,
         download_name='Dhara_Ruparel_Resume.pdf'
     )
+    resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    resp.headers['Pragma'] = 'no-cache'
+    resp.headers['Expires'] = '0'
+    return resp
 
 
 @app.route('/resume/view')
@@ -681,20 +689,28 @@ def view_resume():
     """Serve the resume PDF inline for viewing in the browser."""
     resume_blob = ResumeFile.query.order_by(ResumeFile.updated_at.desc(), ResumeFile.id.desc()).first()
     if resume_blob and resume_blob.data:
-        return send_file(
+        resp = send_file(
             io.BytesIO(resume_blob.data),
             mimetype=resume_blob.content_type or 'application/pdf',
             as_attachment=False
         )
+        resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        resp.headers['Pragma'] = 'no-cache'
+        resp.headers['Expires'] = '0'
+        return resp
 
     resume_path = os.path.join(app.root_path, 'static', 'Dhara_Ruparel_Resume.pdf')
     if not os.path.isfile(resume_path):
         return "Resume not found. Please upload it via the admin panel.", 404
-    return send_file(
+    resp = send_file(
         resume_path,
         mimetype='application/pdf',
         as_attachment=False
     )
+    resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    resp.headers['Pragma'] = 'no-cache'
+    resp.headers['Expires'] = '0'
+    return resp
 
 
 @app.route('/api/resume/upload', methods=['POST'])
@@ -733,6 +749,17 @@ def upload_resume():
             resume_blob.updated_at = datetime.utcnow()
 
         db.session.commit()
+
+        # Also update the static file on disk if writable (local development & backup)
+        try:
+            static_dir = os.path.join(app.root_path, 'static')
+            if os.access(static_dir, os.W_OK):
+                disk_path = os.path.join(static_dir, 'Dhara_Ruparel_Resume.pdf')
+                with open(disk_path, 'wb') as f:
+                    f.write(pdf_bytes)
+        except Exception as disk_err:
+            print(f"[INFO] Static resume file backup skipped: {disk_err}")
+
         return jsonify({'message': 'Resume uploaded successfully'})
     except Exception as e:
         db.session.rollback()

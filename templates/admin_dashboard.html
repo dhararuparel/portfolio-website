@@ -400,7 +400,10 @@
                             <button type="submit" class="btn btn-primary" id="resumeUploadBtn" disabled>
                                 <i class="fas fa-upload"></i> Upload Resume
                             </button>
-                            <a href="/static/Dhara_Ruparel_Resume.pdf" download class="btn btn-secondary" id="resumeDownloadBtn" style="display:none">
+                            <a href="{{ url_for('view_resume') }}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" id="resumeViewBtn" style="display:none">
+                                <i class="fas fa-external-link-alt"></i> View Current
+                            </a>
+                            <a href="{{ url_for('download_resume') }}" download class="btn btn-secondary" id="resumeDownloadBtn" style="display:none">
                                 <i class="fas fa-download"></i> Download Current
                             </a>
                         </div>
@@ -798,7 +801,8 @@
     });
 
     dropZone.addEventListener('click', function (e) {
-        if (e.target.tagName !== 'LABEL' && e.target.tagName !== 'INPUT') fileInput.click();
+        if (e.target.closest('label') || e.target.closest('input')) return;
+        fileInput.click();
     });
 
     dropZone.addEventListener('dragover', function (e) {
@@ -878,6 +882,7 @@
     const fileInput  = document.getElementById('resumeFile');
     const fileNameEl = document.getElementById('resumeFileName');
     const uploadBtn  = document.getElementById('resumeUploadBtn');
+    const viewBtn    = document.getElementById('resumeViewBtn');
     const downloadBtn= document.getElementById('resumeDownloadBtn');
     const form       = document.getElementById('resumeUploadForm');
     const msgEl      = document.getElementById('resumeMsg');
@@ -893,8 +898,15 @@
             if (data.exists) {
                 statusIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
                 statusIcon.className = 'resume-status-icon ok';
-                statusText.textContent = 'Resume on file â€” last updated: ' + data.last_updated;
-                downloadBtn.style.display = 'inline-flex';
+                statusText.textContent = 'Resume on file — last updated: ' + (data.last_updated || 'Active');
+                if (downloadBtn) {
+                    downloadBtn.href = '/resume/download?v=' + Date.now();
+                    downloadBtn.style.display = 'inline-flex';
+                }
+                if (viewBtn) {
+                    viewBtn.href = '/resume/view?v=' + Date.now();
+                    viewBtn.style.display = 'inline-flex';
+                }
             } else {
                 statusIcon.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
                 statusIcon.className = 'resume-status-icon missing';
@@ -907,14 +919,13 @@
 
     // File input change
     fileInput.addEventListener('change', function () {
-        if (this.files[0]) selectFile(this.files[0]);
+        if (this.files && this.files[0]) selectFile(this.files[0], false);
     });
 
-    // Drop zone click
+    // Drop zone click (avoid double-triggering when clicking label or its children)
     dropZone.addEventListener('click', function (e) {
-        if (e.target.tagName !== 'LABEL' && e.target.tagName !== 'INPUT') {
-            fileInput.click();
-        }
+        if (e.target.closest('label') || e.target.closest('input')) return;
+        fileInput.click();
     });
 
     // Drag & drop
@@ -928,11 +939,11 @@
     dropZone.addEventListener('drop', function (e) {
         e.preventDefault();
         dropZone.classList.remove('drag-over');
-        const file = e.dataTransfer.files[0];
-        if (file) selectFile(file);
+        const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+        if (file) selectFile(file, true);
     });
 
-    function selectFile(file) {
+    function selectFile(file, fromDrop) {
         if (!file.name.toLowerCase().endsWith('.pdf')) {
             showMsg('Only PDF files are allowed.', 'error');
             return;
@@ -945,22 +956,31 @@
         fileNameEl.innerHTML = '<i class="fas fa-file-pdf"></i> ' + file.name;
         fileNameEl.style.display = 'flex';
         uploadBtn.disabled = false;
-        // Assign to input
-        const dt = new DataTransfer();
-        dt.items.add(file);
-        fileInput.files = dt.files;
+
+        // If from drag-and-drop, assign to file input
+        if (fromDrop) {
+            try {
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                fileInput.files = dt.files;
+            } catch (_) {}
+        }
     }
 
     // Upload
     form.addEventListener('submit', async function (e) {
         e.preventDefault();
-        if (!fileInput.files[0]) return;
+        const file = fileInput.files && fileInput.files[0];
+        if (!file) {
+            showMsg('Please choose a PDF file first.', 'error');
+            return;
+        }
 
         uploadBtn.disabled = true;
         uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
 
         const fd = new FormData();
-        fd.append('resume', fileInput.files[0]);
+        fd.append('resume', file);
 
         try {
             const res = await fetch('/api/resume/upload', { method: 'POST', body: fd });
@@ -968,7 +988,6 @@
             try {
                 data = await res.json();
             } catch (_) {
-                // Non-JSON responses can happen for proxy/server-side upload failures.
                 data = { error: `Upload failed (HTTP ${res.status}).` };
             }
             if (res.ok) {
@@ -976,8 +995,15 @@
                 statusIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
                 statusIcon.className = 'resume-status-icon ok';
                 const now = new Date();
-                statusText.textContent = 'Resume on file â€” last updated: ' + now.toLocaleString();
-                downloadBtn.style.display = 'inline-flex';
+                statusText.textContent = 'Resume on file — last updated: ' + now.toLocaleString();
+                if (downloadBtn) {
+                    downloadBtn.href = '/resume/download?v=' + Date.now();
+                    downloadBtn.style.display = 'inline-flex';
+                }
+                if (viewBtn) {
+                    viewBtn.href = '/resume/view?v=' + Date.now();
+                    viewBtn.style.display = 'inline-flex';
+                }
             } else {
                 showMsg(data.error || 'Upload failed.', 'error');
             }
