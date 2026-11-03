@@ -18,7 +18,7 @@
             </div>
             <div class="nav-actions">
                 <!-- Resume button -->
-                <a href="{{ url_for('view_resume') }}?v=2026" class="btn-resume" target="_blank" rel="noopener noreferrer">
+                <a href="{{ url_for('view_resume') }}?v={{ resume_version or '20261103' }}" class="btn-resume" target="_blank" rel="noopener noreferrer">
                     <i class="fas fa-file-pdf"></i>
                     Resume
                 </a>
@@ -173,6 +173,12 @@
                 "github": "https://github.com/dhararuparel/Camera-Motion-Sensing-Project.git",
                 "arch": "Camera Feed → OpenCV Frame Diff → Motion Threshold → Alert Trigger → PostgreSQL Log → Flask Dashboard"
             },
+            "CAMERA MOTION SENSING PROJECT": {
+                "problem": "Need for affordable real-time surveillance without expensive hardware.",
+                "metric": "Real-time motion detection with instant automated alert notifications",
+                "github": "https://github.com/dhararuparel/Camera-Motion-Sensing-Project.git",
+                "arch": "Camera Feed → OpenCV Frame Diff → Motion Threshold → Alert Trigger → PostgreSQL Log → Flask Dashboard"
+            },
             "EMOTION DETECTION FROM TEXT": {
                 "problem": "Manually analysing user sentiment at scale is time-consuming and inconsistent.",
                 "metric": "6-class emotion classifier trained on Twitter dataset, deployed as interactive web app",
@@ -241,9 +247,11 @@
                 <div class="cs-row cs-row-stack">
                     <span class="cs-label">Stack</span>
                     <div class="tech-tags cs-tags">
-                        {% for tech in project.technologies.split(', ') %}
-                        <span class="tech-tag">{{ tech }}</span>
+                        {% if project.technologies %}
+                        {% for tech in project.technologies.split(',') %}
+                        <span class="tech-tag">{{ tech.strip() }}</span>
                         {% endfor %}
+                        {% endif %}
                     </div>
                 </div>
 
@@ -296,7 +304,20 @@
             "Version Control & Deployment"
             ] %}
 
-            {% for category in category_order %}
+            {# Collect all unique categories in stable order #}
+            {% set all_categories = [] %}
+            {% for cat in category_order %}
+                {% if skills | selectattr("category", "equalto", cat) | list %}
+                    {% set _ = all_categories.append(cat) %}
+                {% endif %}
+            {% endfor %}
+            {% for s in skills %}
+                {% if s.category and s.category not in all_categories %}
+                    {% set _ = all_categories.append(s.category) %}
+                {% endif %}
+            {% endfor %}
+
+            {% for category in all_categories %}
             {% set category_skills = skills | selectattr("category", "equalto", category) | list %}
             {% if category_skills %}
             <div class="skill-category">
@@ -339,8 +360,8 @@
                     <div class="internship-tech">
                         <h4>Technologies Used:</h4>
                         <div class="tech-tags">
-                            {% for tech in internship.technologies.split(', ') %}
-                            <span class="tech-tag">{{ tech }}</span>
+                            {% for tech in internship.technologies.split(',') %}
+                            <span class="tech-tag">{{ tech.strip() }}</span>
                             {% endfor %}
                         </div>
                     </div>
@@ -555,7 +576,7 @@
 
         <!-- Quick Actions -->
         <div class="rp-quick-actions">
-            <a href="{{ url_for('view_resume') }}" target="_blank" rel="noopener noreferrer" class="rp-action-btn primary">
+            <a href="{{ url_for('view_resume') }}?v={{ resume_version or '20261103' }}" target="_blank" rel="noopener noreferrer" class="rp-action-btn primary">
                 <i class="fas fa-file-pdf"></i> Download Resume
             </a>
             <a href="https://www.linkedin.com/in/dhara-ruparel/" target="_blank" rel="noopener noreferrer" class="rp-action-btn">
@@ -576,6 +597,7 @@
                 <h3 class="rp-section-title"><i class="fas fa-history"></i> Experience</h3>
                 <ul class="rp-list">
                     <li><span class="rp-tag">3+ yrs</span> Python &amp; AI Development</li>
+                    <li><span class="rp-tag">Intern</span> AI Systems Evaluation — AirDawg Labs</li>
                     <li><span class="rp-tag">Intern</span> Python with Django — iTechbrains</li>
                     <li><span class="rp-tag">Intern</span> Summer — TatvaSoft Pvt. Ltd.</li>
                 </ul>

@@ -104,14 +104,14 @@ class Education(db.Model):
     degree = db.Column(db.String(200), nullable=False)
     institution = db.Column(db.String(200), nullable=False)
     year = db.Column(db.String(20), nullable=False)
-    percentage = db.Column(db.String(10))
+    percentage = db.Column(db.String(100))
     display_order = db.Column(db.Integer, default=0)
 
 class Certification(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(300), nullable=False)
     issuer = db.Column(db.String(200), nullable=False)
-    percentage = db.Column(db.String(10))
+    percentage = db.Column(db.String(100))
     date_range = db.Column(db.String(100))
     display_order = db.Column(db.Integer, default=0)
 
@@ -176,6 +176,9 @@ def index():
         db.session.add(snapshot)
         db.session.commit()
         
+    resume_blob = ResumeFile.query.order_by(ResumeFile.updated_at.desc(), ResumeFile.id.desc()).first()
+    resume_version = int(resume_blob.updated_at.timestamp()) if (resume_blob and resume_blob.updated_at) else int(datetime.utcnow().timestamp())
+
     return render_template('index.html', 
                           projects=projects, 
                           skills=skills, 
@@ -183,7 +186,8 @@ def index():
                           certifications=certifications,
                           internships=internships,
                           contact=contact,
-                          snapshot=snapshot)
+                          snapshot=snapshot,
+                          resume_version=resume_version)
 
 @app.route('/admin')
 def admin_login():
@@ -260,6 +264,7 @@ def api_snapshot():
         snapshot.available_for = data['available_for']
         snapshot.last_updated = data['last_updated']
         db.session.commit()
+        sync_static_files()
         return jsonify({'message': 'Snapshot updated successfully'})
         
     return jsonify({
@@ -275,6 +280,58 @@ def api_snapshot():
         'last_updated': snapshot.last_updated
     })
 
+def sync_static_files():
+    """
+    Whenever admin modifies any portfolio content, automatically regenerate
+    root index.html and docs/index.html if the local filesystem is writable,
+    so that root index.html, VSCode Live Server, and GitHub Pages are instantly updated!
+    """
+    try:
+        if not os.access(app.root_path, os.W_OK):
+            return
+        if getattr(sync_static_files, '_syncing', False):
+            return
+        sync_static_files._syncing = True
+
+        try:
+            with app.test_client() as client:
+                res = client.get('/')
+                if res.status_code == 200:
+                    import re
+                    import shutil
+
+                    html = res.get_data(as_text=True)
+
+                    resume_blob = ResumeFile.query.order_by(ResumeFile.updated_at.desc(), ResumeFile.id.desc()).first()
+                    resume_version = int(resume_blob.updated_at.timestamp()) if (resume_blob and resume_blob.updated_at) else int(datetime.utcnow().timestamp())
+
+                    # Relative asset paths for GitHub Pages / static file viewing
+                    static_html = re.sub(r'href=[\'"]/resume/(?:view|download)(?:\?[^\'"]*)?[\'"]', f'href="static/Dhara_Ruparel_Resume.pdf?v={resume_version}"', html)
+                    static_html = re.sub(r'src=[\'"]/intro-video/stream(?:\?[^\'"]*)?[\'"]', 'src="static/videos/intro_video.mp4"', static_html)
+                    static_html = re.sub(r'href=[\'"]/static/', 'href="static/', static_html)
+                    static_html = re.sub(r'src=[\'"]/static/', 'src="static/', static_html)
+
+                    root_index = os.path.join(app.root_path, 'index.html')
+                    with open(root_index, 'w', encoding='utf-8') as f:
+                        f.write(static_html)
+
+                    docs_dir = os.path.join(app.root_path, 'docs')
+                    if os.path.isdir(docs_dir):
+                        docs_index = os.path.join(docs_dir, 'index.html')
+                        with open(docs_index, 'w', encoding='utf-8') as f:
+                            f.write(static_html)
+
+                        docs_static = os.path.join(docs_dir, 'static')
+                        if os.path.isdir(docs_static):
+                            src_pdf = os.path.join(app.root_path, 'static', 'Dhara_Ruparel_Resume.pdf')
+                            dst_pdf = os.path.join(docs_static, 'Dhara_Ruparel_Resume.pdf')
+                            if os.path.isfile(src_pdf):
+                                shutil.copy2(src_pdf, dst_pdf)
+        finally:
+            sync_static_files._syncing = False
+    except Exception as e:
+        print(f"[INFO] Auto-sync static files skipped: {e}")
+
 # API Routes for CRUD operations
 @app.route('/api/projects', methods=['GET', 'POST'])
 def api_projects():
@@ -283,6 +340,7 @@ def api_projects():
     
     if request.method == 'POST':
         data = request.json
+        max_order = db.session.query(db.func.max(Project.display_order)).scalar() or 0
         project = Project(
             title=data['title'],
             description=data['description'],
@@ -291,10 +349,12 @@ def api_projects():
             team_size=data.get('team_size', ''),
             role=data.get('role', ''),
             link_url=data.get('link_url', ''),
-            link_label=data.get('link_label', '')
+            link_label=data.get('link_label', ''),
+            display_order=max_order + 1
         )
         db.session.add(project)
         db.session.commit()
+        sync_static_files()
         return jsonify({'message': 'Project added successfully', 'id': project.id})
     
     projects = Project.query.all()
@@ -341,11 +401,13 @@ def api_project(project_id):
         project.link_url = data.get('link_url', '')
         project.link_label = data.get('link_label', '')
         db.session.commit()
+        sync_static_files()
         return jsonify({'message': 'Project updated successfully'})
     
     elif request.method == 'DELETE':
         db.session.delete(project)
         db.session.commit()
+        sync_static_files()
         return jsonify({'message': 'Project deleted successfully'})
 
 @app.route('/api/skills', methods=['GET', 'POST'])
@@ -355,13 +417,16 @@ def api_skills():
     
     if request.method == 'POST':
         data = request.json
+        max_order = db.session.query(db.func.max(Skill.display_order)).scalar() or 0
         skill = Skill(
             name=data['name'],
             category=data['category'],
-            proficiency=80  # Default proficiency, not used in display
+            proficiency=data.get('proficiency', 80),
+            display_order=max_order + 1
         )
         db.session.add(skill)
         db.session.commit()
+        sync_static_files()
         return jsonify({'message': 'Skill added successfully', 'id': skill.id})
     
     skills = Skill.query.all()
@@ -394,11 +459,13 @@ def api_skill(skill_id):
         # Keep existing proficiency or set default, not used in display
         skill.proficiency = skill.proficiency or 80
         db.session.commit()
+        sync_static_files()
         return jsonify({'message': 'Skill updated successfully'})
     
     elif request.method == 'DELETE':
         db.session.delete(skill)
         db.session.commit()
+        sync_static_files()
         return jsonify({'message': 'Skill deleted successfully'})
 
 @app.route('/api/education', methods=['GET', 'POST'])
@@ -408,14 +475,17 @@ def api_education():
     
     if request.method == 'POST':
         data = request.json
+        max_order = db.session.query(db.func.max(Education.display_order)).scalar() or 0
         education = Education(
             degree=data['degree'],
             institution=data['institution'],
             year=data['year'],
-            percentage=data.get('percentage')
+            percentage=data.get('percentage'),
+            display_order=max_order + 1
         )
         db.session.add(education)
         db.session.commit()
+        sync_static_files()
         return jsonify({'message': 'Education added successfully', 'id': education.id})
     
     education = Education.query.all()
@@ -450,11 +520,13 @@ def api_education_item(education_id):
         education.year = data['year']
         education.percentage = data.get('percentage')
         db.session.commit()
+        sync_static_files()
         return jsonify({'message': 'Education updated successfully'})
     
     elif request.method == 'DELETE':
         db.session.delete(education)
         db.session.commit()
+        sync_static_files()
         return jsonify({'message': 'Education deleted successfully'})
 
 @app.route('/api/certifications', methods=['GET', 'POST'])
@@ -464,14 +536,17 @@ def api_certifications():
     
     if request.method == 'POST':
         data = request.json
+        max_order = db.session.query(db.func.max(Certification.display_order)).scalar() or 0
         certification = Certification(
             title=data['title'],
             issuer=data['issuer'],
             percentage=data.get('percentage'),
-            date_range=data.get('date_range')
+            date_range=data.get('date_range'),
+            display_order=max_order + 1
         )
         db.session.add(certification)
         db.session.commit()
+        sync_static_files()
         return jsonify({'message': 'Certification added successfully', 'id': certification.id})
     
     certifications = Certification.query.all()
@@ -506,11 +581,13 @@ def api_certification(cert_id):
         certification.percentage = data.get('percentage')
         certification.date_range = data.get('date_range')
         db.session.commit()
+        sync_static_files()
         return jsonify({'message': 'Certification updated successfully'})
     
     elif request.method == 'DELETE':
         db.session.delete(certification)
         db.session.commit()
+        sync_static_files()
         return jsonify({'message': 'Certification deleted successfully'})
 
 @app.route('/api/contact', methods=['GET', 'POST', 'PUT'])
@@ -528,6 +605,7 @@ def api_contact():
         )
         db.session.add(contact)
         db.session.commit()
+        sync_static_files()
         return jsonify({'message': 'Contact info added successfully', 'id': contact.id})
     
     elif request.method == 'PUT':
@@ -541,6 +619,7 @@ def api_contact():
         contact.location = data['location']
         contact.linkedin = data.get('linkedin')
         db.session.commit()
+        sync_static_files()
         return jsonify({'message': 'Contact info updated successfully'})
     
     contact = Contact.query.first()
@@ -561,19 +640,22 @@ def api_internships():
     
     if request.method == 'POST':
         data = request.json
+        max_order = db.session.query(db.func.max(Internship.display_order)).scalar() or 0
         internship = Internship(
             company=data['company'],
             position=data['position'],
             duration=data['duration'],
             location=data['location'],
             description=data.get('description', ''),
-            technologies=data.get('technologies', '')
+            technologies=data.get('technologies', ''),
+            display_order=max_order + 1
         )
         db.session.add(internship)
         db.session.commit()
+        sync_static_files()
         return jsonify({'message': 'Internship added successfully', 'id': internship.id})
     
-    internships = Internship.query.all()
+    internships = Internship.query.order_by(Internship.display_order, Internship.id).all()
     return jsonify([{
         'id': i.id,
         'company': i.company,
@@ -611,11 +693,13 @@ def api_internship(internship_id):
         internship.description = data.get('description', '')
         internship.technologies = data.get('technologies', '')
         db.session.commit()
+        sync_static_files()
         return jsonify({'message': 'Internship updated successfully'})
     
     elif request.method == 'DELETE':
         db.session.delete(internship)
         db.session.commit()
+        sync_static_files()
         return jsonify({'message': 'Internship deleted successfully'})
 
 
@@ -629,6 +713,7 @@ def _reorder(model, items):
         if row:
             row.display_order = item['order']
     db.session.commit()
+    sync_static_files()
     return jsonify({'message': 'Order saved'})
 
 @app.route('/api/projects/reorder', methods=['POST'])
@@ -757,6 +842,12 @@ def upload_resume():
                 disk_path = os.path.join(static_dir, 'Dhara_Ruparel_Resume.pdf')
                 with open(disk_path, 'wb') as f:
                     f.write(pdf_bytes)
+            docs_static_dir = os.path.join(app.root_path, 'docs', 'static')
+            if os.path.isdir(docs_static_dir) and os.access(docs_static_dir, os.W_OK):
+                docs_path = os.path.join(docs_static_dir, 'Dhara_Ruparel_Resume.pdf')
+                with open(docs_path, 'wb') as f:
+                    f.write(pdf_bytes)
+            sync_static_files()
         except Exception as disk_err:
             print(f"[INFO] Static resume file backup skipped: {disk_err}")
 
@@ -835,6 +926,23 @@ def upload_intro_video():
             video_blob.updated_at = datetime.utcnow()
 
         db.session.commit()
+
+        # Also backup to static folders if writable
+        try:
+            static_video_dir = os.path.join(app.root_path, 'static', 'videos')
+            if os.path.isdir(static_video_dir) and os.access(static_video_dir, os.W_OK):
+                v_path = os.path.join(static_video_dir, 'intro_video.' + ext)
+                with open(v_path, 'wb') as f:
+                    f.write(video_bytes)
+            docs_video_dir = os.path.join(app.root_path, 'docs', 'static', 'videos')
+            if os.path.isdir(docs_video_dir) and os.access(docs_video_dir, os.W_OK):
+                v_path = os.path.join(docs_video_dir, 'intro_video.' + ext)
+                with open(v_path, 'wb') as f:
+                    f.write(video_bytes)
+            sync_static_files()
+        except Exception as disk_err:
+            print(f"[INFO] Static video backup skipped: {disk_err}")
+
         return jsonify({'message': 'Intro video uploaded successfully'})
     except Exception as e:
         db.session.rollback()
@@ -928,6 +1036,15 @@ def init_db():
                 db.session.execute(text("ALTER TABLE project ADD COLUMN link_label VARCHAR(100)"))
                 db.session.commit()
 
+            # Ensure percentage columns have sufficient capacity (VARCHAR 100)
+            if db.engine.dialect.name == 'postgresql':
+                try:
+                    db.session.execute(text("ALTER TABLE certification ALTER COLUMN percentage TYPE VARCHAR(100)"))
+                    db.session.execute(text("ALTER TABLE education ALTER COLUMN percentage TYPE VARCHAR(100)"))
+                    db.session.commit()
+                except Exception:
+                    db.session.rollback()
+
             # Ensure IntroVideo table exists
             db.create_all()
 
@@ -940,10 +1057,12 @@ def init_db():
                 if 'display_order' not in cols:
                     db.session.execute(text(f'ALTER TABLE "{table}" ADD COLUMN display_order INTEGER DEFAULT 0'))
                     db.session.commit()
-                # Back-fill zeros with sequential values so existing rows have a stable order
-                rows = model.query.filter(model.display_order == 0).order_by(model.id).all()
-                for i, row in enumerate(rows, start=1):
-                    row.display_order = i
+                # Back-fill only unassigned zero/null rows with sequential values beyond existing max
+                max_order = db.session.query(db.func.max(model.display_order)).filter(model.display_order > 0).scalar() or 0
+                unassigned = model.query.filter(db.or_(model.display_order == 0, model.display_order.is_(None))).order_by(model.id).all()
+                for r in unassigned:
+                    max_order += 1
+                    r.display_order = max_order
             db.session.commit()
 
             # Auto-seed if database has no projects yet (e.g. fresh SQLite fallback on Vercel)
@@ -954,22 +1073,27 @@ def init_db():
                 except Exception as seed_err:
                     print(f"[WARNING] Auto-seeding skipped: {seed_err}")
 
-            # Ensure ResumeFile is populated from static PDF if empty
-            if ResumeFile.query.count() == 0:
-                try:
-                    resume_path = os.path.join(app.root_path, 'static', 'Dhara_Ruparel_Resume.pdf')
-                    if os.path.isfile(resume_path):
-                        with open(resume_path, 'rb') as f:
-                            pdf_data = f.read()
-                        if pdf_data:
+            # Ensure ResumeFile is populated or updated to latest static PDF
+            try:
+                resume_path = os.path.join(app.root_path, 'static', 'Dhara_Ruparel_Resume.pdf')
+                if os.path.isfile(resume_path):
+                    with open(resume_path, 'rb') as f:
+                        pdf_data = f.read()
+                    if pdf_data:
+                        cur_resume = ResumeFile.query.order_by(ResumeFile.updated_at.desc(), ResumeFile.id.desc()).first()
+                        if not cur_resume:
                             db.session.add(ResumeFile(
                                 filename='Dhara_Ruparel_Resume.pdf',
                                 content_type='application/pdf',
                                 data=pdf_data
                             ))
                             db.session.commit()
-                except Exception as resume_seed_err:
-                    print(f"[WARNING] ResumeFile seeding skipped: {resume_seed_err}")
+                        elif cur_resume.data != pdf_data and len(cur_resume.data) == 93252:
+                            cur_resume.data = pdf_data
+                            cur_resume.updated_at = datetime.utcnow()
+                            db.session.commit()
+            except Exception as resume_seed_err:
+                print(f"[WARNING] ResumeFile seeding skipped: {resume_seed_err}")
         except Exception as e:
             print(f"Startup DB init error: {e}")
 
